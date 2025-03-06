@@ -5,6 +5,7 @@ const { usersRouter } = require("./routes/usersRoutes");
 const { verifyToken, undefinedRouteHandler, allErrorsHandler } = require('./middlewares/middleware');
 require("dotenv").config();
 const { config } = require("./config/db_config");
+const { freeRouter } = require("./routes/freeRoutes");
 
 async function startServer() {
     const app = express();
@@ -29,6 +30,7 @@ async function startServer() {
             next();
         });
 
+        app.use(freeRouter);
         app.use("/users", usersRouter);
         app.use(verifyToken);
         app.all('*', undefinedRouteHandler);

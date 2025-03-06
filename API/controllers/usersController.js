@@ -1,3 +1,7 @@
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { newUserSchema } = require("../validators/validators");
+
 //get all users
 function getAllUsers(req, res) {
     let pool = req.pool;
@@ -21,4 +25,39 @@ function getAllUsers(req, res) {
     );
 };
 
-module.exports = { getAllUsers };
+//sign-up for a new user
+async function addNewUser(req, res) {
+    let pool = req.pool;
+    let addedUser = req.body;
+
+    const { error, value } = newUserSchema.validate(addedUser, {
+        abortEarly: false
+    });
+
+    if (error) {
+        console.log(error);
+        return res.status(400).json({ errors: error.details });
+    };
+
+    let hashedPassword = await bcrypt.hash(value.UserPassword, 5);
+
+    let token = await jwt.sign({ addedUser }, "impossibletoguessright");
+
+    pool.query(
+        `INSERT INTO users (FirstName, LastName, Email, PhoneNumber, UserRole, UserPassword)
+    VALUES ('${value.FirstName}', '${value.LastName}', '${value.Email}', '${value.PhoneNumber}', '${value.UserRole}', '${value.hashedPassword}')`, (err, result) =>{
+    if (err) {
+        console.log("Error occured in query", err);
+    } else {
+        res.json({
+            success: true,
+            message: "User added successfully",
+            addedUser,
+            token
+        });
+    };
+    }
+  );
+};
+
+module.exports = { getAllUsers, addNewUser };
