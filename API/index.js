@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const sql = require("mssql");
+const { verifyToken, undefinedRouteHandler, allErrorsHandler } = require('./middlewares/middleware');
 require("dotenv").config();
 const { config } = require("./config/db_config");
 
@@ -26,6 +27,11 @@ async function startServer() {
             req.pool = pool;
             next();
         });
+
+        app.use(verifyToken);
+        app.all('*', undefinedRouteHandler);
+        app.use(allErrorsHandler);
+
         const port = 4500;
         app.listen(port, () =>{
             console.log(`Server listening to port ${port}`);
