@@ -45,7 +45,7 @@ async function addNewUser(req, res) {
 
     pool.query(
         `INSERT INTO users (FirstName, LastName, Email, PhoneNumber, UserRole, UserPassword)
-    VALUES ('${value.FirstName}', '${value.LastName}', '${value.Email}', '${value.PhoneNumber}', '${value.UserRole}', '${value.hashedPassword}')`, (err, result) =>{
+    VALUES ('${value.FirstName}', '${value.LastName}', '${value.Email}', '${value.PhoneNumber}', '${value.UserRole}', '${hashedPassword}')`, (err, result) =>{
     if (err) {
         console.log("Error occured in query", err);
     } else {
@@ -59,5 +59,7 @@ async function addNewUser(req, res) {
     }
   );
 };
+
+//delete a user
 
 module.exports = { getAllUsers, addNewUser };
