@@ -1,14 +1,36 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
+import Header from './Components/Header';
 
 function App() {
   return (
     <>
+      <Header/>
       <div className="App">
-        <header className="App-header">
-          <h1>My Ecommerce</h1>
-        </header>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
+        <h1>Hello world</h1>
       </div>
     </>
   );
