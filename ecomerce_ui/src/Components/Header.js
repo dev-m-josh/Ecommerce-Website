@@ -1,11 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBasket, faSearch, faUser, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import "../Styles/Header.css";
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("signedUser"));
 
     const toggleMenu = () => {
@@ -19,6 +21,16 @@ export default function Header() {
             setIsAdmin(true);
         }
     }, [user]);
+
+    // Handle logout
+    const handleLogout = () => {
+        // Clear user data from localStorage
+        localStorage.removeItem("token");
+        localStorage.removeItem("signedUser");
+
+        // Redirect to the login page
+        navigate("/login");
+    };
 
     return (
         <>
@@ -93,7 +105,7 @@ export default function Header() {
                                 <a href="/account">
                                     <FontAwesomeIcon className="icon user-icon" icon={faUser} />
                                 </a>
-                                <a className='logout' href="/logout">LogOut</a>
+                                <a onClick={handleLogout} className='logout' href="/logout">LogOut</a>
                             </>
                         ) : (
                             <>
