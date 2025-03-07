@@ -1,23 +1,24 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBasket, faSearch, faUser, faBars } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import "../Styles/Header.css";
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [activeLink, setActiveLink] = useState("/"); 
+    const [isAdmin, setIsAdmin] = useState(false);
     const user = JSON.parse(localStorage.getItem("signedUser"));
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
-    
+    const currentPath = window.location.pathname;
 
-    // Function to set active link
-    const handleLinkClick = (link) => {
-        setActiveLink(link);
-    };
+    useEffect(() =>{
+        if (user && user.UserRole === "Admin") {
+            setIsAdmin(true);
+        }
+    }, [user]);
 
     return (
         <>
@@ -25,7 +26,7 @@ export default function Header() {
                 {/* Larger Screen Layout */}
                 <div className="larger-screen">
                     <div className="logo">
-                        <a href="/" onClick={() => handleLinkClick("/")}>
+                        <a href="/">
                             <img src="/logo.webp" alt="Logo" />
                         </a>
                     </div>
@@ -35,26 +36,23 @@ export default function Header() {
                             <li>
                                 <a
                                     href="/"
-                                    onClick={() => handleLinkClick("/")}
-                                    className={activeLink === "/" ? "active" : ""}
+                                    className={`${currentPath === '/' ? 'active' : ''}`}
                                 >
                                     Home
                                 </a>
                             </li>
                             <li>
                                 <a
-                                    href="/shop"
-                                    onClick={() => handleLinkClick("/shop")}
-                                    className={activeLink === "/shop" ? "active" : ""}
+                                href="/shop"
+                                className={`${currentPath === '/shop' ? 'active' : ''}`}
                                 >
-                                    Shop
+                                Shop
                                 </a>
                             </li>
                             <li>
                                 <a
                                     href="/categories"
-                                    onClick={() => handleLinkClick("/categories")}
-                                    className={activeLink === "/categories" ? "active" : ""}
+                                    className={`${currentPath === '/categories' ? 'active' : ''}`}
                                 >
                                     Categories
                                 </a>
@@ -62,11 +60,20 @@ export default function Header() {
                             <li>
                                 <a
                                     href="/about"
-                                    onClick={() => handleLinkClick("/about")}
-                                    className={activeLink === "/about" ? "active" : ""}
+                                    className={`${currentPath === '/about' ? 'active' : ''}`}
                                 >
                                     About Us
                                 </a>
+                            </li>
+                            <li>
+                                {isAdmin && (
+                                <a
+                                href="/admin"
+                                className={`${currentPath === '/admin' ? 'active' : ''}`}
+                                >
+                                Admin
+                                </a>
+                                )}
                             </li>
                         </ul>
                     </div>
@@ -84,14 +91,14 @@ export default function Header() {
                         {user ? (
                             <>
                                 <a href="/account">
-                                    <FontAwesomeIcon className="icon user-icon" icon={faUser} /> Account
+                                    <FontAwesomeIcon className="icon user-icon" icon={faUser} />
                                 </a>
-                                <a href="/logout">LogOut</a>
+                                <a className='logout' href="/logout">LogOut</a>
                             </>
                         ) : (
                             <>
-                                <a href="/login">Login</a>
-                                <a href="/register">Sign Up</a>
+                                <a className='user-btns' href="/login">Login</a>
+                                <a className='user-btns' href="/register">Sign Up</a>
                             </>
                         )}
                     </div>
@@ -101,10 +108,11 @@ export default function Header() {
                 <div className="smaller-screen">
                     <div className="mini-header">
                         <div className="logo">
-                            <a href="/" onClick={() => handleLinkClick("/")}>
+                            <a href="/">
                                 <img src="/logo.webp" alt="Logo" />
                             </a>
                         </div>
+                        <div className="mini-header-right">
                         <ul>
                             {user ? (
                                 <>
@@ -113,13 +121,14 @@ export default function Header() {
                                 </>
                             ) : (
                                 <>
-                                    <a href="/login">Login</a>
-                                    <a href="/register">Sign Up</a>
+                                    <a className='logins' href="/login">Login</a>
+                                    <a className='logins' href="/register">Sign Up</a>
                                 </>
                             )}
                         </ul>
                         <div className="hamburger" onClick={toggleMenu}>
                             <FontAwesomeIcon className="icon" icon={faBars} />
+                        </div>
                         </div>
                     </div>
 
@@ -136,8 +145,7 @@ export default function Header() {
                             <li>
                                 <a
                                     href="/"
-                                    onClick={() => handleLinkClick("/")}
-                                    className={activeLink === "/" ? "active" : ""}
+                                    className={`${currentPath === '/' ? 'active' : ''}`}
                                 >
                                     Home
                                 </a>
@@ -145,8 +153,7 @@ export default function Header() {
                             <li>
                                 <a
                                     href="/shop"
-                                    onClick={() => handleLinkClick("/shop")}
-                                    className={activeLink === "/shop" ? "active" : ""}
+                                    className={`${currentPath === '/shop' ? 'active' : ''}`}
                                 >
                                     Shop
                                 </a>
@@ -154,8 +161,7 @@ export default function Header() {
                             <li>
                                 <a
                                     href="/categories"
-                                    onClick={() => handleLinkClick("/categories")}
-                                    className={activeLink === "/categories" ? "active" : ""}
+                                    className={`${currentPath === '/categories' ? 'active' : ''}`}
                                 >
                                     Categories
                                 </a>
@@ -163,8 +169,7 @@ export default function Header() {
                             <li>
                                 <a
                                     href="/about"
-                                    onClick={() => handleLinkClick("/about")}
-                                    className={activeLink === "/about" ? "active" : ""}
+                                    className={`${currentPath === '/about' ? 'active' : ''}`}
                                 >
                                     About Us
                                 </a>
@@ -172,10 +177,20 @@ export default function Header() {
                             {user && (
                                 <li>
                                     <a href="/account">
-                                        <FontAwesomeIcon className="icon user-icon" icon={faUser} /> Account
+                                        <FontAwesomeIcon className={`icon ${currentPath === '/account' ? 'user-icon' : ''}`} icon={faUser} /> Account
                                     </a>
                                 </li>
                             )}
+                            <li>
+                                {isAdmin && (
+                                <a
+                                href="/admin"
+                                className={`${currentPath === '/admin' ? 'active' : ''}`}
+                                >
+                                Admin
+                                </a>
+                                )}
+                            </li>
                         </ul>
                     </div>
                 </div>
