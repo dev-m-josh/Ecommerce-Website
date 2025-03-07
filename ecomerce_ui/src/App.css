@@ -8,3 +8,9 @@
     box-sizing: border-box; 
     border: 1px rgb(215, 243, 248) solid;
 }
+
+@media screen and (max-width: 768px) {
+    .App{
+        background-color: #fff;
+    }
+}

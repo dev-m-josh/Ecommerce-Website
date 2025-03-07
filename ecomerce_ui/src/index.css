@@ -12,3 +12,8 @@ body {
   min-height: 100vh;
 }
 
+@media screen and (max-width: 768px) {
+  body{
+      background-color: #fff;
+  }
+}
