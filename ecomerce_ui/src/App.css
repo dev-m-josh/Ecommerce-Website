@@ -1,1 +1,16 @@
+.App{
+    width: 100%;
+    margin-top: 70px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.1);
+    padding: 0 20px;
+    box-sizing: border-box; 
+    border: 1px rgb(215, 243, 248) solid;
+}
 
+@media screen and (max-width: 768px) {
+    .App{
+        background-color: #fff;
+    }
+}
