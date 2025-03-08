@@ -6,6 +6,7 @@ const { verifyToken, undefinedRouteHandler, allErrorsHandler } = require('./midd
 require("dotenv").config();
 const { config } = require("./config/db_config");
 const { freeRouter } = require("./routes/freeRoutes");
+const { authRouter } = require("./routes/authRoute");
 
 async function startServer() {
     const app = express();
@@ -31,6 +32,7 @@ async function startServer() {
         });
 
         app.use(freeRouter);
+        app.use(authRouter);
         app.use(verifyToken);
         app.use("/users", usersRouter);
         app.all('*', undefinedRouteHandler);

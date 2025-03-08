@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { newUserSchema } = require("../validators/validators");
+const { newUserSchema, loginSchema } = require("../validators/validators");
 
 //get all users
 function getAllUsers(req, res) {
@@ -122,6 +122,66 @@ function deactivateUser(req, res) {
     });
 };
 
+//login user
+async function userLogin(req, res) {
+    let pool = req.pool;
+    let userDetails = req.body;
+  
+    // Validation
+    const { error, value } = loginSchema.validate(userDetails, {
+      abortEarly: false,
+    });
+    if (error) {
+      console.log(error);
+      return res.status(400).json({ errors: error.details });
+    }
+  
+    let requestedUser = await pool.query(
+      `SELECT UserId, FirstName, LastName, Email, PhoneNumber, UserRole, UserPassword, UserStatus FROM users WHERE Email = '${value.Email}'`
+    );
+    let user = requestedUser.recordset[0];
+  
+    // If no user is found
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found!",
+      });
+    }
+  
+    // Compare passwords
+    try {
+      let passwordComparison = await bcrypt.compare(
+        userDetails.UserPassword,
+        user.UserPassword
+      );
+  
+      // If the password matches
+      if (passwordComparison) {
+        // Remove the password from the user object before returning it
+        const { UserPassword, ...userWithoutPassword } = user; 
+  
+        // Create a JWT token
+        let token = jwt.sign({ UserId: user.UserId }, "impossibletoguessright");
+  
+        // Return the user details and token
+        return res.json({
+          message: "Logged in successfully",
+          token,
+          user: userWithoutPassword,
+        });
+      } else {
+        return res.status(401).json({
+          message: "Incorrect credentials!",
+        });
+      }
+    } catch (error) {
+      console.error("Error during password comparison:", error);
+      return res.status(500).json({
+        message: "Internal server error",
+        error: error.message,
+      });
+    }
+  }
 
-
-module.exports = { getAllUsers, addNewUser, deleteUser, deactivateUser };
+module.exports = { getAllUsers, addNewUser, deleteUser, deactivateUser, userLogin };

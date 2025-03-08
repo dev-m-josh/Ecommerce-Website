@@ -12,4 +12,10 @@ const newUserSchema = joi.object({
     default('Active')
 });
 
-module.exports = { newUserSchema };
+//USER LOGIN SCHEMA
+const loginSchema = joi.object({
+    Email: joi.string().email().required(),
+    UserPassword: joi.string().min(8).max(64).required(),
+  });
+
+module.exports = { newUserSchema, loginSchema };
