@@ -60,6 +60,35 @@ async function addNewUser(req, res) {
   );
 };
 
-//delete a user
+//delete a user compeletely
+function deleteUser(req, res) {
+    let pool = req.pool;
+    let requestedId = req.params.userId;
+    pool.query(`DELETE FROM users WHERE UserId = ${requestedId}`, (err, result) =>{
+        if (err) {
+            res.status(500).json({
+              success: false,
+              message: "Internal server error.",
+            });
+            console.log("Error occured in query", err);
+          }
 
-module.exports = { getAllUsers, addNewUser };
+        //CHECK IF REQUESTED USER IS AVAILABLE
+        if (result.rowsAffected[0] === 0) {
+            res.status(400).json({
+            success: false,
+            message: "User not found!",
+            });
+            return;
+        }
+
+        //RESPONSE
+        res.json({
+            success: true,
+            message: "User deleted successfully!",
+            result: result.rowsAffected,
+        });
+    });
+};
+
+module.exports = { getAllUsers, addNewUser, deleteUser };

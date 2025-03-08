@@ -31,8 +31,8 @@ async function startServer() {
         });
 
         app.use(freeRouter);
+        
         app.use("/users", usersRouter);
-        app.use(verifyToken);
         app.all('*', undefinedRouteHandler);
         app.use(allErrorsHandler);
 
