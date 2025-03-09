@@ -184,4 +184,49 @@ async function userLogin(req, res) {
     }
   }
 
-module.exports = { getAllUsers, addNewUser, deleteUser, deactivateUser, userLogin };
+  async function updateUserPassword(req, res) {
+      let pool = req.pool;
+      let requestedId = req.params.userId;
+      let newPassword = req.body.newPassword;
+  
+      try {
+          // Check if newPassword is provided
+          if (!newPassword) {
+              return res.status(400).json({
+                  success: false,
+                  message: "New password is required."
+              });
+          }
+  
+          // Hash the new password
+          const hashedPassword = await bcrypt.hash(newPassword, 5);
+  
+          // Use parameterized query to prevent SQL injection
+          const result = await pool.query(
+              `UPDATE users SET UserPassword = '${hashedPassword}' WHERE UserId = '${requestedId}'`,
+          );
+  
+          if (result.rowCount === 0) {
+              return res.status(400).json({
+                  success: false,
+                  message: "User not found!"
+              });
+          }
+  
+          res.json({
+              success: true,
+              message: "User password updated successfully!",
+              result: result.rowCount
+          });
+  
+      } catch (err) {
+          console.log("Error occurred:", err);
+          res.status(500).json({
+              success: false,
+              message: "Internal server error."
+          });
+      }
+  }
+  
+
+module.exports = { getAllUsers, addNewUser, deleteUser, deactivateUser, userLogin, updateUserPassword };
