@@ -21,11 +21,6 @@ async function startServer() {
             console.log("Database connected successfully");
         };
 
-        // Sample endpoint to test server
-        app.get('/', (req, res) => {
-            res.send('Hello, World!');
-        });
-
         app.use(function(req, res, next){
             req.pool = pool;
             next();

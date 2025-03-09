@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { newUserSchema, loginSchema } = require("../validators/validators");
+const { newUserSchema, loginSchema, editUserRoleSchema } = require("../validators/validators");
 
 //get all users
 function getAllUsers(req, res) {
@@ -228,5 +228,49 @@ async function userLogin(req, res) {
       }
   }
   
+  // EDIT USER ROLE
+function updateUserRole(req, res) {
+  let pool = req.pool;
+  let requestedUserId = req.params.userId;
+  let userEdits = req.body;
 
-module.exports = { getAllUsers, addNewUser, deleteUser, deactivateUser, userLogin, updateUserPassword };
+  // Validation
+  const { error, value } = editUserRoleSchema.validate(userEdits, {
+    abortEarly: false,
+  });
+  if (error) {
+    console.log(error);
+    return res.status(400).json({ errors: error.details });
+  }
+
+  pool.query(`
+    UPDATE users
+    SET UserRole = '${value.UserRole}'
+    WHERE UserId = '${requestedUserId}'`,(err,result) =>{
+        if (err) {
+          res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+          });
+          console.log("Error occured in query", err);
+          return
+        }
+        // Check if any rows were affected
+        if (result.rowsAffected[0] === 0) {
+          return res.status(404).json({
+            success: false,
+            message: `User with ID ${requestedUserId} not found.`,
+          });
+        } else {
+          res.json({
+            success: true,
+            message: "Edit was successfully done.",
+            rowsAffected: result.rowsAffected,
+            newUserDetails: userEdits,
+          });
+        }
+      }
+  )
+}
+
+module.exports = { getAllUsers, addNewUser, deleteUser, deactivateUser, userLogin, updateUserPassword, updateUserRole };

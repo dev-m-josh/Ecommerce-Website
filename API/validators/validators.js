@@ -18,4 +18,11 @@ const loginSchema = joi.object({
     UserPassword: joi.string().min(8).max(64).required(),
   });
 
-module.exports = { newUserSchema, loginSchema };
+//USER ROLE UPDATE SCHEMA
+const editUserRoleSchema = joi.object({
+  UserRole: joi.string()
+      .valid('Admin', 'Customer')
+      .required()
+});
+
+module.exports = { newUserSchema, loginSchema, editUserRoleSchema };
