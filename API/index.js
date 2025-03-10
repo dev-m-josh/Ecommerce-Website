@@ -6,6 +6,7 @@ const { verifyToken, undefinedRouteHandler, allErrorsHandler } = require('./midd
 require("dotenv").config();
 const { config } = require("./config/db_config");
 const { freeRouter } = require("./routes/freeRoutes");
+const { authRouter } = require("./routes/authRoute");
 
 async function startServer() {
     const app = express();
@@ -20,19 +21,15 @@ async function startServer() {
             console.log("Database connected successfully");
         };
 
-        // Sample endpoint to test server
-        app.get('/', (req, res) => {
-            res.send('Hello, World!');
-        });
-
         app.use(function(req, res, next){
             req.pool = pool;
             next();
         });
 
         app.use(freeRouter);
-        app.use("/users", usersRouter);
+        app.use(authRouter);
         app.use(verifyToken);
+        app.use("/users", usersRouter);
         app.all('*', undefinedRouteHandler);
         app.use(allErrorsHandler);
 
