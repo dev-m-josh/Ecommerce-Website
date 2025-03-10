@@ -44,10 +44,14 @@ async function addNewUser(req, res) {
     let token = await jwt.sign({ addedUser }, "impossibletoguessright");
 
     pool.query(
-        `INSERT INTO users (FirstName, LastName, Email, PhoneNumber, UserRole, UserPassword)
-    VALUES ('${value.FirstName}', '${value.LastName}', '${value.Email}', '${value.PhoneNumber}', '${value.UserRole}', '${hashedPassword}')`, (err, result) =>{
+        `INSERT INTO users (FirstName, LastName, Email, PhoneNumber, UserPassword)
+    VALUES ('${value.FirstName}', '${value.LastName}', '${value.Email}', '${value.PhoneNumber}', '${hashedPassword}')`, (err, result) =>{
     if (err) {
-        console.log("Error occured in query", err);
+        console.log("Error occured in query.", err.details);
+        res.json({
+          success: false,
+          message: err.message
+        });
     } else {
         res.json({
             success: true,

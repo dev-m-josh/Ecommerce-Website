@@ -1,13 +1,17 @@
 import React from 'react';
+import { Routes, Route } from "react-router-dom";
 import './App.css';
 import Header from './Components/Header';
+import SignUp from "./Components/SignUp";
 
 function App() {
   return (
     <>
       <Header/>
       <div className="App">
-        <h1>My Ecommerce Website</h1>
+        <Routes>
+          <Route path="/register" element={<SignUp/>}/>
+        </Routes>
       </div>
     </>
   );
