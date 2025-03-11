@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+
+    const togglePassword = () => setShowPassword((prev) => !prev);
 
     const handleEmailChange = (e) =>{
         setEmail(e.target.value);
@@ -32,12 +37,12 @@ export default function Login() {
             const data = response.data;
 
             if (data.token) {
-                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("token", data.token);
 
                 const loggedInUser = {
                     UserId: data.user.UserId,
                     FirstName: data.user.FirstName,
-                    LastName: data.user.lastName,
+                    LastName: data.user.LastName,
                     Email: data.user.Email,
                     PhoneNumber: data.user.phoneNumber,
                     UserPassword: data.user.Password,
@@ -76,12 +81,15 @@ export default function Login() {
                 <div className="user-details">
                     <label htmlFor="password">Password:</label>
                     <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         id="password"
                         value={password}
                         onChange={handlePasswordChange}
                         required
                     />
+                    <button className="password-visibility" type="button" onClick={togglePassword}>
+                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                    </button>
                 </div>
 
                 {errorMessage && <div className="error-message">{errorMessage}
@@ -94,7 +102,7 @@ export default function Login() {
                 </div>
 
                 <div>
-                    <button  onSubmit={handleSubmit} type="submit" disabled={loading}>
+                    <button  onClick={handleSubmit} type="submit" disabled={loading}>
                         {loading ? "Logging in..." : "Login"}
                     </button>
                 </div>

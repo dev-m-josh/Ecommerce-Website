@@ -105,7 +105,7 @@ export default function Header() {
                                 <a href="/account">
                                     <FontAwesomeIcon className="icon user-icon" icon={faUser} />
                                 </a>
-                                <a onClick={handleLogout} className='logout' href="/logout">LogOut</a>
+                                <button onClick={handleLogout} className='logout'>LogOut</button>
                             </>
                         ) : (
                             <>

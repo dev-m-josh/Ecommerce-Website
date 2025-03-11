@@ -249,6 +249,13 @@ a.active {
 
 .logout{
     background-color: rgb(255, 0, 0);
+    cursor: pointer;
+    outline: none;
+    border: 0;
+    font-weight: bold;
+    color: #333;
+    transition: all .3s ease-in-out;
+    margin-left: 10px;
 }
 
 .logout:hover{

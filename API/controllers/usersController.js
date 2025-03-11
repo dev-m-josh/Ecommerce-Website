@@ -191,23 +191,21 @@ async function userLogin(req, res) {
   async function updateUserPassword(req, res) {
       let pool = req.pool;
       let requestedId = req.params.userId;
+      let currentPassword = req.body.currentPassword;
       let newPassword = req.body.newPassword;
   
       try {
-          // Check if newPassword is provided
-          if (!newPassword) {
+          // Check if currentPassword and newPassword are provided
+          if (!currentPassword || !newPassword) {
               return res.status(400).json({
                   success: false,
-                  message: "New password is required."
+                  message: "Both current and new passwords are required."
               });
           }
   
-          // Hash the new password
-          const hashedPassword = await bcrypt.hash(newPassword, 5);
-  
-          // Use parameterized query to prevent SQL injection
+          // Fetch the user's current password from the database
           const result = await pool.query(
-              `UPDATE users SET UserPassword = '${hashedPassword}' WHERE UserId = '${requestedId}'`,
+              `SELECT UserPassword FROM users WHERE UserId = '${requestedId}'`
           );
   
           if (result.rowCount === 0) {
@@ -217,10 +215,29 @@ async function userLogin(req, res) {
               });
           }
   
+          const storedPassword = result.recordset[0].UserPassword;
+  
+          // Compare the current password provided by the user with the stored password
+          const isMatch = await bcrypt.compare(currentPassword, storedPassword);
+  
+          if (!isMatch) {
+              return res.status(400).json({
+                  success: false,
+                  message: "Password don't match!."
+              });
+          }
+  
+          // Hash the new password
+          const hashedPassword = await bcrypt.hash(newPassword, 5);
+  
+          // Update the user's password with the new hashed password
+          await pool.query(
+              `UPDATE users SET UserPassword = '${hashedPassword}' WHERE UserId = '${requestedId}'`
+          );
+  
           res.json({
               success: true,
-              message: "User password updated successfully!",
-              result: result.rowCount
+              message: "Password updated successfully!"
           });
   
       } catch (err) {
@@ -231,6 +248,7 @@ async function userLogin(req, res) {
           });
       }
   }
+  
   
   // EDIT USER ROLE
 function updateUserRole(req, res) {
