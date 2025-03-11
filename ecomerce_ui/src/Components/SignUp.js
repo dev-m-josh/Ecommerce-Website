@@ -172,6 +172,12 @@ export default function SignUp() {
                  style={{color: "red"}}>
                  {errorMessage}
                 </p>}
+                
+                <div className="navigate">
+                    <p>
+                        If you already have an account try logging in.<button onClick={() => navigate("/login")}>Login</button>     
+                    </p>
+                </div>
 
                 <div className="submit-btn">
                     <button type="submit">
