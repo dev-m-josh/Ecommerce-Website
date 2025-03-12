@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
+import "../Styles/Login.css"
 
 export default function SignUp() {
     const navigate = useNavigate();
@@ -143,6 +143,7 @@ export default function SignUp() {
                 </div>
                 <div className="user-details">
                     <label htmlFor="password">Password:</label>
+                    <div>
                     <input
                         type={showPassword ? "text" : "password"}
                         id="password"
@@ -153,9 +154,11 @@ export default function SignUp() {
                     <button className="password-visibility" type="button" onClick={togglePassword}>
                         <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                     </button>
+                    </div>
                 </div>
                 <div className="user-details">
                     <label htmlFor="confirmPassword">Confirm Password:</label>
+                    <div>
                     <input
                         type={showConfirmPassword ? "text" : "password"}
                         id="confirmPassword"
@@ -166,6 +169,7 @@ export default function SignUp() {
                     <button className="password-visibility" type="button" onClick={toggleConfirmPassword}>
                         <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
                     </button>
+                    </div>
                 </div>
 
                 {errorMessage && <p

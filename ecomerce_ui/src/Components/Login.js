@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import "../Styles/Login.css"
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -80,7 +81,9 @@ export default function Login() {
                 </div>
                 <div className="user-details">
                     <label htmlFor="password">Password:</label>
+                    <div>
                     <input
+                        className="password-input"
                         type={showPassword ? "text" : "password"}
                         id="password"
                         value={password}
@@ -90,6 +93,7 @@ export default function Login() {
                     <button className="password-visibility" type="button" onClick={togglePassword}>
                         <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                     </button>
+                    </div>
                 </div>
 
                 {errorMessage && <div className="error-message">{errorMessage}
@@ -101,8 +105,8 @@ export default function Login() {
                     </p>
                 </div>
 
-                <div>
-                    <button  onClick={handleSubmit} type="submit" disabled={loading}>
+                <div  className="submit-btn">
+                    <button onClick={handleSubmit} type="submit" disabled={loading}>
                         {loading ? "Logging in..." : "Login"}
                     </button>
                 </div>

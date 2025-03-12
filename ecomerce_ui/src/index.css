@@ -10,9 +10,13 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f7fc;
+  color: #333;
+  padding: 0;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 600px) {
   body{
       background-color: #fff;
   }

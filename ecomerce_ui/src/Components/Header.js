@@ -128,8 +128,12 @@ export default function Header() {
                         <ul>
                             {user ? (
                                 <>
-                                    <a href="/logout">LogOut</a>
-                                    <a href="/account">Account</a>
+                                    <span>
+                                        {currentPath === '/' ? 'Home' : currentPath === '/shop' ? 'Shop' : currentPath === '/categories' ? 'Categories' : currentPath === '/about' ? 'About Us' : 'Home'}
+                                    </span>
+                                    <a href="/account">
+                                        <FontAwesomeIcon className={`icon ${currentPath === '/account' ? 'user-icon' : ''}`} icon={faUser} />
+                                    </a>
                                 </>
                             ) : (
                                 <>
@@ -163,11 +167,8 @@ export default function Header() {
                                 </a>
                             </li>
                             <li>
-                                <a
-                                    href="/shop"
-                                    className={`${currentPath === '/shop' ? 'active' : ''}`}
-                                >
-                                    Shop
+                                <a href="/account">
+                                    Account
                                 </a>
                             </li>
                             <li>
@@ -186,13 +187,6 @@ export default function Header() {
                                     About Us
                                 </a>
                             </li>
-                            {user && (
-                                <li>
-                                    <a href="/account">
-                                        <FontAwesomeIcon className={`icon ${currentPath === '/account' ? 'user-icon' : ''}`} icon={faUser} /> Account
-                                    </a>
-                                </li>
-                            )}
                             <li>
                                 {isAdmin && (
                                 <a
@@ -202,6 +196,9 @@ export default function Header() {
                                 Admin
                                 </a>
                                 )}
+                            </li>
+                            <li>
+                                <span onClick={handleLogout}>LogOut</span>
                             </li>
                         </ul>
                     </div>
