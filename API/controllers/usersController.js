@@ -162,6 +162,9 @@ async function userLogin(req, res) {
   
       // If the password matches
       if (passwordComparison) {
+        await pool.query(
+          `UPDATE users SET UserStatus = 'Active' WHERE UserId = ${user.UserId}`
+        );
         // Remove the password from the user object before returning it
         const { UserPassword, ...userWithoutPassword } = user; 
   
@@ -180,7 +183,7 @@ async function userLogin(req, res) {
         });
       }
     } catch (error) {
-      console.error("Error during password comparison:", error);
+      console.error("Error during login process:", error);
       return res.status(500).json({
         message: "Internal server error",
         error: error.message,

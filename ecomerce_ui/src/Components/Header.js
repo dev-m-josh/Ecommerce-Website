@@ -3,12 +3,15 @@ import { faShoppingBasket, faSearch, faUser, faBars } from '@fortawesome/free-so
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import "../Styles/Header.css";
+import axios from 'axios';
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("signedUser"));
+    const token = localStorage.getItem("token");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -23,13 +26,37 @@ export default function Header() {
     }, [user]);
 
     // Handle logout
-    const handleLogout = () => {
+    const handleLogout = async (e) => {
         // Clear user data from localStorage
         localStorage.removeItem("token");
         localStorage.removeItem("signedUser");
 
+        try {
+            const response = await axios.put(
+                `http://localhost:4500/users/deactivate/${user.UserId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                }
+            );
+            const data = response.data;
+
+            if (data.success) {
+                alert(data.message);
+            };
+
+            navigate("/")
+            
+        } catch (error) {
+            console.log("Login error:", error);
+            if (error.response.data) {
+             setErrorMessage(error.response.data.message);
+             alert(errorMessage);
+         } 
+        }
         // Redirect to the login page
-        navigate("/login");
     };
 
     return (

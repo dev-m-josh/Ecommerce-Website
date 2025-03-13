@@ -60,7 +60,9 @@ export default function Login() {
             
         } catch (error) {
            console.log("Login error:", error);
-           setErrorMessage("Login failed try again!"); 
+           if (error.response.data) {
+            setErrorMessage(error.response.data.message);
+        } 
         } finally {
             setLoading(false);
         }
