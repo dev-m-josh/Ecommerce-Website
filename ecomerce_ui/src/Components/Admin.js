@@ -3,6 +3,11 @@ import React from "react";
 export default function Admin() {
     
     return(
-        <h2>Admin Functions</h2>
-    )
-}
+        <div>
+            <h2>Admin Functions</h2>
+            <div>
+                <a href="/users">Check all users.</a>
+            </div>
+        </div>
+    );
+};
