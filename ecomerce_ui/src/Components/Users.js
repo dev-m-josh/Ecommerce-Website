@@ -75,10 +75,6 @@ export default function Users() {
         return <div className="error">Error: {errorMessage}</div>;
     }
 
-    const handleBackClick = () => {
-        navigate("/admin");
-    };
-
     return (
         <div className="users">
             <h2>Active Users</h2>
@@ -108,7 +104,6 @@ export default function Users() {
                     </tbody>
                 </table>
             )}
-            <button onClick={handleBackClick}>Back</button>
             <div className="pagination">
                 <button
                     onClick={handlePreviousPage}
@@ -128,4 +123,4 @@ export default function Users() {
             </div>
         </div>
     );
-}
+};
