@@ -180,6 +180,7 @@ a.active {
 
 .smaller-screen .mini-header ul {
     display: flex;
+    align-items: center;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -188,7 +189,7 @@ a.active {
 .smaller-screen .mini-header ul a {
     text-decoration: none;
     color: #333;
-    margin-left: 15px;
+    margin-left: 10px;
 }
 
 /* Slide-bar (Mobile Menu) */
@@ -249,6 +250,13 @@ a.active {
 
 .logout{
     background-color: rgb(255, 0, 0);
+    cursor: pointer;
+    outline: none;
+    border: 0;
+    font-weight: bold;
+    color: #333;
+    transition: all .3s ease-in-out;
+    margin-left: 10px;
 }
 
 .logout:hover{

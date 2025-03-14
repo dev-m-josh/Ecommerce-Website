@@ -3,7 +3,7 @@ const { getAllUsers, deleteUser, deactivateUser, updateUserPassword, updateUserR
 
 usersRouter.get('/', getAllUsers);
 usersRouter.delete('/:userId', deleteUser);
-usersRouter.put('/:userId', deactivateUser);
+usersRouter.put('/deactivate/:userId', deactivateUser);
 usersRouter.put('/password/:userId', updateUserPassword);
 usersRouter.put('/role/:userId', updateUserRole);
 

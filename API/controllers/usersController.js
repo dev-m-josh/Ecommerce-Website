@@ -44,10 +44,14 @@ async function addNewUser(req, res) {
     let token = await jwt.sign({ addedUser }, "impossibletoguessright");
 
     pool.query(
-        `INSERT INTO users (FirstName, LastName, Email, PhoneNumber, UserRole, UserPassword)
-    VALUES ('${value.FirstName}', '${value.LastName}', '${value.Email}', '${value.PhoneNumber}', '${value.UserRole}', '${hashedPassword}')`, (err, result) =>{
+        `INSERT INTO users (FirstName, LastName, Email, PhoneNumber, UserPassword)
+    VALUES ('${value.FirstName}', '${value.LastName}', '${value.Email}', '${value.PhoneNumber}', '${hashedPassword}')`, (err, result) =>{
     if (err) {
-        console.log("Error occured in query", err);
+        console.log("Error occured in query.", err.details);
+        res.json({
+          success: false,
+          message: err.message
+        });
     } else {
         res.json({
             success: true,
@@ -85,7 +89,7 @@ function deleteUser(req, res) {
         //RESPONSE
         res.json({
             success: true,
-            message: "User deleted successfully!",
+            message: "Account deleted successfully!",
             result: result.rowsAffected,
         });
     });
@@ -116,7 +120,7 @@ function deactivateUser(req, res) {
         //RESPONSE
         res.json({
             success: true,
-            message: "User deactivated successfully!",
+            message: "Logged out successfully!",
             result: result.rowsAffected,
         });
     });
@@ -145,7 +149,7 @@ async function userLogin(req, res) {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found!",
+        message: "You don't have an account yet!",
       });
     }
   
@@ -158,6 +162,9 @@ async function userLogin(req, res) {
   
       // If the password matches
       if (passwordComparison) {
+        await pool.query(
+          `UPDATE users SET UserStatus = 'Active' WHERE UserId = ${user.UserId}`
+        );
         // Remove the password from the user object before returning it
         const { UserPassword, ...userWithoutPassword } = user; 
   
@@ -176,7 +183,7 @@ async function userLogin(req, res) {
         });
       }
     } catch (error) {
-      console.error("Error during password comparison:", error);
+      console.error("Error during login process:", error);
       return res.status(500).json({
         message: "Internal server error",
         error: error.message,
@@ -187,23 +194,21 @@ async function userLogin(req, res) {
   async function updateUserPassword(req, res) {
       let pool = req.pool;
       let requestedId = req.params.userId;
+      let currentPassword = req.body.currentPassword;
       let newPassword = req.body.newPassword;
   
       try {
-          // Check if newPassword is provided
-          if (!newPassword) {
+          // Check if currentPassword and newPassword are provided
+          if (!currentPassword || !newPassword) {
               return res.status(400).json({
                   success: false,
-                  message: "New password is required."
+                  message: "Both current and new passwords are required."
               });
           }
   
-          // Hash the new password
-          const hashedPassword = await bcrypt.hash(newPassword, 5);
-  
-          // Use parameterized query to prevent SQL injection
+          // Fetch the user's current password from the database
           const result = await pool.query(
-              `UPDATE users SET UserPassword = '${hashedPassword}' WHERE UserId = '${requestedId}'`,
+              `SELECT UserPassword FROM users WHERE UserId = '${requestedId}'`
           );
   
           if (result.rowCount === 0) {
@@ -213,10 +218,29 @@ async function userLogin(req, res) {
               });
           }
   
+          const storedPassword = result.recordset[0].UserPassword;
+  
+          // Compare the current password provided by the user with the stored password
+          const isMatch = await bcrypt.compare(currentPassword, storedPassword);
+  
+          if (!isMatch) {
+              return res.status(400).json({
+                  success: false,
+                  message: "Password don't match!."
+              });
+          }
+  
+          // Hash the new password
+          const hashedPassword = await bcrypt.hash(newPassword, 5);
+  
+          // Update the user's password with the new hashed password
+          await pool.query(
+              `UPDATE users SET UserPassword = '${hashedPassword}' WHERE UserId = '${requestedId}'`
+          );
+  
           res.json({
               success: true,
-              message: "User password updated successfully!",
-              result: result.rowCount
+              message: "Password updated successfully!"
           });
   
       } catch (err) {
@@ -227,6 +251,7 @@ async function userLogin(req, res) {
           });
       }
   }
+  
   
   // EDIT USER ROLE
 function updateUserRole(req, res) {
@@ -264,7 +289,7 @@ function updateUserRole(req, res) {
         } else {
           res.json({
             success: true,
-            message: "Edit was successfully done.",
+            message: "Update successfully done.",
             rowsAffected: result.rowsAffected,
             newUserDetails: userEdits,
           });
