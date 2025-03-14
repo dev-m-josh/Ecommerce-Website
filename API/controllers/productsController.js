@@ -16,6 +16,31 @@ function getAllProducts(req, res) {
     );
 };
 
+//Get most selling product
+function getMostSellingProduct(req, res) {
+    let pool = req.pool;
+
+    pool.query(
+        `SELECT TOP 20 
+            p.ProductId, 
+            p.ProductName, 
+        SUM(oi.Quantity) AS TotalUnitsSold
+        FROM order_items oi
+        JOIN products p ON oi.ProductId = p.ProductId
+        WHERE p.ProductStatus = 'Active'
+        GROUP BY p.ProductId, p.ProductName
+        ORDER BY TotalUnitsSold DESC`,
+        (err, result) =>{
+            if (err) {
+                console.log("error occured in query", err);
+              } else {
+                res.json(result.recordset);
+              }
+        }
+    );
+};
+
 module.exports = {
-    getAllProducts
+    getAllProducts,
+    getMostSellingProduct
 };
