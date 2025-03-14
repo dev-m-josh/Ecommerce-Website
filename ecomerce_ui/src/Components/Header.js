@@ -187,19 +187,25 @@ export default function Header() {
                                 <Link
                                     to="/"
                                     className={`${currentPath === '/' ? 'active' : ''}`}
+                                    onClick={toggleMenu}
                                 >
                                     Home
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/account">
-                                    Account
+                                <Link
+                                    to="/shop"
+                                    className={`${currentPath === '/shop' ? 'active' : ''}`}
+                                    onClick={toggleMenu}
+                                >
+                                    Shop
                                 </Link>
                             </li>
                             <li>
                                 <Link
                                     to="/categories"
                                     className={`${currentPath === '/categories' ? 'active' : ''}`}
+                                    onClick={toggleMenu}
                                 >
                                     Categories
                                 </Link>
@@ -208,6 +214,7 @@ export default function Header() {
                                 <Link
                                     to="/about"
                                     className={`${currentPath === '/about' ? 'active' : ''}`}
+                                    onClick={toggleMenu}
                                 >
                                     About Us
                                 </Link>
@@ -217,6 +224,7 @@ export default function Header() {
                                     <Link
                                         to="/admin"
                                         className={`${currentPath === '/admin' ? 'active' : ''}`}
+                                        onClick={toggleMenu}
                                     >
                                         Admin
                                     </Link>
