@@ -6,7 +6,7 @@ export default function Users() {
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(5); 
+    const [pageSize] = useState(10);
     const [noMoreUsers, setNoMoreUsers] = useState(false);
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
@@ -14,11 +14,12 @@ export default function Users() {
     useEffect(() => {
         if (!token) {
             navigate("/login");
+            return;
         }
 
         const fetchUsers = async () => {
             try {
-                setLoading(true); 
+                setLoading(true);
 
                 const response = await fetch(
                     `http://localhost:4500/users?page=${page}&pageSize=${pageSize}`,
@@ -39,17 +40,12 @@ export default function Users() {
 
                 if (Array.isArray(data)) {
                     setUsers(data);
-
-                    if (data.length < pageSize) {
-                        setNoMoreUsers(true);
-                    } else {
-                        setNoMoreUsers(false);
-                    }
+                    setNoMoreUsers(data.length < pageSize);
                 } else {
                     throw new Error("Unexpected response format");
                 }
             } catch (err) {
-                console.error("Error fetching staffs:", err);
+                console.error("Error fetching users:", err);
                 setErrorMessage(err.message);
             } finally {
                 setLoading(false);
@@ -59,7 +55,6 @@ export default function Users() {
         fetchUsers();
     }, [page, pageSize, navigate, token]);
 
-    // Handle pagination for next and previous page
     const handleNextPage = () => {
         if (!noMoreUsers && !loading) {
             setPage((nextPage) => nextPage + 1);
@@ -73,11 +68,11 @@ export default function Users() {
     };
 
     if (loading) {
-        return <div className="loading">Loading...</div>
-    };
+        return <div className="loading">Loading...</div>;
+    }
 
     if (errorMessage) {
-        return <div className="error">Error: {errorMessage}</div>
+        return <div className="error">Error: {errorMessage}</div>;
     }
 
     const handleBackClick = () => {
@@ -86,9 +81,9 @@ export default function Users() {
 
     return (
         <div className="users">
-            <h2>Active users.</h2>
+            <h2>Active Users</h2>
             {users.length === 0 ? (
-                <div>No active users yet.</div>
+                <div>No users available to display.</div>
             ) : (
                 <table className="users-table">
                     <thead>

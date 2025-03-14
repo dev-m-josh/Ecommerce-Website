@@ -54,14 +54,12 @@ export default function Login() {
                 localStorage.setItem("signedUser", JSON.stringify(loggedInUser));
 
                 navigate("/");
-            } else {
-                
-            }
+            };
             
         } catch (error) {
            console.log("Login error:", error);
            if (error.response.data) {
-            setErrorMessage(error.response.data.message);
+            alert(error.response.data.message);
         } 
         } finally {
             setLoading(false);

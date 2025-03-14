@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from "react-router-dom";
 
 export default function Account() {
     const [currentPassword, setCurrentPassword] = useState("");
@@ -10,10 +11,12 @@ export default function Account() {
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
     
 
     const user = JSON.parse(localStorage.getItem("signedUser"));
     const token = localStorage.getItem("token");
+    const UserId = user.UserId;
 
     const togglePassword = () => setShowPassword((prev) => !prev);
 
@@ -53,6 +56,39 @@ export default function Account() {
         }
     };
 
+    const handleDeleteAccount = async () => {
+        const confirmAccountDelete = window.confirm("Are you sure you want to delete this account?");
+
+        if (!confirmAccountDelete) return;
+
+        try {
+            const response = await fetch(
+                `http://localhost:4500/users/${UserId}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to delete account!");
+            };
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("signedUser");
+
+            navigate("/");
+
+        } catch (error) {
+            
+        }
+    };
+
     return (
         <div>
             <h2>User Details</h2>
@@ -61,7 +97,8 @@ export default function Account() {
             <p><strong>Email:</strong> {user.Email}</p>
             <p><strong>User Role:</strong> {user.UserRole}</p>
 
-            <h3>Change Password</h3>
+            <p>Change Password</p>
+            <p onClick={handleDeleteAccount}>Delete Account</p>
             <form onSubmit={handleChangePassword}>
                 <div>
                     <label>Current Password</label>

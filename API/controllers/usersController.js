@@ -120,7 +120,7 @@ function deactivateUser(req, res) {
         //RESPONSE
         res.json({
             success: true,
-            message: "User deactivated successfully!",
+            message: "Logged out successfully!",
             result: result.rowsAffected,
         });
     });
@@ -149,7 +149,7 @@ async function userLogin(req, res) {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found!",
+        message: "You don't have an account yet!",
       });
     }
   

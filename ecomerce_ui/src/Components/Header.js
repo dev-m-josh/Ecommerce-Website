@@ -56,7 +56,6 @@ export default function Header() {
              alert(errorMessage);
          } 
         }
-        // Redirect to the login page
     };
 
     return (
