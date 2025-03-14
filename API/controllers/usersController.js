@@ -89,7 +89,7 @@ function deleteUser(req, res) {
         //RESPONSE
         res.json({
             success: true,
-            message: "User deleted successfully!",
+            message: "Account deleted successfully!",
             result: result.rowsAffected,
         });
     });
@@ -289,7 +289,7 @@ function updateUserRole(req, res) {
         } else {
           res.json({
             success: true,
-            message: "Edit was successfully done.",
+            message: "Update successfully done.",
             rowsAffected: result.rowsAffected,
             newUserDetails: userEdits,
           });

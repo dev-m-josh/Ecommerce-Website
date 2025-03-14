@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBasket, faSearch, faUser, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../Styles/Header.css";
 import axios from 'axios';
 
@@ -19,7 +19,7 @@ export default function Header() {
 
     const currentPath = window.location.pathname;
 
-    useEffect(() =>{
+    useEffect(() => {
         if (user && user.UserRole === "Admin") {
             setIsAdmin(true);
         }
@@ -48,13 +48,12 @@ export default function Header() {
             };
 
             navigate("/")
-            
         } catch (error) {
             console.log("Login error:", error);
             if (error.response.data) {
-             setErrorMessage(error.response.data.message);
-             alert(errorMessage);
-         } 
+                setErrorMessage(error.response.data.message);
+                alert(errorMessage);
+            } 
         }
     };
 
@@ -64,53 +63,53 @@ export default function Header() {
                 {/* Larger Screen Layout */}
                 <div className="larger-screen">
                     <div className="logo">
-                        <a href="/">
+                        <Link to="/">
                             <img src="/logo.webp" alt="Logo" />
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="navigation">
                         <ul>
                             <li>
-                                <a
-                                    href="/"
+                                <Link
+                                    to="/"
                                     className={`${currentPath === '/' ? 'active' : ''}`}
                                 >
                                     Home
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a
-                                href="/shop"
-                                className={`${currentPath === '/shop' ? 'active' : ''}`}
+                                <Link
+                                    to="/shop"
+                                    className={`${currentPath === '/shop' ? 'active' : ''}`}
                                 >
-                                Shop
-                                </a>
+                                    Shop
+                                </Link>
                             </li>
                             <li>
-                                <a
-                                    href="/categories"
+                                <Link
+                                    to="/categories"
                                     className={`${currentPath === '/categories' ? 'active' : ''}`}
                                 >
                                     Categories
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a
-                                    href="/about"
+                                <Link
+                                    to="/about"
                                     className={`${currentPath === '/about' ? 'active' : ''}`}
                                 >
                                     About Us
-                                </a>
+                                </Link>
                             </li>
                             <li>
                                 {isAdmin && (
-                                <a
-                                href="/admin"
-                                className={`${currentPath === '/admin' ? 'active' : ''}`}
-                                >
-                                Admin
-                                </a>
+                                    <Link
+                                        to="/admin"
+                                        className={`${currentPath === '/admin' ? 'active' : ''}`}
+                                    >
+                                        Admin
+                                    </Link>
                                 )}
                             </li>
                         </ul>
@@ -122,21 +121,21 @@ export default function Header() {
                     </div>
 
                     <div className="user-actions">
-                        <a className="cart" href="/cart">
+                        <Link className="cart" to="/cart">
                             <FontAwesomeIcon className="icon " icon={faShoppingBasket} />
                             <div className="cart-number">{0}</div>
-                        </a>
+                        </Link>
                         {user ? (
                             <>
-                                <a href="/account">
+                                <Link to="/account">
                                     <FontAwesomeIcon className="icon user-icon" icon={faUser} />
-                                </a>
+                                </Link>
                                 <button onClick={handleLogout} className='logout'>LogOut</button>
                             </>
                         ) : (
                             <>
-                                <a className='user-btns' href="/login">Login</a>
-                                <a className='user-btns' href="/register">Sign Up</a>
+                                <Link className='user-btns' to="/login">Login</Link>
+                                <Link className='user-btns' to="/register">Sign Up</Link>
                             </>
                         )}
                     </div>
@@ -146,31 +145,31 @@ export default function Header() {
                 <div className="smaller-screen">
                     <div className="mini-header">
                         <div className="logo">
-                            <a href="/">
+                            <Link to="/">
                                 <img src="/logo.webp" alt="Logo" />
-                            </a>
+                            </Link>
                         </div>
                         <div className="mini-header-right">
-                        <ul>
-                            {user ? (
-                                <>
-                                    <span>
-                                        {currentPath === '/' ? 'Home' : currentPath === '/shop' ? 'Shop' : currentPath === '/categories' ? 'Categories' : currentPath === '/about' ? 'About Us' : 'Home'}
-                                    </span>
-                                    <a href="/account">
-                                        <FontAwesomeIcon className={`icon ${currentPath === '/account' ? 'user-icon' : ''}`} icon={faUser} />
-                                    </a>
-                                </>
-                            ) : (
-                                <>
-                                    <a className='logins' href="/login">Login</a>
-                                    <a className='logins' href="/register">Sign Up</a>
-                                </>
-                            )}
-                        </ul>
-                        <div className="hamburger" onClick={toggleMenu}>
-                            <FontAwesomeIcon className="icon" icon={faBars} />
-                        </div>
+                            <ul>
+                                {user ? (
+                                    <>
+                                        <span>
+                                            {currentPath === '/' ? 'Home' : currentPath === '/shop' ? 'Shop' : currentPath === '/categories' ? 'Categories' : currentPath === '/about' ? 'About Us' : 'Home'}
+                                        </span>
+                                        <Link to="/account">
+                                            <FontAwesomeIcon className={`icon ${currentPath === '/account' ? 'user-icon' : ''}`} icon={faUser} />
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link className='logins' to="/login">Login</Link>
+                                        <Link className='logins' to="/register">Sign Up</Link>
+                                    </>
+                                )}
+                            </ul>
+                            <div className="hamburger" onClick={toggleMenu}>
+                                <FontAwesomeIcon className="icon" icon={faBars} />
+                            </div>
                         </div>
                     </div>
 
@@ -185,42 +184,42 @@ export default function Header() {
                     <div className="navigation slide">
                         <ul>
                             <li>
-                                <a
-                                    href="/"
+                                <Link
+                                    to="/"
                                     className={`${currentPath === '/' ? 'active' : ''}`}
                                 >
                                     Home
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="/account">
+                                <Link to="/account">
                                     Account
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a
-                                    href="/categories"
+                                <Link
+                                    to="/categories"
                                     className={`${currentPath === '/categories' ? 'active' : ''}`}
                                 >
                                     Categories
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a
-                                    href="/about"
+                                <Link
+                                    to="/about"
                                     className={`${currentPath === '/about' ? 'active' : ''}`}
                                 >
                                     About Us
-                                </a>
+                                </Link>
                             </li>
                             <li>
                                 {isAdmin && (
-                                <a
-                                href="/admin"
-                                className={`${currentPath === '/admin' ? 'active' : ''}`}
-                                >
-                                Admin
-                                </a>
+                                    <Link
+                                        to="/admin"
+                                        className={`${currentPath === '/admin' ? 'active' : ''}`}
+                                    >
+                                        Admin
+                                    </Link>
                                 )}
                             </li>
                             <li>
