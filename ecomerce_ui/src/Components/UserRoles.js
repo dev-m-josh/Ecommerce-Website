@@ -167,9 +167,10 @@ export default function UserRoles() {
             {editingUser && (
                 <div className={`edit-modal ${editingUser ? "visible" : ""}`}>
                     <div className="modal-content">
-                        <h2>Edit User Role</h2>
-                        <h3 onClick={handleCloseModal}>X</h3>
-                        <p>Editing: {editingUser.FirstName}</p>
+                        <div>
+                            <h2>Edit User Role</h2>
+                            <div className="modal-close" onClick={handleCloseModal}>X</div>
+                        </div>
                         <div className="form-group">
                             <label htmlFor="username">FirstName:</label>
                             <input
@@ -187,6 +188,16 @@ export default function UserRoles() {
                                 id="username"
                                 name="username"
                                 value={editingUser.LastName}
+                                disabled
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="username">LastName:</label>
+                            <input
+                                type="email"
+                                id="Email"
+                                name="Email"
+                                value={editingUser.Email}
                                 disabled
                             />
                         </div>

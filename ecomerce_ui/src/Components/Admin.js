@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import UserRoles from "./UserRoles";
 import Users from "./Users";
-import "../Styles/Login.css"
 
 export default function Admin() {
     const [showUsers, setShowUsers] = useState(false);
