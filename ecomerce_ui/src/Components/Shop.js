@@ -119,6 +119,7 @@ export default function Shop() {
                     disabled={page === 1 || loading}>
                     Previous
                 </button>
+                <span>{`Page ${page}`}</span>
                 <button 
                     onClick={handleNextPage} 
                     disabled={noMoreProducts || loading}>

@@ -6,7 +6,7 @@ export default function LowStock() {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] =useState(null);
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(1);
+    const [pageSize] = useState(10);
     const [noMoreProducts, setNoMoreProducts] = useState(false);
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
@@ -87,7 +87,7 @@ export default function LowStock() {
                     <thead>
                         <tr>
                             <th>Product</th>
-                            <th>Stock</th>
+                            <th>Units Left</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -106,6 +106,7 @@ export default function LowStock() {
                     disabled={page === 1 || loading}>
                     Previous
                 </button>
+                <span>{`Page ${page}`}</span>
                 <button 
                     onClick={handleNextPage} 
                     disabled={noMoreProducts || loading}>
