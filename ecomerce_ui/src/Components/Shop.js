@@ -6,7 +6,7 @@ export default function Shop() {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] =useState(null);
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(3);
+    const [pageSize] = useState(2);
     const [noMoreProducts, setNoMoreProducts] = useState(false);
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
@@ -36,7 +36,6 @@ export default function Shop() {
                 };
 
                 const data = await response.json();
-                console.log(data)
 
                 setProducts(data);
 
@@ -78,55 +77,52 @@ export default function Shop() {
     }
 
     return (
-        <>
         <div className="products">
             <h2>Products List</h2>
             {products.length === 0 ? (
                 <div>No products available</div>
             ) : (
                 <div>
-                        {products.map((product) => (
-                            <div className="product" key={product.ProductId}>
-                                {product.ProductImage && (
-                                    <img 
-                                        src={product.ProductImage} 
-                                        alt={product.ProductName} 
-                                        style={{ maxWidth: "200px", height: "auto" }} 
-                                    />
-                                )}
-                                <div className="product-details">
-                                    <h4>
-                                        {product.ProductName}
-                                    </h4>
-                                    <p>
-                                        {product.Description}
-                                    </p>
-                                    <h4>
-                                        Ksh {product.Price}
-                                    </h4>
-                                    <h5>
-                                        {product.StockQuantity} items left.
-                                    </h5>
-                                    <h5>Category: {product.Category}</h5>
-                                </div>
+                    {products.map((product) => (
+                        <div className="product" key={product.ProductId}>
+                            {product.ProductImage && (
+                                <img 
+                                    src={product.ProductImage} 
+                                    alt={product.ProductName} 
+                                    style={{ maxWidth: "200px", height: "auto" }} 
+                                />
+                            )}
+                            <div className="product-details">
+                                <h4>
+                                    {product.ProductName}
+                                </h4>
+                                <p>
+                                    {product.Description}
+                                </p>
+                                <h4>
+                                    Ksh {product.Price}
+                                </h4>
+                                <h5>
+                                    {product.StockQuantity} items left.
+                                </h5>
+                                <h5>Category: {product.Category}</h5>
                             </div>
-                        ))}
-                </div>
-            )}
-        </div>
-                            <div className="pagination">
-                            <button 
-                                onClick={handlePreviousPage} 
-                                disabled={page === 1 || loading}>
-                                Previous
-                            </button>
-                            <button 
-                                onClick={handleNextPage} 
-                                disabled={noMoreProducts || loading}>
-                                Next
-                            </button>
                         </div>
-                        </>
+                    ))}
+                </div>
+            )};
+            <div className="pagination">
+                <button 
+                    onClick={handlePreviousPage} 
+                    disabled={page === 1 || loading}>
+                    Previous
+                </button>
+                <button 
+                    onClick={handleNextPage} 
+                    disabled={noMoreProducts || loading}>
+                    Next
+                </button>
+        </div>
+    </div>
     );
-    
 };
