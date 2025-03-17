@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import UserRoles from "./UserRoles";
 import Users from "./Users";
 import MostSelling from "./MostSelling";
+import LowStock from "./LowStock";
 
 export default function Admin() {
     const [showUsers, setShowUsers] = useState(false);
     const [showUserRoles, setShowUserRoles] = useState(false);
     const [showMostSellingProducts, setShowMostSellingProducts] = useState(false);
+    const [showLowStock, setShowLowStock] = useState(false);
 
     const handleShowUsers = () => {
         setShowUsers(true);
@@ -26,10 +28,18 @@ export default function Admin() {
         setShowUsers(false);
     };
 
+    const handleShowLowStock = () => {
+        setShowLowStock(true);
+        setShowMostSellingProducts(false);
+        setShowUserRoles(false);
+        setShowUsers(false);
+    }
+
     const closeModal = () => {
         setShowUsers(false);
         setShowUserRoles(false);
         setShowMostSellingProducts(false);
+        setShowLowStock(false);
     };
 
     return (
@@ -45,6 +55,9 @@ export default function Admin() {
                     </li>
                     <li>
                         <h3 onClick={handleShowMostSellingProducts}>Most selling products.</h3>
+                    </li>
+                    <li>
+                        <h3 onClick={handleShowLowStock}>Products on low stock.</h3>
                     </li>
                 </ul>
             </div>
@@ -71,6 +84,13 @@ export default function Admin() {
                 <div className="modal-content">
                     <div className="modal-close" onClick={closeModal}>X</div>
                     <MostSelling />
+                </div>
+            )}
+
+            {showLowStock && (
+                <div className="modal-content">
+                    <div className="modal-close" onClick={closeModal}>X</div>
+                    <LowStock />
                 </div>
             )}
         </div>

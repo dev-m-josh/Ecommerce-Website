@@ -24,7 +24,7 @@ export default function Shop() {
                     `http://localhost:4500/products?page=${page}&pageSize=${pageSize}`,
                     {
                         method: "GET",
-                        Headers: {
+                        headers: {
                             Authorization: `Bearer ${token}`,
                             "Content-Type": "application/json",
                         }
@@ -54,7 +54,7 @@ export default function Shop() {
         }
 
         fetchProducts()
-    }, [page, pageSize, token]);
+    }, [page, pageSize, token, navigate]);
 
     const handleNextPage= () =>{
         if (!noMoreProducts && !loading) {
@@ -103,14 +103,16 @@ export default function Shop() {
                                     Ksh {product.Price}
                                 </h4>
                                 <h5>
+                                    Category: {product.Category}
+                                </h5>
+                                <h5>
                                     {product.StockQuantity} items left.
                                 </h5>
-                                <h5>Category: {product.Category}</h5>
                             </div>
                         </div>
                     ))}
                 </div>
-            )};
+            )}
             <div className="pagination">
                 <button 
                     onClick={handlePreviousPage} 
