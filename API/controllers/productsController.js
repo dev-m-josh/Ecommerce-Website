@@ -61,8 +61,42 @@ function getLowQuantityProducts(req, res) {
     );
 };
 
+//deactivate a product
+function deactivateProduct(req, res) {
+    let pool = req.pool;
+    let requestedProductId = req.params.productId;
+
+    pool.query(
+        `UPDATE products
+        SET ProductStatus = 'Inactive'
+        WHERE ProductId = ${requestedProductId}`, (err, result) =>{
+            if (err) {
+                res.status(500).json({
+                    success: false,
+                    message: "Internal server error."
+                });
+                console.log("Error occured in query", err);
+                return;
+            };
+            if (result.rowsAffected[0] === 0) {
+                return res.status(404).json({
+                success: false,
+                message: `Product with ID ${requestedProductId} not found.`,
+                });
+            } else {
+                res.json({
+                success: true,
+                message: "Product was successfully deactivated.",
+                rowsAffected: result.rowsAffected,
+                });
+            }
+        }
+    );
+};
+
 module.exports = {
     getAllProducts,
     getMostSellingProduct,
-    getLowQuantityProducts
+    getLowQuantityProducts,
+    deactivateProduct
 };
