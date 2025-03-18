@@ -100,7 +100,7 @@ export default function Shop() {
                                     {product.Description}
                                 </p>
                                 <h4>
-                                    Ksh {product.Price}
+                                    Ksh {product.Price.toLocaleString()}
                                 </h4>
                                 <h5>
                                     Category: {product.Category}

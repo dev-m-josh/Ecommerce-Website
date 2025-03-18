@@ -1,3 +1,5 @@
+const { newProductSchema } = require("../validators/validators");
+
 //display all products
 function getAllProducts(req, res) {
     let pool = req.pool;
@@ -126,12 +128,48 @@ function activateProduct (req, res){
             }
         }
     )
-}
+};
+
+//add new product
+function addNewProduct(req, res) {
+    let pool = req.pool;
+    let newProduct = req.body;
+
+    const {error, value } = newProductSchema.validate(newProduct, {
+        abortEarly: false
+    });
+
+    if (error) {
+        console.log(error);
+        return res.status(400).json({ errors: error.details });
+    };
+
+    pool.query(
+        `INSERT INTO products (ProductName, Description, Price, StockQuantity, Category, ProductImage)
+        VALUES ('${value.ProductName}', '${value.Description}', '${value.Price}', '${value.StockQuantity}', '${value.Category}', '${value.ProductImage}')`, 
+        (err, result) =>{
+            if (err) {
+                console.log("Error occured in query.", err.message);
+                res.json({
+                  success: false,
+                  message: err.message
+                });
+            } else {
+                res.json({
+                    success: true,
+                    message: "Product added successfully",
+                    newProduct,
+                });
+            };
+        }
+    );
+};
 
 module.exports = {
     getAllProducts,
     getMostSellingProduct,
     getLowQuantityProducts,
     deactivateProduct,
-    activateProduct
+    activateProduct,
+    addNewProduct
 };
