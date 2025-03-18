@@ -6,8 +6,10 @@ const {
     deactivateProduct,
     activateProduct,
     addNewProduct,
+    getAllInActiveProducts,
 } = require("../controllers/productsController");
 
+productsRouter.get('/inactive', getAllInActiveProducts);
 productsRouter.get('/most-selling', getMostSellingProduct);
 productsRouter.get('/low-quantity', getLowQuantityProducts);
 productsRouter.put('/deactivate-product/:productId', deactivateProduct);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-export default function DeactivateProduct() {
+export default function ActivateProduct() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -15,16 +15,15 @@ export default function DeactivateProduct() {
     useEffect(() => {
         if (!token) {
             navigate('/login');
-        };
+            return;
+        }
 
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-
-                const response = await fetch(
-                    `http://localhost:4500/products?page=${page}&pageSize=${pageSize}`,
+                const response = await axios.get(
+                    `http://localhost:4500/products/inactive?page=${page}&pageSize=${pageSize}`,
                     {
-                        method: "GET",
                         headers: {
                             Authorization: `Bearer ${token}`,
                             "Content-Type": "application/json",
@@ -32,11 +31,7 @@ export default function DeactivateProduct() {
                     }
                 );
 
-                if (!response.ok) {
-                    throw new Error(`${response.statusText}`);
-                };
-
-                const data = await response.json();
+                const data = response.data;
                 setProducts(data);
 
                 if (data.length < pageSize) {
@@ -45,35 +40,33 @@ export default function DeactivateProduct() {
                     setNoMoreProducts(false);
                 }
             } catch (err) {
-                console.error("Error fetching products:", err);
+                console.log("Error fetching products:", err);
                 setErrorMessage("There was an error displaying the products. Please reload page.");
             } finally {
                 setLoading(false);
             }
-        };
+        }
 
         fetchProducts();
     }, [page, pageSize, token, navigate]);
 
-    const handleProductDeactivate = async (ProductId) => {
+    const handleProductRestore = async (ProductId) => {
         try {
             const response = await axios.put(
-                `http://localhost:4500/products/deactivate-product/${ProductId}`,
+                `http://localhost:4500/products/activate-product/${ProductId}`,
                 {},
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     }
-                    
                 }
             );
 
             const data = response.data;
             alert(data.message);
-            
         } catch (error) {
-            console.log("Deactivate error:", error);
+            console.log("Activate error:", error);
             if (error.response && error.response.data) {
                 setErrorMessage(error.response.data.message);
                 alert(error.response.data.message);
@@ -126,8 +119,8 @@ export default function DeactivateProduct() {
                                 <td>{product.Category}</td>
                                 <td>{product.StockQuantity}</td>
                                 <td>
-                                    <button onClick={() => handleProductDeactivate(product.ProductId)}>
-                                        Delete
+                                    <button onClick={() => handleProductRestore(product.ProductId)}>
+                                        Restore
                                     </button>
                                 </td>
                             </tr>
@@ -135,6 +128,7 @@ export default function DeactivateProduct() {
                     </tbody>
                 </table>
             )}
+
             <div className="pagination">
                 <button
                     onClick={handlePreviousPage}

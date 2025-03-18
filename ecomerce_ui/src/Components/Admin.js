@@ -4,6 +4,7 @@ import Users from "./Users";
 import MostSelling from "./MostSelling";
 import LowStock from "./LowStock";
 import DeactivateProduct from "./DeactivateProduct";
+import ActivateProduct from "./ActivateProduct";
 
 export default function Admin() {
     const [showUsers, setShowUsers] = useState(false);
@@ -11,6 +12,7 @@ export default function Admin() {
     const [showMostSellingProducts, setShowMostSellingProducts] = useState(false);
     const [showLowStock, setShowLowStock] = useState(false);
     const [showDeactivate, setShowDeactivate] = useState(false);
+    const [showActivateProduct, setShowActivateProduct] = useState(false);
 
     const handleShowUsers = () => {
         setShowUsers(true);
@@ -49,12 +51,22 @@ export default function Admin() {
         setShowUsers(false);
     }
 
+    const handleShowActivate = () => {
+        setShowActivateProduct(true);
+        setShowLowStock(false);
+        setShowMostSellingProducts(false);
+        setShowUserRoles(false);
+        setShowUsers(false);
+        setShowDeactivate(false);
+    }
+
     const closeModal = () => {
         setShowUsers(false);
         setShowUserRoles(false);
         setShowMostSellingProducts(false);
         setShowLowStock(false);
         setShowDeactivate(false);
+        setShowActivateProduct(false);
     };
 
     return (
@@ -85,6 +97,11 @@ export default function Admin() {
                     <li>
                         <h3 onClick={handleShowDeactivate}>
                             Delete product.
+                        </h3>
+                    </li>
+                    <li>
+                        <h3 onClick={handleShowActivate}>
+                            Restore product.
                         </h3>
                     </li>
                 </ul>
@@ -126,6 +143,14 @@ export default function Admin() {
                 <div className="modal-content">
                     <div className="modal-close" onClick={closeModal}>X</div>
                     <DeactivateProduct />
+                </div>
+            )}
+
+            {showActivateProduct && (
+                <div className="modal-content">
+                    <div className="modal-close"
+                    onClick={closeModal}>X</div>
+                    <ActivateProduct />
                 </div>
             )}
         </div>
