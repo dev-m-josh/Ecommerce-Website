@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBasket, faSearch, faUser, faBars } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import "../Styles/Header.css";
 import axios from 'axios';
@@ -13,9 +13,9 @@ export default function Header() {
     const token = localStorage.getItem("token");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
+    const toggleMenu = useCallback(() => {
+        setIsMenuOpen(prevState => !prevState);
+    }, []);
 
     const currentPath = window.location.pathname;
 
@@ -23,13 +23,14 @@ export default function Header() {
         if (user && user.UserRole === "Admin") {
             setIsAdmin(true);
         }
-    }, [user]);
+    }, [user, token]);
 
     // Handle logout
     const handleLogout = async (e) => {
         // Clear user data from localStorage
         localStorage.removeItem("token");
         localStorage.removeItem("signedUser");
+        setIsAdmin(false);
 
         try {
             const response = await axios.put(
