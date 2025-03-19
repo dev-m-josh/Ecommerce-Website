@@ -22,4 +22,14 @@ const editUserRoleSchema = joi.object({
       .required()
 });
 
-module.exports = { newUserSchema, loginSchema, editUserRoleSchema };
+//NEW PRODUCT SCHEMA
+const newProductSchema = joi.object({
+  ProductName: joi.string().min(2).max(50).required(),
+  Description: joi.string().min(2).max(250).required(),
+  Price: joi.number().precision(2).positive().required(),
+  StockQuantity: joi.number().integer().min(0),
+  Category: joi.string().max(50).required(),
+  ProductImage: joi.string().max(255)
+});
+
+module.exports = { newUserSchema, loginSchema, editUserRoleSchema, newProductSchema };
