@@ -8,6 +8,7 @@ const { config } = require("./config/db_config");
 const { freeRouter } = require("./routes/freeRoutes");
 const { authRouter } = require("./routes/authRoute");
 const { productsRouter } = require("./routes/productsRoutes");
+const { salesRouter } = require("./routes/salesRoutes");
 
 async function startServer() {
     const app = express();
@@ -32,6 +33,7 @@ async function startServer() {
         app.use(verifyToken);
         app.use("/users", usersRouter);
         app.use('/products', productsRouter);
+        app.use('/sales', salesRouter)
         app.all('*', undefinedRouteHandler);
         app.use(allErrorsHandler);
 
