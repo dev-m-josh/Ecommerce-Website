@@ -11,21 +11,29 @@ export default function Account() {
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [deleteLoading, setDeleteLoading] = useState(false); // for handling account deletion loading
+    const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false); // for controlling password form visibility
     const navigate = useNavigate();
-    
 
     const user = JSON.parse(localStorage.getItem("signedUser"));
     const token = localStorage.getItem("token");
     const UserId = user.UserId;
 
     const togglePassword = () => setShowPassword((prev) => !prev);
-
     const toggleNewPassword = () => setShowNewPassword((prev) => !prev);
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setErrorMessage(""); 
+        setErrorMessage(""); // Clear previous error message
+
+        // Basic validation for new password
+        if (newPassword.length < 6) {
+            setErrorMessage("New password must be at least 6 characters long.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const response = await axios.put(
                 `http://localhost:4500/users/password/${user.UserId}`, 
@@ -48,7 +56,7 @@ export default function Account() {
 
         } catch (error) {
             console.log("Error updating password:", error);
-            if (error.response.data) {
+            if (error.response && error.response.data) {
                 setErrorMessage(error.response.data.message);
             }
         } finally {
@@ -60,6 +68,8 @@ export default function Account() {
         const confirmAccountDelete = window.confirm("Are you sure you want to delete this account?");
 
         if (!confirmAccountDelete) return;
+
+        setDeleteLoading(true);
 
         try {
             const response = await fetch(
@@ -77,15 +87,17 @@ export default function Account() {
 
             if (!response.ok) {
                 throw new Error(data.message || "Failed to delete account!");
-            };
+            }
 
             localStorage.removeItem("token");
             localStorage.removeItem("signedUser");
-
             navigate("/");
 
         } catch (error) {
-            
+            console.error("Error deleting account:", error);
+            alert("Failed to delete the account. Please try again later.");
+        } finally {
+            setDeleteLoading(false);
         }
     };
 
@@ -97,43 +109,53 @@ export default function Account() {
             <p><strong>Email:</strong> {user.Email}</p>
             <p><strong>User Role:</strong> {user.UserRole}</p>
 
-            <p>Change Password</p>
-            <p onClick={handleDeleteAccount}>Delete Account</p>
-            <form onSubmit={handleChangePassword}>
-                <div>
-                    <label>Current Password</label>
-                    <input
-                        type={showPassword ? "text" : "password"}
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        required
-                    />
-                    <button className="password-visibility" type="button" onClick={togglePassword}>
-                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                    </button>
-                </div>
+            <button onClick={() => setIsChangePasswordVisible(!isChangePasswordVisible)}>
+                {isChangePasswordVisible ? "Cancel" : "Change Password"}
+            </button>
 
-                <div>
-                    <label>New Password</label>
-                    <input
-                        type={showNewPassword ? "text" : "password"}
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        required
-                    />
-                    <button className="password-visibility" type="button" onClick={toggleNewPassword}>
-                        <FontAwesomeIcon icon={showNewPassword ? faEyeSlash : faEye} />
-                    </button>
-                </div>
+            {isChangePasswordVisible && (
+                <form onSubmit={handleChangePassword}>
+                    <div>
+                        <label htmlFor="currentPassword">Current Password</label>
+                        <input
+                            id="currentPassword"
+                            type={showPassword ? "text" : "password"}
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            required
+                        />
+                        <button type="button" onClick={togglePassword} aria-label="Toggle password visibility">
+                            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                        </button>
+                    </div>
 
-                <div>
-                    <button type="submit" disabled={loading}>
-                        {loading ? "Updating..." : "Update Password"}
-                    </button>
-                </div>
+                    <div>
+                        <label htmlFor="newPassword">New Password</label>
+                        <input
+                            id="newPassword"
+                            type={showNewPassword ? "text" : "password"}
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            required
+                        />
+                        <button type="button" onClick={toggleNewPassword} aria-label="Toggle password visibility">
+                            <FontAwesomeIcon icon={showNewPassword ? faEyeSlash : faEye} />
+                        </button>
+                    </div>
 
-                {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-            </form>
+                    <div>
+                        <button type="submit" disabled={loading}>
+                            {loading ? "Updating..." : "Update Password"}
+                        </button>
+                    </div>
+
+                    {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+                </form>
+            )}
+
+            <button onClick={handleDeleteAccount} disabled={deleteLoading}>
+                {deleteLoading ? "Deleting..." : "Delete Account"}
+            </button>
         </div>
     );
 }
