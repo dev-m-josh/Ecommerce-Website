@@ -64,9 +64,53 @@ export default function ActivateProduct() {
             );
 
             const data = response.data;
-            alert(data.message);
+            
+            setProducts(prevProducts =>
+                prevProducts.map(product =>
+                    product.ProductId === ProductId
+                        ? { ...product, ProductStatus: 'Active' }
+                        : product
+                )
+            );
+
         } catch (error) {
             console.log("Activate error:", error);
+            if (error.response && error.response.data) {
+                setErrorMessage(error.response.data.message);
+                alert(error.response.data.message);
+            } else {
+                setErrorMessage('An unexpected error occurred.');
+                alert('An unexpected error occurred.');
+            }
+        }
+    };
+
+    const handleProductDeactivate = async (ProductId) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:4500/products/deactivate-product/${ProductId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    }
+                    
+                }
+            );
+
+            const data = response.data;
+            
+            setProducts(prevProducts =>
+                prevProducts.map(product =>
+                    product.ProductId === ProductId
+                        ? { ...product, productStatus: 'Inactive' }
+                        : product
+                )
+            );
+            
+        } catch (error) {
+            console.log("Deactivate error:", error);
             if (error.response && error.response.data) {
                 setErrorMessage(error.response.data.message);
                 alert(error.response.data.message);
@@ -112,16 +156,28 @@ export default function ActivateProduct() {
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                        <tbody>
                         {products.map((product) => (
                             <tr key={product.ProductId}>
                                 <td>{product.ProductName}</td>
                                 <td>{product.Category}</td>
                                 <td>{product.StockQuantity}</td>
                                 <td>
-                                    <button onClick={() => handleProductRestore(product.ProductId)}>
-                                        Restore
-                                    </button>
+                                    {product.ProductStatus === 'Active' ? (
+                                        <button
+                                            className="delete" 
+                                            onClick={() => handleProductDeactivate(product.ProductId)}
+                                        >
+                                            Delete
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="restore" 
+                                            onClick={() => handleProductRestore(product.ProductId)}
+                                        >
+                                            Restore
+                                        </button>
+                                    )}
                                 </td>
                             </tr>
                         ))}

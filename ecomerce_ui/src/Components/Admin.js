@@ -3,53 +3,52 @@ import UserRoles from "./UserRoles";
 import Users from "./Users";
 import MostSelling from "./MostSelling";
 import LowStock from "./LowStock";
-import DeactivateProduct from "./DeactivateProduct";
 import ActivateProduct from "./ActivateProduct";
+import NewProduct from "./NewProduct";
 
 export default function Admin() {
     const [showUsers, setShowUsers] = useState(false);
     const [showUserRoles, setShowUserRoles] = useState(false);
     const [showMostSellingProducts, setShowMostSellingProducts] = useState(false);
     const [showLowStock, setShowLowStock] = useState(false);
-    const [showDeactivate, setShowDeactivate] = useState(false);
     const [showActivateProduct, setShowActivateProduct] = useState(false);
+    const [showAddNewProduct, setshowAddNewProduct] = useState(false);
 
     const handleShowUsers = () => {
         setShowUsers(true);
         setShowUserRoles(false);
+        setShowLowStock(false);
         setShowMostSellingProducts(false);
-        setShowDeactivate(false);
+        setShowActivateProduct(false);
+        setshowAddNewProduct(false);
     };
 
     const handleShowUserRoles = () => {
         setShowUserRoles(true);
         setShowUsers(false);
+        setShowLowStock(false);
         setShowMostSellingProducts(false);
-        setShowDeactivate(false);
+        setShowActivateProduct(false);
+        setshowAddNewProduct(false);
     };
 
     const handleShowMostSellingProducts = () => {
         setShowMostSellingProducts(true);
         setShowUserRoles(false);
         setShowUsers(false);
-        setShowDeactivate(false);
+        setShowLowStock(false);
+        setShowActivateProduct(false);
+        setshowAddNewProduct(false);
     };
 
     const handleShowLowStock = () => {
         setShowLowStock(true);
         setShowMostSellingProducts(false);
         setShowUserRoles(false);
+        setShowActivateProduct(false);
         setShowUsers(false);
-        setShowDeactivate(false);
+        setshowAddNewProduct(false);
     };
-
-    const handleShowDeactivate = () => {
-        setShowDeactivate(true);
-        setShowLowStock(false);
-        setShowMostSellingProducts(false);
-        setShowUserRoles(false);
-        setShowUsers(false);
-    }
 
     const handleShowActivate = () => {
         setShowActivateProduct(true);
@@ -57,7 +56,16 @@ export default function Admin() {
         setShowMostSellingProducts(false);
         setShowUserRoles(false);
         setShowUsers(false);
-        setShowDeactivate(false);
+        setshowAddNewProduct(false);
+    }
+
+    const handleShowAddNewProduct = () => {
+        setshowAddNewProduct(true);
+        setShowLowStock(false);
+        setShowMostSellingProducts(false);
+        setShowUserRoles(false);
+        setShowUsers(false);
+        setShowActivateProduct(false);
     }
 
     const closeModal = () => {
@@ -65,8 +73,8 @@ export default function Admin() {
         setShowUserRoles(false);
         setShowMostSellingProducts(false);
         setShowLowStock(false);
-        setShowDeactivate(false);
         setShowActivateProduct(false);
+        setshowAddNewProduct(false);
     };
 
     return (
@@ -85,6 +93,11 @@ export default function Admin() {
                         </h3>
                     </li>
                     <li>
+                        <h3 onClick={handleShowAddNewProduct}>
+                            Add new product.
+                        </h3>
+                    </li>
+                    <li>
                         <h3 onClick={handleShowMostSellingProducts}>
                             Most selling products.
                         </h3>
@@ -95,13 +108,8 @@ export default function Admin() {
                         </h3>
                     </li>
                     <li>
-                        <h3 onClick={handleShowDeactivate}>
-                            Delete product.
-                        </h3>
-                    </li>
-                    <li>
                         <h3 onClick={handleShowActivate}>
-                            Restore product.
+                            Delete and restore a product.
                         </h3>
                     </li>
                 </ul>
@@ -139,18 +147,19 @@ export default function Admin() {
                 </div>
             )}
 
-            {showDeactivate && (
-                <div className="modal-content">
-                    <div className="modal-close" onClick={closeModal}>X</div>
-                    <DeactivateProduct />
-                </div>
-            )}
-
             {showActivateProduct && (
                 <div className="modal-content">
                     <div className="modal-close"
                     onClick={closeModal}>X</div>
                     <ActivateProduct />
+                </div>
+            )}
+
+            {showAddNewProduct && (
+                <div className="modal-content">
+                    <div className="modal-close"
+                    onClick={closeModal}>X</div>
+                    <NewProduct />
                 </div>
             )}
         </div>

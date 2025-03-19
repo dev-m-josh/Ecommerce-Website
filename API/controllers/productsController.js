@@ -1,7 +1,7 @@
 const { newProductSchema } = require("../validators/validators");
 
 //display all products
-function getAllProducts(req, res) {
+function getAllActiveProducts(req, res) {
     let pool = req.pool;
     let { page, pageSize } = req.query;
     let offset = (Number(page) - 1) * Number(pageSize);
@@ -18,12 +18,12 @@ function getAllProducts(req, res) {
     );
 };
 
-function getAllInActiveProducts(req, res) {
+function getAllProducts(req, res) {
     let pool = req.pool;
     let { page, pageSize } = req.query;
     let offset = (Number(page) - 1) * Number(pageSize);
     pool.query(
-        `SELECT * FROM products WHERE ProductStatus = 'Inactive' ORDER BY ProductId OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+        `SELECT * FROM products ORDER BY ProductId OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
         (err, result) =>{
             if (err) {
                 console.log("Error occured in query:", err);
@@ -139,7 +139,7 @@ function activateProduct (req, res){
             } else {
                 res.json({
                 success: true,
-                message: "Product was successfully activated.",
+                message: "Product was successfully restored.",
                 rowsAffected: result.rowsAffected,
                 });
             }
@@ -183,8 +183,8 @@ function addNewProduct(req, res) {
 };
 
 module.exports = {
+    getAllActiveProducts,
     getAllProducts,
-    getAllInActiveProducts,
     getMostSellingProduct,
     getLowQuantityProducts,
     deactivateProduct,
