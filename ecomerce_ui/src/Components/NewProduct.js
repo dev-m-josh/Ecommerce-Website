@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 export default function NewProduct() {
     const [productName, setProductName] = useState("");
@@ -43,6 +44,7 @@ export default function NewProduct() {
             );
 
             const data = response.data;
+            toast.success(data.message);
 
             setProductName("");
             setDescription("");

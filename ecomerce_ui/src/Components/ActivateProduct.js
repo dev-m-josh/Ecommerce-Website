@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import axios from 'axios';
 
 export default function ActivateProduct() {
@@ -64,6 +65,7 @@ export default function ActivateProduct() {
             );
 
             const data = response.data;
+            toast.success(data.message);
             
             setProducts(prevProducts =>
                 prevProducts.map(product =>
@@ -100,6 +102,7 @@ export default function ActivateProduct() {
             );
 
             const data = response.data;
+            toast.success(data.message);
             
             setProducts(prevProducts =>
                 prevProducts.map(product =>
