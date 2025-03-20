@@ -155,7 +155,7 @@ export default function UserRoles() {
                                 <td>{user.UserRole}</td>
                                 <td>{user.Email}</td>
                                 <td>
-                                    <button onClick={() => setEditingUser(user)}>
+                                    <button className="update" onClick={() => setEditingUser(user)}>
                                         Update
                                     </button>
                                 </td>

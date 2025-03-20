@@ -3,6 +3,10 @@
     font-family: Arial, sans-serif;
 }
 
+.users h2{
+    text-decoration: none;
+}
+
 .loading, .error {
     text-align: center;
     font-size: 18px;
@@ -16,7 +20,7 @@
 }
 
 .users-table th, .users-table td {
-    padding: 12px 15px;
+    padding: 10px 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
@@ -28,6 +32,22 @@
 
 .users-table tr:hover {
     background-color: #f5f5f5;
+}
+
+.update{
+    border: none;
+    outline: none;
+    background-color: #0054d1;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #f5f5f5;
+    cursor: pointer;
+    transition: .3s ease-in-out;
+}
+
+.update:hover{
+    background-color: #2980B9;
 }
 
 /* Edit modal */
@@ -103,6 +123,7 @@
     justify-content: center;
     align-items: center;
     margin: 20px 0;
+    margin-bottom: 5px;
 }
 
 .pagination-button {
@@ -124,4 +145,36 @@
 .pagination span {
     font-size: 18px;
     margin: 0 10px;
+}
+
+.delete{
+    background-color: red;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: gainsboro;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .3s ease-in-out;
+}
+
+.delete:hover{
+    background-color: rgb(255, 20, 20);
+}
+
+.restore{
+    background-color: #3498db;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: gainsboro;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .3s ease-in-out;
+}
+
+.restore:hover{
+    background-color: #2980b9;
 }
