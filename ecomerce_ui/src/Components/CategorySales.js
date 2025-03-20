@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import '../Styles/Users.css'
 
 export default function CategorySales() {
     const [products, setProducts] = useState([]);
@@ -103,13 +104,17 @@ export default function CategorySales() {
             <div className="pagination">
                 <button 
                     onClick={handlePreviousPage} 
-                    disabled={page === 1 || loading}>
+                    disabled={page === 1 || loading}
+                    className="pagination-button"
+                >
                     Previous
                 </button>
                 <span>{`Page ${page}`}</span>
                 <button 
                     onClick={handleNextPage} 
-                    disabled={noMoreProducts || loading}>
+                    disabled={noMoreProducts || loading}
+                    className="pagination-button"    
+                >
                     Next
                 </button>
             </div>
