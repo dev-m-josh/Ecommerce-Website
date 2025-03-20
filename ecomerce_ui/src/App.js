@@ -7,6 +7,7 @@ import Login from './Components/Login';
 import Account from './Components/Account';
 import Admin from './Components/Admin';
 import Shop from './Components/Shop';
+import Home from './Components/Home';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path='/account' element={<Account/>}/>
           <Route path='/admin' element={<Admin/>}/>
           <Route path='/shop' element={<Shop/>}/>
+          <Route path='/' element={<Home/>}/>
         </Routes>
       </div>
     </>

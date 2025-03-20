@@ -1,8 +1,9 @@
 const salesRouter = require("express").Router();
 
-const { totalSalesOfProduct } = require("../controllers/salesControllers");
+const { totalSalesOfProduct, revenueByCategory } = require("../controllers/salesControllers");
 
-salesRouter.get('/', totalSalesOfProduct);
+salesRouter.get('/products', totalSalesOfProduct);
+salesRouter.get('/category', revenueByCategory);
 
 module.exports = {
     salesRouter
