@@ -6,6 +6,8 @@ import LowStock from "./LowStock";
 import ActivateProduct from "./ActivateProduct";
 import NewProduct from "./NewProduct";
 import ProductSales from "./ProductSales";
+import CategorySales from "./CategorySales";
+import '../Styles/Admin.css'
 
 export default function Admin() {
     const [showUsers, setShowUsers] = useState(false);
@@ -220,7 +222,7 @@ export default function Admin() {
             {showCategorySales && (
                 <div className="modal-content">
                     <div className="modal-close" onClick={closeModal}>X</div>
-                    
+                    <CategorySales />
                 </div>
             )}
         </div>

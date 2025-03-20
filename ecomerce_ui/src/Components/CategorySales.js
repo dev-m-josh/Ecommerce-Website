@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ProductSales() {
+export default function CategorySales() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] =useState(null);
@@ -21,7 +21,7 @@ export default function ProductSales() {
                     setLoading(true);
     
                     const response = await fetch(
-                        `http://localhost:4500/sales/products?page=${page}&pageSize=${pageSize}`,
+                        `http://localhost:4500/sales/category?page=${page}&pageSize=${pageSize}`,
                         {
                             method: "GET",
                             headers: {
@@ -79,21 +79,21 @@ export default function ProductSales() {
     
     return(
         <div className="users">
-            <h2>Products sales.</h2>
+            <h2>Category sales.</h2>
             {products.length === 0 ? (
-                <div>No products to display.</div>
+                <div>No sales to display.</div>
             ) : (
                 <table className="users-table">
                     <thead>
                         <tr>
-                            <th>Product</th>
+                            <th>Category</th>
                             <th>Total Revenue</th>
                         </tr>
                     </thead>
                     <tbody>
                         {products.map((product) => (
-                            <tr key={product.ProductId}>
-                                <td>{product.ProductName}</td>
+                            <tr key={product.Category}>
+                                <td>{product.Category}</td>
                                 <td>Ksh {product.TotalRevenue}</td>
                             </tr>
                         ))}

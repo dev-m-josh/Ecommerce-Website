@@ -107,7 +107,7 @@ export default function ActivateProduct() {
             setProducts(prevProducts =>
                 prevProducts.map(product =>
                     product.ProductId === ProductId
-                        ? { ...product, productStatus: 'Inactive' }
+                        ? { ...product, ProductStatus: 'Inactive' }
                         : product
                 )
             );
