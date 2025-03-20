@@ -1,0 +1,91 @@
+.new-product{
+    width: 100%;
+    max-height: fit-content;
+    font-family: cursive;
+}
+
+form{
+    padding: 0;
+}
+
+.new-product h3 {
+    font-size: 24px;
+    color: #007bff;
+    text-align: start;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+
+.product-details{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-details label{
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1px;
+}
+
+.new-product .error-message {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.product-details {
+    margin-bottom: 10px;
+}
+
+.product-details input,
+.product-details textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.product-details textarea{
+    width: 500px;
+    max-width: 500px;
+    min-width: 250px;
+    max-height: 120px;
+    min-height: 55px;
+}
+
+.product-details input:focus,
+.product-details textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.new-product-btn {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.new-product-btn button {
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.new-product-btn button:hover {
+    background-color: #218838;
+}
+
+@media (max-width: 768px) {
+    .new-product {
+        width: 90%;
+    }
+}

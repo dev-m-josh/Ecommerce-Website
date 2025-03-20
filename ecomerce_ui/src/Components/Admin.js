@@ -148,7 +148,7 @@ export default function Admin() {
                 </h3>
             </div>
 
-            {(showUsers || showUserRoles) && (
+            {(showUsers || showUserRoles || showMostSellingProducts || showLowStock || showActivateProduct || showAddNewProduct || showProductSales || showCategorySales) && (
                 <div className="modal-background" onClick={closeModal}></div>
             )}
 
