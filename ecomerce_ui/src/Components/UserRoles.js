@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import '../Styles/Users.css'
 
 export default function UserRoles() {
     const [users, setUsers] = useState([]);
