@@ -121,49 +121,31 @@ export default function Admin() {
     return (
         <div className="admin-container">
             <h2>Admin Functions</h2>
-            <div>
-                <ul>
-                    <li>
-                        <h3 onClick={handleShowUsers}>
-                            Check all users.
-                        </h3>
-                    </li>
-                    <li>
-                        <h3 onClick={handleShowUserRoles}>
-                            Update user role.
-                        </h3>
-                    </li>
-                    <li>
-                        <h3 onClick={handleShowAddNewProduct}>
-                            Add new product.
-                        </h3>
-                    </li>
-                    <li>
-                        <h3 onClick={handleShowActivate}>
-                            Restore and delete products.
-                        </h3>
-                    </li>
-                    <li>
-                        <h3 onClick={handleShowMostSellingProducts}>
-                            Most selling products.
-                        </h3>
-                    </li>
-                    <li>
-                        <h3 onClick={handleShowLowStock}>
-                            Products on low stock.
-                        </h3>
-                    </li>
-                    <li>
-                        <h3 onClick={handleShowProductSales}>
-                        Sales per product.
-                        </h3>
-                    </li>
-                    <li>
-                        <h3 onClick={handleShowCategorySales}>
-                            Sales per category.
-                        </h3>
-                    </li>
-                </ul>
+            <div className="admin-functions">
+                <h3 onClick={handleShowUsers}>
+                    Check all users.
+                </h3>
+                <h3 onClick={handleShowUserRoles}>
+                    Update user role.
+                </h3>
+                <h3 onClick={handleShowAddNewProduct}>
+                    Add new product.
+                </h3>
+                <h3 onClick={handleShowActivate}>
+                    Restore and delete products.
+                </h3>
+                <h3 onClick={handleShowMostSellingProducts}>
+                    Most selling products.
+                </h3>
+                <h3 onClick={handleShowLowStock}>
+                    Products on low stock.
+                </h3>
+                <h3 onClick={handleShowProductSales}>
+                Sales per product.
+                </h3>
+                <h3 onClick={handleShowCategorySales}>
+                    Sales per category.
+                </h3>
             </div>
 
             {(showUsers || showUserRoles) && (
