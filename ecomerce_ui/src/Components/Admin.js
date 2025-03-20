@@ -5,6 +5,7 @@ import MostSelling from "./MostSelling";
 import LowStock from "./LowStock";
 import ActivateProduct from "./ActivateProduct";
 import NewProduct from "./NewProduct";
+import ProductSales from "./ProductSales";
 
 export default function Admin() {
     const [showUsers, setShowUsers] = useState(false);
@@ -13,6 +14,8 @@ export default function Admin() {
     const [showLowStock, setShowLowStock] = useState(false);
     const [showActivateProduct, setShowActivateProduct] = useState(false);
     const [showAddNewProduct, setshowAddNewProduct] = useState(false);
+    const [showProductSales, setShowProductSales] = useState(false);
+    const [showCategorySales, setShowCategorySales] = useState(false);
 
     const handleShowUsers = () => {
         setShowUsers(true);
@@ -21,6 +24,8 @@ export default function Admin() {
         setShowMostSellingProducts(false);
         setShowActivateProduct(false);
         setshowAddNewProduct(false);
+        setShowProductSales(false);
+        setShowCategorySales(false);
     };
 
     const handleShowUserRoles = () => {
@@ -30,6 +35,8 @@ export default function Admin() {
         setShowMostSellingProducts(false);
         setShowActivateProduct(false);
         setshowAddNewProduct(false);
+        setShowProductSales(false);
+        setShowCategorySales(false);
     };
 
     const handleShowMostSellingProducts = () => {
@@ -39,6 +46,8 @@ export default function Admin() {
         setShowLowStock(false);
         setShowActivateProduct(false);
         setshowAddNewProduct(false);
+        setShowProductSales(false);
+        setShowCategorySales(false);
     };
 
     const handleShowLowStock = () => {
@@ -48,6 +57,8 @@ export default function Admin() {
         setShowActivateProduct(false);
         setShowUsers(false);
         setshowAddNewProduct(false);
+        setShowProductSales(false);
+        setShowCategorySales(false);
     };
 
     const handleShowActivate = () => {
@@ -57,6 +68,8 @@ export default function Admin() {
         setShowUserRoles(false);
         setShowUsers(false);
         setshowAddNewProduct(false);
+        setShowProductSales(false);
+        setShowCategorySales(false);
     }
 
     const handleShowAddNewProduct = () => {
@@ -66,6 +79,30 @@ export default function Admin() {
         setShowUserRoles(false);
         setShowUsers(false);
         setShowActivateProduct(false);
+        setShowProductSales(false);
+        setShowCategorySales(false);
+    }
+
+    const handleShowProductSales = () =>{
+        setShowProductSales(true);
+        setShowUsers(false);
+        setShowUserRoles(false);
+        setShowMostSellingProducts(false);
+        setShowLowStock(false);
+        setShowActivateProduct(false);
+        setshowAddNewProduct(false);
+        setShowCategorySales(false);
+    }
+
+    const handleShowCategorySales = () =>{
+        setShowCategorySales(true);
+        setShowUsers(false);
+        setShowUserRoles(false);
+        setShowMostSellingProducts(false);
+        setShowLowStock(false);
+        setShowActivateProduct(false);
+        setshowAddNewProduct(false);
+        setShowProductSales(false);
     }
 
     const closeModal = () => {
@@ -75,6 +112,8 @@ export default function Admin() {
         setShowLowStock(false);
         setShowActivateProduct(false);
         setshowAddNewProduct(false);
+        setShowProductSales(false);
+        setShowCategorySales(false);
     };
 
     return (
@@ -98,6 +137,11 @@ export default function Admin() {
                         </h3>
                     </li>
                     <li>
+                        <h3 onClick={handleShowActivate}>
+                            Restore and delete products.
+                        </h3>
+                    </li>
+                    <li>
                         <h3 onClick={handleShowMostSellingProducts}>
                             Most selling products.
                         </h3>
@@ -108,8 +152,13 @@ export default function Admin() {
                         </h3>
                     </li>
                     <li>
-                        <h3 onClick={handleShowActivate}>
-                            Delete and restore a product.
+                        <h3 onClick={handleShowProductSales}>
+                        Sales per product.
+                        </h3>
+                    </li>
+                    <li>
+                        <h3 onClick={handleShowCategorySales}>
+                            Sales per category.
                         </h3>
                     </li>
                 </ul>
@@ -149,17 +198,29 @@ export default function Admin() {
 
             {showActivateProduct && (
                 <div className="modal-content">
-                    <div className="modal-close"
-                    onClick={closeModal}>X</div>
+                    <div className="modal-close" onClick={closeModal}>X</div>
                     <ActivateProduct />
                 </div>
             )}
 
             {showAddNewProduct && (
                 <div className="modal-content">
-                    <div className="modal-close"
-                    onClick={closeModal}>X</div>
+                    <div className="modal-close" onClick={closeModal}>X</div>
                     <NewProduct />
+                </div>
+            )}
+
+            {showProductSales && (
+                <div className="modal-content">
+                    <div className="modal-close" onClick={closeModal}>X</div>
+                    <ProductSales />
+                </div>
+            )}
+
+            {showCategorySales && (
+                <div className="modal-content">
+                    <div className="modal-close" onClick={closeModal}>X</div>
+                    
                 </div>
             )}
         </div>
