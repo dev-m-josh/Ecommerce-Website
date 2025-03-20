@@ -58,7 +58,7 @@ export default function MostSelling() {
 
     return(
         <div className="users">
-        <h2>Active Users</h2>
+        <h2>Most selling products</h2>
         {products.length === 0 ? (
             <div>No products available to display.</div>
         ) : (
