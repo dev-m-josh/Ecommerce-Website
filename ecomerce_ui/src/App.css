@@ -6,6 +6,7 @@
     box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.1);
     border: 1px rgb(215, 243, 248) solid;
     background-color: #fff;
+    max-height: 100vh;
 }
 
 @media screen and (max-width: 600px) {

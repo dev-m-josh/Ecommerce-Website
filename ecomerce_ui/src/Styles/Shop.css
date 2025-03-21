@@ -1,5 +1,6 @@
 .products {
-    height: 100vh;
+    max-height: 100vh;
+    min-width: fit-content;
     padding: 15px;
 }
 
@@ -8,6 +9,7 @@
 }
 
 .products-list {
+    width: fit-content;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 15px;
@@ -67,12 +69,19 @@
     font-weight: 550;
 }
 
-.product-details p {
+.product-details span {
     font-size: 0.9rem;
     color: #555;
     margin: 0;
     margin-bottom: 5px;
     text-decoration-line: line-through;
+}
+
+.description{
+    font-size: 0.9rem;
+    color: #555;
+    margin: 0;
+    margin-top: 5px;
 }
 
 .offer{
@@ -138,3 +147,4 @@
         font-size: 0.9rem;
     }
 }
+

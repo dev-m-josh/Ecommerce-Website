@@ -182,6 +182,24 @@ function addNewProduct(req, res) {
     );
 };
 
+//product details
+function getProductDetails(req, res) {
+    let pool = req.pool;
+    let productId = req.params.productId;
+
+    pool.query(
+        `SELECT * FROM products WHERE ProductId = ${productId}`,
+        (err, result) => {
+            if (err) {
+                console.log("Error occured in query:", err);
+                return res.status(500).json({ message: "Error fetching products!"});
+            } else {
+                res.json(result.recordset);
+            };
+        }
+    );
+};
+
 module.exports = {
     getAllActiveProducts,
     getAllProducts,
@@ -189,5 +207,6 @@ module.exports = {
     getLowQuantityProducts,
     deactivateProduct,
     activateProduct,
-    addNewProduct
+    addNewProduct,
+    getProductDetails
 };
