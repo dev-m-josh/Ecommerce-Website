@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import '../Styles/Users.css'
 
 export default function UserRoles() {
     const [users, setUsers] = useState([]);
@@ -154,7 +155,7 @@ export default function UserRoles() {
                                 <td>{user.UserRole}</td>
                                 <td>{user.Email}</td>
                                 <td>
-                                    <button onClick={() => setEditingUser(user)}>
+                                    <button className="update" onClick={() => setEditingUser(user)}>
                                         Update
                                     </button>
                                 </td>

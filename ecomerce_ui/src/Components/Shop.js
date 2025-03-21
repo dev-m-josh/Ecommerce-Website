@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import '../Styles/Shop.css'
 
 export default function Shop() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] =useState(null);
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(2);
+    const [pageSize] = useState(10);
     const [noMoreProducts, setNoMoreProducts] = useState(false);
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function Shop() {
     useEffect(() => {
         if (!token) {
             navigate('/login');
+            return;
         };
 
         const fetchProducts = async () => {
@@ -78,36 +80,30 @@ export default function Shop() {
 
     return (
         <div className="products">
-            <h2>Products List</h2>
+            <h2>All Products</h2>
             {products.length === 0 ? (
                 <div>No products available</div>
             ) : (
-                <div>
+                <div className="products-list">
                     {products.map((product) => (
                         <div className="product" key={product.ProductId}>
+                            <div className="offer">{product.ProductDiscount}</div>
                             {product.ProductImage && (
                                 <img 
                                     src={product.ProductImage} 
                                     alt={product.ProductName} 
-                                    style={{ maxWidth: "200px", height: "auto" }} 
                                 />
                             )}
                             <div className="product-details">
                                 <h4>
                                     {product.ProductName}
                                 </h4>
+                                <h5>
+                                    Ksh {Math.floor(product.Price * (100 - (product.ProductDiscount) / 100)).toLocaleString()}
+                                </h5>
                                 <p>
-                                    {product.Description}
-                                </p>
-                                <h4>
                                     Ksh {product.Price.toLocaleString()}
-                                </h4>
-                                <h5>
-                                    Category: {product.Category}
-                                </h5>
-                                <h5>
-                                    {product.StockQuantity} items left.
-                                </h5>
+                                </p>
                             </div>
                         </div>
                     ))}

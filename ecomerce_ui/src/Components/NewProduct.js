@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from 'react-toastify';
+import '../Styles/NewProduct.css'
 
 export default function NewProduct() {
     const [productName, setProductName] = useState("");
@@ -12,12 +13,47 @@ export default function NewProduct() {
     const [errorMessage, setErrorMessage] = useState("");
     const token = localStorage.getItem("token");
 
+    const handleProductChange = (e) => {
+        let text = e.target.value;
+
+        if (text && text[0] !== text[0].toUpperCase()) {
+            text = text.charAt(0).toUpperCase() + text.slice(1);
+        }
+
+        setProductName(text);
+    };
+
+    const handleDescriptionChange = (e) => {
+        let text = e.target.value;
+
+        if (text && text[0] !== text[0].toUpperCase()) {
+            text = text.charAt(0).toUpperCase() + text.slice(1);
+        }
+
+        setDescription(text);
+    };
+
+    const handleCategoryChange = (e) => {
+        let text = e.target.value;
+
+        if (text && text[0] !== text[0].toUpperCase()) {
+            text = text.charAt(0).toUpperCase() + text.slice(1);
+        }
+
+        setCategory(text);
+    };
+
     const handleAddProduct = async (e) => {
         e.preventDefault();
         setErrorMessage("");
 
         if (!productName || !description || !price || !stock || !category || !productImage) {
             setErrorMessage("All fields are required!");
+            return;
+        }
+
+        if (price <= 0 || stock <= 0) {
+            setErrorMessage("Price and stock quantity must be positive values!");
             return;
         }
 
@@ -55,61 +91,63 @@ export default function NewProduct() {
             
         } catch (error) {
             console.error("Error adding product:", error);
-            setErrorMessage(error.message);
+            setErrorMessage(error.response.data.message || "Error adding product!");
         };
     };
 
     return(
-        <div>
+        <div className="new-product">
             <h3>Add New Product</h3>
             {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
             <form onSubmit={handleAddProduct}>
-                <div>
-                    <label>Product Name</label>
+                <div className="product-details">
+                    <label>Product Name:</label>
                     <input
                         type="text"
                         value={productName}
-                        onChange={(e) => setProductName(e.target.value)}
+                        onChange={handleProductChange}
                         required
                     />
                 </div>
-                <div>
-                    <label>Description</label>
+                <div className="product-details">
+                    <label>Description:</label>
                     <textarea
                         value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        onChange={handleDescriptionChange}
                         required
                     />
                 </div>
-                <div>
-                    <label>Price</label>
+                <div className="product-details">
+                    <label>Price:</label>
                     <input
                         type="number"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
+                        min= '1'
                         required
                     />
                 </div>
-                <div>
-                    <label>Stock Quantity</label>
+                <div className="product-details">
+                    <label>Stock Quantity:</label>
                     <input
                         type="number"
                         value={stock}
                         onChange={(e) => setStock(e.target.value)}
+                        min= '1'
                         required
                     />
                 </div>
-                <div>
-                    <label>Category</label>
+                <div className="product-details">
+                    <label>Category:</label>
                     <input
                         type="text"
                         value={category}
-                        onChange={(e) => setCategory(e.target.value)}
+                        onChange={handleCategoryChange}
                         required
                     />
                 </div>
-                <div>
-                    <label>Product Image URL</label>
+                <div className="product-details">
+                    <label>Product Image URL:</label>
                     <input
                         type="text"
                         value={productImage}
@@ -117,7 +155,7 @@ export default function NewProduct() {
                         required
                     />
                 </div>
-                <div>
+                <div className="new-product-btn">
                     <button type="submit">Add Product</button>
                 </div>
             </form>

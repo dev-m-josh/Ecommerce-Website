@@ -1,14 +1,11 @@
 .App{
-    width: 100%;
+    min-width: fit-content;
     margin-top: 80px;
     margin-bottom: 20px;
     border-radius: 10px;
     box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.1);
-    padding: 15px ;
-    box-sizing: border-box; 
     border: 1px rgb(215, 243, 248) solid;
     background-color: #fff;
-    max-height: 100vh;
 }
 
 @media screen and (max-width: 600px) {
