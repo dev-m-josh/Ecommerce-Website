@@ -7,13 +7,13 @@ import Login from './Components/Login';
 import Account from './Components/Account';
 import Admin from './Components/Admin';
 import Shop from './Components/Shop';
-import Footer from './Components/Footer';
+import Footer from './Components/Footer/Footer';
 import ProductDetails from './Components/ProductDetails';
-import AboutUs from './Components/About';
-import PrivacyPolicy from './Components/PrivacyPolicy';
-import TermsAndConditions from './Components/TermsAndConditions';
-import ContactUs from './Components/Contacts';
-import ReturnPolicy from './Components/ReturnPolicy';
+import AboutUs from './Components/Footer/About';
+import PrivacyPolicy from './Components/Footer/PrivacyPolicy';
+import TermsAndConditions from './Components/Footer/TermsAndConditions';
+import ContactUs from './Components/Footer/Contacts';
+import ReturnPolicy from './Components/Footer/ReturnPolicy';
 
 function App() {
   return (
