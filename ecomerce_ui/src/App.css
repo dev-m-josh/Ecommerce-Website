@@ -113,6 +113,11 @@ footer.home {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.about-content .contact-us{
+  background-color: transparent;
+  padding: 0;
+}
+
 /* Section Titles */
 .about-content h3 {
   font-size: 2rem;
@@ -203,6 +208,11 @@ footer.home {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.privacy-policy-content .contact-us{
+  background-color: transparent;
+  padding: 0;
+}
+
 .privacy-policy-content h3 {
   font-size: 2rem;
   margin: 5px 0;
@@ -279,7 +289,7 @@ footer.home {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.terms-content .privacy-policy{
+.terms-content .privacy-policy,.terms-content .contact-us{
   padding: 0;
   background-color: transparent;
 }
@@ -337,3 +347,95 @@ footer.home {
   }
 }
 
+/* Contact Us Page */
+.contact-us {
+  font-family: Arial, sans-serif;
+  padding: 0px;
+  background-color: #f8f9fa;
+}
+
+.contact-us h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  margin: 10px 0;
+}
+
+.contact-info p {
+  font-size: 1.2rem;
+  color: #555;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.contact-form {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form .form-group {
+  margin-bottom: 15px;
+}
+
+.contact-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.contact-form textarea{
+  width: 95%;
+  max-width: 95%;
+  max-height: 80px;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border: 1px solid #007bff;
+}
+
+.contact-form button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.contact-form button:hover {
+  background-color: #0056b3;
+}
+
+.contact-details {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.contact-details h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+.contact-details p {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 8px 0;
+}
