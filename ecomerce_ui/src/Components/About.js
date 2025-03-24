@@ -36,7 +36,7 @@ export default function AboutUs() {
         <section className="contact-us">
           <h3>Contact Us</h3>
           <p>
-            We’d love to hear from you! If you have any questions or feedback, feel free to reach out to us at <a href="mailto:mutambukijoshua2@gmail.com">support@mystore.com</a>.
+            We’d love to hear from you! If you have any questions or feedback, feel free to reach out to us at <a href="mailto:mutambukijoshua2@gmail.com">support@mystore.com</a>
           </p>
         </section>
       </div>

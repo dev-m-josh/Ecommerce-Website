@@ -10,6 +10,7 @@ import Shop from './Components/Shop';
 import Footer from './Components/Footer';
 import ProductDetails from './Components/ProductDetails';
 import AboutUs from './Components/About';
+import PrivacyPolicy from './Components/PrivacyPolicy';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path='/shop' element={<Shop/>}/>
           <Route path='/product/:productId' element={<ProductDetails />} />
           <Route path='/about' element={<AboutUs />}/>
+          <Route path='/privacy' element={<PrivacyPolicy />}/>
         </Routes>
       </div>
         {<Footer/>}
