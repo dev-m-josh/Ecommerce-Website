@@ -439,3 +439,63 @@ footer.home {
   color: #555;
   margin: 8px 0;
 }
+
+/* General Return Policy Page Styles */
+.return-policy {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.return-policy h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.return-policy h3 {
+  font-size: 1.5rem;
+  color: #007bff;
+  margin: 0px;
+  margin-top: 5px;
+}
+
+.return-policy p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 0px;
+  margin-top: 5px;
+  text-align: left;
+}
+
+.return-policy a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.return-policy a:hover {
+  text-decoration: underline;
+}
+
+/* Small screen responsiveness */
+@media (max-width: 768px) {
+  .return-policy {
+    padding: 20px;
+  }
+
+  .return-policy h1 {
+    font-size: 2rem;
+  }
+
+  .return-policy h3 {
+    font-size: 1.25rem;
+  }
+
+  .return-policy p {
+    font-size: 0.9rem;
+  }
+}
