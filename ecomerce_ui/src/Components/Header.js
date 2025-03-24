@@ -46,9 +46,10 @@ export default function Header() {
 
             if (data.success) {
                 alert(data.message);
+                navigate("/");
             };
 
-            navigate("/")
+
         } catch (error) {
             console.log("Login error:", error);
             if (error.response.data) {
@@ -93,14 +94,6 @@ export default function Header() {
                                     className={`${currentPath === '/categories' ? 'active' : ''}`}
                                 >
                                     Categories
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/about"
-                                    className={`${currentPath === '/about' ? 'active' : ''}`}
-                                >
-                                    About Us
                                 </Link>
                             </li>
                             <li>
@@ -155,7 +148,7 @@ export default function Header() {
                                 {user ? (
                                     <>
                                         <span>
-                                            {currentPath === '/' ? 'Home' : currentPath === '/shop' ? 'Shop' : currentPath === '/categories' ? 'Categories' : currentPath === '/about' ? 'About Us' : 'Home'}
+                                            {currentPath === '/' ? 'Home' : currentPath === '/shop' ? 'Shop' : currentPath === '/categories' ? 'Categories' : 'Home'}
                                         </span>
                                         <Link to="/account">
                                             <FontAwesomeIcon className={`icon ${currentPath === '/account' ? 'user-icon' : ''}`} icon={faUser} />
@@ -209,15 +202,6 @@ export default function Header() {
                                     onClick={toggleMenu}
                                 >
                                     Categories
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/about"
-                                    className={`${currentPath === '/about' ? 'active' : ''}`}
-                                    onClick={toggleMenu}
-                                >
-                                    About Us
                                 </Link>
                             </li>
                             <li>

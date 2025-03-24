@@ -29,7 +29,8 @@ const newProductSchema = joi.object({
   Price: joi.number().precision(2).positive().required(),
   StockQuantity: joi.number().integer().min(0),
   Category: joi.string().max(50).required(),
-  ProductImage: joi.string().max(255)
+  ProductImage: joi.string().max(255),
+  ProductDiscount: joi.number().integer().min(0)
 });
 
 module.exports = { newUserSchema, loginSchema, editUserRoleSchema, newProductSchema };

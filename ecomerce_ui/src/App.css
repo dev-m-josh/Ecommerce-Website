@@ -1,6 +1,7 @@
 .App{
     min-width: fit-content;
-    margin-top: 80px;
+    margin-top: 75px;
+    margin-bottom: 140px;
     border-radius: 10px;
     box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.1);
     border: 1px rgb(215, 243, 248) solid;
@@ -87,3 +88,93 @@ footer.home {
     }
   }
   
+
+  /* Overall About Us Section */
+.about-us {
+  font-family: 'Arial', sans-serif;
+  padding: 5px 20px;
+  background-color: #f8f9fa;
+}
+
+.about-us h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 5px;
+  margin-top: 0;
+}
+
+/* About Content */
+.about-content {
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Titles */
+.about-content h3 {
+  font-size: 2rem;
+  margin-bottom: 0px;
+  color: #007bff;
+  margin-top: 0;
+}
+
+/* Paragraph Styles */
+.about-content p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+  margin: 10px 0;
+  text-align: justify;
+
+}
+
+/* List Styles */
+.about-content ul {
+  padding-left: 20px;
+}
+
+.about-content ul li {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Contact Link */
+.about-content a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.about-content a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .about-us {
+    padding: 20px;
+  }
+
+  .about-content {
+    padding: 20px;
+  }
+
+  .about-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .about-content h3 {
+    font-size: 1.8rem;
+  }
+
+  .about-content p {
+    font-size: 1rem;
+  }
+
+  .about-content ul li {
+    font-size: 1rem;
+  }
+}

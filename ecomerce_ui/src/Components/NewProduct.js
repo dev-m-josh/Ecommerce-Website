@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { toast } from 'react-toastify';
 import '../Styles/NewProduct.css'
 
 export default function NewProduct() {
@@ -9,6 +8,7 @@ export default function NewProduct() {
     const [price, setPrice] = useState("");
     const [stock, setStock] = useState("");
     const [category, setCategory] = useState("");
+    const [discount, setDiscount] = useState("");
     const [productImage, setProductImage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const token = localStorage.getItem("token");
@@ -47,7 +47,7 @@ export default function NewProduct() {
         e.preventDefault();
         setErrorMessage("");
 
-        if (!productName || !description || !price || !stock || !category || !productImage) {
+        if (!productName || !description || !price || !discount || !stock || !category || !productImage) {
             setErrorMessage("All fields are required!");
             return;
         }
@@ -60,10 +60,11 @@ export default function NewProduct() {
         const productDetails = {
             ProductName: productName,
             Description: description,
+            Price: price,
+            StockQuantity: stock,
             Category: category,
             ProductImage: productImage,
-            Price: price,
-            StockQuantity: stock
+            ProductDiscount: discount
         };
 
         try {
@@ -80,14 +81,15 @@ export default function NewProduct() {
             );
 
             const data = response.data;
-            toast.success(data.message);
+            alert(data.message);
 
-            setProductName("");
-            setDescription("");
-            setPrice("");
-            setStock("");
-            setCategory("");
-            setProductImage("");
+            // setProductName("");
+            // setDescription("");
+            // setPrice("");
+            // setStock("");
+            // setCategory("");
+            // setProductImage("");
+            // setDiscount("");
             
         } catch (error) {
             console.error("Error adding product:", error);
@@ -121,9 +123,19 @@ export default function NewProduct() {
                     <label>Price:</label>
                     <input
                         type="number"
+                        value={discount}
+                        onChange={(e) => setDiscount(e.target.value)}
+                        min= '1'
+                        required
+                    />
+                </div>
+                <div className="product-details">
+                    <label>Discount:</label>
+                    <input
+                        type="number"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
-                        min= '1'
+                        min= '0'
                         required
                     />
                 </div>

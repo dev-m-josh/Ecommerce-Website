@@ -63,7 +63,7 @@ export default function ProductDetails() {
     }
 
     return (
-        <div className="product" key={product.ProductId}>
+        <div className="" key={product.ProductId}>
             <div className="offer">-{product.ProductDiscount}%</div>
             {product.ProductImage && (
                 <img 
