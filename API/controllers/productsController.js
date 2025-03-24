@@ -162,14 +162,14 @@ function addNewProduct(req, res) {
     };
 
     pool.query(
-        `INSERT INTO products (ProductName, Description, Price, StockQuantity, Category, ProductImage)
-        VALUES ('${value.ProductName}', '${value.Description}', '${value.Price}', '${value.StockQuantity}', '${value.Category}', '${value.ProductImage}')`, 
+        `INSERT INTO products (ProductName, Description, Price, StockQuantity, Category, ProductImage, ProductDiscount)
+        VALUES ('${value.ProductName}', '${value.Description}', '${value.Price}', '${value.StockQuantity}', '${value.Category}', '${value.ProductImage}', '${value.ProductDiscount}')`, 
         (err, result) =>{
             if (err) {
                 console.log("Error occured in query.", err.message);
                 res.json({
                   success: false,
-                  message: err.message
+                  message: err
                 });
             } else {
                 res.json({
@@ -182,6 +182,24 @@ function addNewProduct(req, res) {
     );
 };
 
+//product details
+function getProductDetails(req, res) {
+    let pool = req.pool;
+    let productId = req.params.productId;
+
+    pool.query(
+        `SELECT * FROM products WHERE ProductId = ${productId}`,
+        (err, result) => {
+            if (err) {
+                console.log("Error occured in query:", err);
+                return res.status(500).json({ message: "Error fetching products!"});
+            } else {
+                res.json(result.recordset);
+            };
+        }
+    );
+};
+
 module.exports = {
     getAllActiveProducts,
     getAllProducts,
@@ -189,5 +207,6 @@ module.exports = {
     getLowQuantityProducts,
     deactivateProduct,
     activateProduct,
-    addNewProduct
+    addNewProduct,
+    getProductDetails
 };

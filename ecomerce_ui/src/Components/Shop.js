@@ -86,8 +86,8 @@ export default function Shop() {
             ) : (
                 <div className="products-list">
                     {products.map((product) => (
-                        <div className="product" key={product.ProductId}>
-                            <div className="offer">{product.ProductDiscount}</div>
+                        <div onClick={() => navigate(`/product/${product.ProductId}`) && console.log(product.ProductId)} className="product" key={product.ProductId}>
+                            <div className="offer">-{product.ProductDiscount}%</div>
                             {product.ProductImage && (
                                 <img 
                                     src={product.ProductImage} 
@@ -99,7 +99,7 @@ export default function Shop() {
                                     {product.ProductName}
                                 </h4>
                                 <h5>
-                                    Ksh {Math.floor(product.Price * (100 - (product.ProductDiscount) / 100)).toLocaleString()}
+                                    Ksh {Math.floor(product.Price * ((100 - product.ProductDiscount) / 100)).toLocaleString()}
                                 </h5>
                                 <p>
                                     Ksh {product.Price.toLocaleString()}

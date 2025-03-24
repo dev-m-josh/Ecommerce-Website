@@ -7,7 +7,7 @@ export default function UserRoles() {
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(10);
+    const [pageSize] = useState(8);
     const [noMoreUsers, setNoMoreUsers] = useState(false);
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
