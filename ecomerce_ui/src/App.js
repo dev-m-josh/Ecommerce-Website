@@ -11,6 +11,7 @@ import Footer from './Components/Footer';
 import ProductDetails from './Components/ProductDetails';
 import AboutUs from './Components/About';
 import PrivacyPolicy from './Components/PrivacyPolicy';
+import TermsAndConditions from './Components/TermsAndConditions';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path='/product/:productId' element={<ProductDetails />} />
           <Route path='/about' element={<AboutUs />}/>
           <Route path='/privacy' element={<PrivacyPolicy />}/>
+          <Route path='/terms' element={<TermsAndConditions />}/>
         </Routes>
       </div>
         {<Footer/>}

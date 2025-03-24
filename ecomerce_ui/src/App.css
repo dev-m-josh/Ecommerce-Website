@@ -255,3 +255,85 @@ footer.home {
     font-size: 1rem;
   }
 }
+
+
+/* Terms and Conditions Page */
+.terms-and-conditions {
+  font-family: 'Arial', sans-serif;
+  padding: 0px;
+  background-color: #f8f9fa;
+}
+
+.terms-and-conditions h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  margin: 10px 0;
+}
+
+.terms-content {
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.terms-content .privacy-policy{
+  padding: 0;
+  background-color: transparent;
+}
+
+.terms-content h3 {
+  font-size: 1.4rem;
+  margin: 5px 0;
+  color: #007bff;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.terms-content p,
+.terms-content ul {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+  margin: 0px;
+  text-align: left;
+}
+
+.terms-content a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.terms-content a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .terms-and-conditions {
+    padding: 20px;
+  }
+
+  .terms-content {
+    padding: 20px;
+  }
+
+  .terms-and-conditions h1 {
+    font-size: 2.5rem;
+  }
+
+  .terms-content h3 {
+    font-size: 1.8rem;
+  }
+
+  .terms-content p {
+    font-size: 1rem;
+  }
+
+  .terms-content ul li {
+    font-size: 1rem;
+  }
+}
+
