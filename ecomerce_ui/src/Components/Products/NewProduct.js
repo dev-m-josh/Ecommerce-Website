@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import '../Styles/NewProduct.css'
+import './NewProduct.css'
 
 export default function NewProduct() {
     const [productName, setProductName] = useState("");

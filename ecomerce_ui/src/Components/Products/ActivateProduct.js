@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from 'axios';
-import '../Styles/Users.css'
+import './Users.css'
 
 export default function ActivateProduct() {
     const [products, setProducts] = useState([]);

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../Styles/Users.css'
+import './Users.css'
 
-export default function CategorySales() {
+export default function LowStock() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] =useState(null);
@@ -22,7 +22,7 @@ export default function CategorySales() {
                     setLoading(true);
     
                     const response = await fetch(
-                        `http://localhost:4500/sales/category?page=${page}&pageSize=${pageSize}`,
+                        `http://localhost:4500/products/low-quantity?page=${page}&pageSize=${pageSize}`,
                         {
                             method: "GET",
                             headers: {
@@ -80,22 +80,22 @@ export default function CategorySales() {
     
     return(
         <div className="users">
-            <h2>Category sales.</h2>
+            <h2>Products on low stock.</h2>
             {products.length === 0 ? (
-                <div>No sales to display.</div>
+                <div>No products are on low stock.</div>
             ) : (
                 <table className="users-table">
                     <thead>
                         <tr>
-                            <th>Category</th>
-                            <th>Total Revenue</th>
+                            <th>Product</th>
+                            <th>Units Left</th>
                         </tr>
                     </thead>
                     <tbody>
                         {products.map((product) => (
-                            <tr key={product.Category}>
-                                <td>{product.Category}</td>
-                                <td>Ksh {product.TotalRevenue}</td>
+                            <tr key={product.ProductId}>
+                                <td>{product.ProductName}</td>
+                                <td>{product.StockQuantity}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -113,7 +113,7 @@ export default function CategorySales() {
                 <button 
                     onClick={handleNextPage} 
                     disabled={noMoreProducts || loading}
-                    className="pagination-button"    
+                    className="pagination-button"
                 >
                     Next
                 </button>

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import UserRoles from "./UserRoles";
-import Users from "./Users";
-import MostSelling from "./MostSelling";
-import LowStock from "./LowStock";
-import ActivateProduct from "./ActivateProduct";
-import NewProduct from "./NewProduct";
-import ProductSales from "./ProductSales";
-import CategorySales from "./CategorySales";
+import UserRoles from "./Users/UserRoles";
+import Users from "./Users/Users";
+import MostSelling from "./Sales/MostSelling";
+import LowStock from "./Products/LowStock";
+import ActivateProduct from "./Products/ActivateProduct";
+import NewProduct from "./Products/NewProduct"
+import ProductSales from "./Sales/ProductSales";
+import CategorySales from "./Sales/CategorySales";
 import '../Styles/Admin.css'
 
 export default function Admin() {

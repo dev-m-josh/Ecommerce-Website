@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../Styles/Users.css'
+import './Users.css'
 
 export default function MostSelling() {
     const [products, setProducts] = useState([]);
