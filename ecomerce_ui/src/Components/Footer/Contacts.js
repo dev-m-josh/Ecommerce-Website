@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Footer.css'
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({

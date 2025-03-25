@@ -2,10 +2,9 @@
 /* Admin Container */
 .admin-container {
     width: fit-content;
-    padding: 20px;
-    background-color: white;
+    padding: 0px;
+    background-color: transparent;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
@@ -51,7 +50,7 @@ h3:hover {
     transform: translate(-50%, -50%);
     background-color: #fff;
     padding: 20px;
-    padding-bottom: 0;
+    padding-bottom: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     z-index: 1000;

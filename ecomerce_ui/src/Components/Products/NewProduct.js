@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import '../Styles/NewProduct.css'
+import './NewProduct.css'
 
 export default function NewProduct() {
     const [productName, setProductName] = useState("");
@@ -47,6 +47,10 @@ export default function NewProduct() {
         e.preventDefault();
         setErrorMessage("");
 
+        const parsedPrice = parseFloat(price);
+        const parsedDiscount = parseFloat(discount);
+        const parsedStock = parseFloat(stock);
+
         if (!productName || !description || !price || !discount || !stock || !category || !productImage) {
             setErrorMessage("All fields are required!");
             return;
@@ -60,11 +64,11 @@ export default function NewProduct() {
         const productDetails = {
             ProductName: productName,
             Description: description,
-            Price: price,
-            StockQuantity: stock,
+            Price: parsedPrice,
+            StockQuantity: parsedStock,
             Category: category,
             ProductImage: productImage,
-            ProductDiscount: discount
+            ProductDiscount: parsedDiscount
         };
 
         try {
@@ -83,13 +87,13 @@ export default function NewProduct() {
             const data = response.data;
             alert(data.message);
 
-            // setProductName("");
-            // setDescription("");
-            // setPrice("");
-            // setStock("");
-            // setCategory("");
-            // setProductImage("");
-            // setDiscount("");
+            setProductName("");
+            setDescription("");
+            setPrice("");
+            setStock("");
+            setCategory("");
+            setProductImage("");
+            setDiscount("");
             
         } catch (error) {
             console.error("Error adding product:", error);
@@ -123,8 +127,8 @@ export default function NewProduct() {
                     <label>Price:</label>
                     <input
                         type="number"
-                        value={discount}
-                        onChange={(e) => setDiscount(e.target.value)}
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
                         min= '1'
                         required
                     />
@@ -133,8 +137,8 @@ export default function NewProduct() {
                     <label>Discount:</label>
                     <input
                         type="number"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
+                        value={discount}
+                        onChange={(e) => setDiscount(e.target.value)}
                         min= '0'
                         required
                     />

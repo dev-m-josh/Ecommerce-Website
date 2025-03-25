@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
+import './Account.css'
 
 export default function Account() {
     const [currentPassword, setCurrentPassword] = useState("");
@@ -11,8 +12,8 @@ export default function Account() {
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [deleteLoading, setDeleteLoading] = useState(false); // for handling account deletion loading
-    const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false); // for controlling password form visibility
+    const [deleteLoading, setDeleteLoading] = useState(false); 
+    const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false); 
     const navigate = useNavigate();
 
     const user = JSON.parse(localStorage.getItem("signedUser"));
@@ -25,9 +26,8 @@ export default function Account() {
     const handleChangePassword = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setErrorMessage(""); // Clear previous error message
+        setErrorMessage(""); 
 
-        // Basic validation for new password
         if (newPassword.length < 6) {
             setErrorMessage("New password must be at least 6 characters long.");
             setLoading(false);
@@ -102,21 +102,32 @@ export default function Account() {
     };
 
     return (
-        <div>
-            <h2>User Details</h2>
-            <p><strong>First Name:</strong> {user.FirstName}</p>
-            <p><strong>Last Name:</strong> {user.LastName}</p>
-            <p><strong>Email:</strong> {user.Email}</p>
-            <p><strong>User Role:</strong> {user.UserRole}</p>
+        <div className="account-container">
+            {!isChangePasswordVisible && (
+                <div className="details">
+                    <h2>User Details</h2>
+                    <p><strong>First Name:</strong> {user.FirstName}</p>
+                    <p><strong>Last Name:</strong> {user.LastName}</p>
+                    <p><strong>Email:</strong> {user.Email}</p>
+                    <p><strong>User Role:</strong> {user.UserRole}</p>
 
-            <button onClick={() => setIsChangePasswordVisible(!isChangePasswordVisible)}>
-                {isChangePasswordVisible ? "Cancel" : "Change Password"}
-            </button>
+                    <div className="action-btns">
+                        <button className="delete-account-btn" onClick={handleDeleteAccount} disabled={deleteLoading}>
+                        {deleteLoading ? "Deleting..." : "Delete Account"}
+                        </button>
+                        <button className="change-password-button" onClick={() => setIsChangePasswordVisible(!isChangePasswordVisible)}>
+                            {isChangePasswordVisible ? "Cancel" : "Change Password"}
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {isChangePasswordVisible && (
-                <form onSubmit={handleChangePassword}>
-                    <div>
+                <form className="password-change-form" onSubmit={handleChangePassword}>
+                    <h3>Update Password</h3>
+                    <div className="password-field">
                         <label htmlFor="currentPassword">Current Password</label>
+                        <div className="inputs">
                         <input
                             id="currentPassword"
                             type={showPassword ? "text" : "password"}
@@ -124,13 +135,15 @@ export default function Account() {
                             onChange={(e) => setCurrentPassword(e.target.value)}
                             required
                         />
-                        <button type="button" onClick={togglePassword} aria-label="Toggle password visibility">
+                        <button className="password-toggle-btn" type="button" onClick={togglePassword} aria-label="Toggle password visibility">
                             <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                         </button>
+                        </div>
                     </div>
 
-                    <div>
+                    <div className="password-field">
                         <label htmlFor="newPassword">New Password</label>
+                        <div className="inputs">
                         <input
                             id="newPassword"
                             type={showNewPassword ? "text" : "password"}
@@ -138,13 +151,21 @@ export default function Account() {
                             onChange={(e) => setNewPassword(e.target.value)}
                             required
                         />
-                        <button type="button" onClick={toggleNewPassword} aria-label="Toggle password visibility">
+                        <button className="password-toggle-btn" type="button" onClick={toggleNewPassword} aria-label="Toggle password visibility">
                             <FontAwesomeIcon icon={showNewPassword ? faEyeSlash : faEye} />
                         </button>
+                        </div>
                     </div>
 
-                    <div>
-                        <button type="submit" disabled={loading}>
+                    <div className="password-action">
+                        <button
+                            className={`change-password-button ${isChangePasswordVisible ? 'cancel' : ''}`}
+                            onClick={() => setIsChangePasswordVisible(!isChangePasswordVisible)}
+                        >
+                            {isChangePasswordVisible ? "Cancel" : "Change Password"}
+                        </button>
+
+                        <button className="password-submit-btn" type="submit" disabled={loading}>
                             {loading ? "Updating..." : "Update Password"}
                         </button>
                     </div>
@@ -152,10 +173,6 @@ export default function Account() {
                     {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
                 </form>
             )}
-
-            <button onClick={handleDeleteAccount} disabled={deleteLoading}>
-                {deleteLoading ? "Deleting..." : "Delete Account"}
-            </button>
         </div>
     );
 }
