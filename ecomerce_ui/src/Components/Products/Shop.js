@@ -39,13 +39,13 @@ export default function Shop() {
 
                 const data = await response.json();
 
-                setProducts(data);
-
                 if (data.length < pageSize) {
                     setNoMoreProducts(true);
                 } else {
                     setNoMoreProducts(false);
                 };
+
+                setProducts(data);
                 
             } catch (err) {
                 console.error("Error fetching products:", err);
@@ -86,7 +86,10 @@ export default function Shop() {
             ) : (
                 <div className="products-list">
                     {products.map((product) => (
-                        <div onClick={() => navigate(`/product/${product.ProductId}`) && console.log(product.ProductId)} className="product" key={product.ProductId}>
+                        <div 
+                            onClick={() => navigate(`/product/${product.ProductId}`)} className="product" 
+                            key={product.ProductId}
+                        >
                             <div className="offer">-{product.ProductDiscount}%</div>
                             {product.ProductImage && (
                                 <img 
