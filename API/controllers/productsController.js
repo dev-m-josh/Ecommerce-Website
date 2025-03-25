@@ -163,7 +163,7 @@ function addNewProduct(req, res) {
 
     pool.query(
         `INSERT INTO products (ProductName, Description, Price, StockQuantity, Category, ProductImage, ProductDiscount)
-        VALUES ('${value.ProductName}', '${value.Description}', '${value.Price}', '${value.StockQuantity}', '${value.Category}', '${value.ProductImage}', '${value.ProductDiscount}')`, 
+        VALUES ('${value.ProductName}', '${value.Description}', ${value.Price}, ${value.StockQuantity}, '${value.Category}', '${value.ProductImage}', ${value.ProductDiscount})`, 
         (err, result) =>{
             if (err) {
                 console.log("Error occured in query.", err.message);
