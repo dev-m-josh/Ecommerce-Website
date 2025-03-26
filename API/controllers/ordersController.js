@@ -1,4 +1,4 @@
-const { newOrderSchema, orderItemSchema } = require("../validators/validators")
+const { newOrderSchema, orderItemSchema, orderDetailsSchema } = require("../validators/validators")
 
 function ordersAndTotalSales(req, res) {
     let pool = req.pool;
@@ -109,11 +109,58 @@ function addItemsToCart(req, res) {
             });
         }
     });
-}
+};
+
+//order item details
+function orderItemsDetails(req, res) {
+    let pool = req.pool;
+    let orderDetails = req.body;
+
+    const {error, value } = orderDetailsSchema.validate(orderDetails, {
+        abortEarly: false
+    });
+
+    if (error) {
+        console.log(error);
+        return res.status(400).json({ errors: error.details });
+    };
+
+    pool.query(
+        `SELECT 
+            oi.OrderItemId,
+            oi.OrderId,
+            oi.ProductId,
+            oi.Quantity,
+            p.ProductName,
+            p.ProductImage,
+            o.ShippingAddress,
+            ROUND(p.Price * (1 - p.ProductDiscount / 100), 0) AS DiscountedPrice
+        FROM 
+            order_items oi
+        JOIN 
+            orders o ON oi.OrderId = o.OrderId
+        JOIN 
+            products p ON oi.ProductId = p.ProductId
+        WHERE 
+            oi.OrderId = '${value.OrderId}' AND o.UserId = ${value.UserId}`, (err, result) => {
+            if (err) {
+                console.error("Error executing query:", err);
+                return res.status(500).json({ success: false, message: "Internal server error." });
+            } else {
+                res.status(200).json({
+                    success: true,
+                    orderDetails: result.recordset
+                })
+            };
+        }
+    );
+};
+
 
 
 module.exports= {
     ordersAndTotalSales,
     newOrder,
-    addItemsToCart
+    addItemsToCart,
+    orderItemsDetails
 };

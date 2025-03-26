@@ -195,12 +195,13 @@ h2 {
 
 .add-btns{
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: start;
     justify-content: start;
     gap: 10px;
 }
 
-.add-btns button{
+.quantity-selection button{
     background-color: #F6B01E;
     border: none;
     outline: none;
@@ -212,14 +213,15 @@ h2 {
     transition: all .3s ease-in-out;
 }
 
-.add-btns button:hover{
+.quantity-selection button:hover{
     background-color: #E07E1B;
 }
 
-.add-btns button:disabled {
-    background-color: #f5f5f5;
-    color: #bbb;
-    cursor: not-allowed;
+.quantity-selection{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 5px;
 }
 
 .add-btn{
@@ -238,6 +240,11 @@ h2 {
 
 .add-btn:hover{
     background-color: #E07E1B;
+}
+
+.add-btn:disabled{
+    cursor: not-allowed;
+    background-color: rgb(214, 214, 214);
 }
 
 .add-btns p{

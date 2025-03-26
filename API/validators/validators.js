@@ -43,7 +43,13 @@ const orderItemSchema = joi.object({
   OrderId: joi.number().integer().required().label('OrderId'),
   ProductId: joi.number().integer().required().label('ProductId'),
   Quantity: joi.number().integer().required().label('Quantity'),
-})
+});
+
+//ORDER AND ORDER ITEMS SCHEMA
+const orderDetailsSchema = joi.object({
+  OrderId: joi.number().integer().required().label('OrderId'),
+  UserId: joi.number().integer().required().label('UserId')
+});
 
 module.exports = { 
   newUserSchema,
@@ -51,5 +57,6 @@ module.exports = {
   editUserRoleSchema,
   newProductSchema,
   newOrderSchema,
-  orderItemSchema
+  orderItemSchema,
+  orderDetailsSchema
 };
