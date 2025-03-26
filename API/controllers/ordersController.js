@@ -1,4 +1,4 @@
-const { newOrderSchema } = require("../validators/validators")
+const { newOrderSchema, orderItemSchema } = require("../validators/validators")
 
 function ordersAndTotalSales(req, res) {
     let pool = req.pool;
@@ -75,10 +75,45 @@ function newOrder(req, res) {
     );
 };
 
+// Add items to the cart
+function addItemsToCart(req, res) {
+    let pool = req.pool;
+    let orderItem = req.body;
 
+    const { error, value } = orderItemSchema.validate(orderItem, { abortEarly: false });
+
+    if (error) {
+        console.log(error);
+        return res.status(400).json({ errors: error.details });
+    }
+
+    const query = `
+        INSERT INTO order_items (OrderId, ProductId, Quantity)
+        OUTPUT Inserted.OrderItemId, Inserted.OrderId, Inserted.ProductId, inserted.Quantity
+        VALUES ('${value.OrderId}', '${value.ProductId}', '${value.Quantity}')
+        `;
+
+    pool.query(query, (err, result) => {
+        if (err) {
+            console.log("Error occurred in query:", err.message);
+            return res.status(500).json({
+                success: false,
+                message: err.message,
+            });
+        } else {
+            const item = result.recordset[0];
+            return res.status(200).json({
+                success: true,
+                message: "Item added to cart successfully.",
+                orderItem: item,
+            });
+        }
+    });
+}
 
 
 module.exports= {
     ordersAndTotalSales,
-    newOrder
+    newOrder,
+    addItemsToCart
 };

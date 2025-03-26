@@ -70,10 +70,10 @@ export default function OpenCart() {
                         type="text"
                         value={address}
                         onChange={handleAddressChange}
-                        placeholder="Enter your address"
+                        placeholder="Enter your address..."
                     />
                 </div>
-                <button type="submit">Opening Cart</button>
+                <button type="submit">Open Cart</button>
             </form>
             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         </div>

@@ -38,4 +38,18 @@ const newOrderSchema = joi.object({
   ShippingAddress: joi.string().max(255).required().label('Shipping Address'),
 });
 
-module.exports = { newUserSchema, loginSchema, editUserRoleSchema, newProductSchema, newOrderSchema };
+//ORDER ITEM SCHEMA
+const orderItemSchema = joi.object({
+  OrderId: joi.number().integer().required().label('OrderId'),
+  ProductId: joi.number().integer().required().label('ProductId'),
+  Quantity: joi.number().integer().required().label('Quantity'),
+})
+
+module.exports = { 
+  newUserSchema,
+  loginSchema,
+  editUserRoleSchema,
+  newProductSchema,
+  newOrderSchema,
+  orderItemSchema
+};
