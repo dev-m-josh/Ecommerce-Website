@@ -1,3 +1,5 @@
+const { newOrderSchema } = require("../validators/validators")
+
 function ordersAndTotalSales(req, res) {
     let pool = req.pool;
     let {start, end} = req.query;
@@ -37,6 +39,40 @@ function ordersAndTotalSales(req, res) {
   );
 };
 
+//new order
+function newOrder(req, res){
+    let pool = req.pool;
+    let newOrderDetails = req.body;
+
+    const {error, value} = newOrderSchema.validate(newOrderDetails, {abortEarly: false});
+
+    if (error) {
+        console.log(error);
+        return res.status(400).json({ errors: error.details });
+    };
+
+    pool.query(
+        `INSERT INTO orders (UserId, ShippingAddress)
+        VALUES ('${value.UserId}', '${value.ShippingAddress}')`,
+        (err, result) =>{
+            if (err) {
+                console.log("Error occured in query.", err.message);
+                res.json({
+                  success: false,
+                  message: err.message
+                });
+            } else {
+                res.json({
+                    success: true,
+                    message: "Cart opened successfully",
+                    newOrderDetails,
+                });
+            };
+        }
+    );
+};
+
 module.exports= {
-    ordersAndTotalSales
+    ordersAndTotalSales,
+    newOrder
 };

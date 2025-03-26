@@ -32,4 +32,10 @@ const newProductSchema = joi.object({
   ProductDiscount: joi.number().integer().min(0)
 });
 
-module.exports = { newUserSchema, loginSchema, editUserRoleSchema, newProductSchema };
+//NEW ORDER SCHEMA
+const newOrderSchema = joi.object({
+  UserId: joi.number().integer().required().label('UserId'),
+  ShippingAddress: joi.string().max(255).required().label('Shipping Address'),
+});
+
+module.exports = { newUserSchema, loginSchema, editUserRoleSchema, newProductSchema, newOrderSchema };
