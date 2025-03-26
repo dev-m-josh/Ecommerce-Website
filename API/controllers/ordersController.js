@@ -39,38 +39,44 @@ function ordersAndTotalSales(req, res) {
   );
 };
 
-//new order
-function newOrder(req, res){
+function newOrder(req, res) {
     let pool = req.pool;
     let newOrderDetails = req.body;
 
-    const {error, value} = newOrderSchema.validate(newOrderDetails, {abortEarly: false});
+    const { error, value } = newOrderSchema.validate(newOrderDetails, { abortEarly: false });
 
     if (error) {
         console.log(error);
         return res.status(400).json({ errors: error.details });
-    };
+    }
 
     pool.query(
         `INSERT INTO orders (UserId, ShippingAddress)
+        OUTPUT Inserted.OrderId, Inserted.UserId, Inserted.ShippingAddress, 
+               Inserted.OrderDate, Inserted.TotalAmount, Inserted.OrderStatus, 
+               Inserted.PaymentStatus, Inserted.CreatedAt, Inserted.UpdatedAt
         VALUES ('${value.UserId}', '${value.ShippingAddress}')`,
-        (err, result) =>{
+        (err, result) => {
             if (err) {
-                console.log("Error occured in query.", err.message);
-                res.json({
-                  success: false,
-                  message: err.message
+                console.log("Error occurred in query.", err.message);
+                return res.status(500).json({
+                    success: false,
+                    message: err.message,
                 });
             } else {
+                const order = result.recordset[0];
                 res.json({
                     success: true,
                     message: "Cart opened successfully",
-                    newOrderDetails,
+                    order: order,
                 });
-            };
+            }
         }
     );
 };
+
+
+
 
 module.exports= {
     ordersAndTotalSales,

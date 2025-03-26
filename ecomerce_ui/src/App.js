@@ -14,6 +14,7 @@ import PrivacyPolicy from './Components/Footer/PrivacyPolicy';
 import TermsAndConditions from './Components/Footer/TermsAndConditions';
 import ContactUs from './Components/Footer/Contacts';
 import ReturnPolicy from './Components/Footer/ReturnPolicy';
+import OpenCart from './Components/Cart/OpenCart';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path='/terms' element={<TermsAndConditions />}/>
           <Route path='/contact' element={<ContactUs />}/>
           <Route path='/returns-policy' element={<ReturnPolicy />}/>
+          <Route path='/cart' element={<OpenCart />}/>
         </Routes>
       </div>
         {<Footer/>}
