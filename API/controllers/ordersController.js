@@ -160,11 +160,40 @@ function orderItemsDetails(req, res) {
     );
 };
 
+//delete item from cart
+function removeItemFromCart(req, res) {
+    let pool = req.pool;
+    let { OrderId, ProductId } = req.body;
+
+    pool.query(
+        `DELETE FROM order_items
+        WHERE OrderId = ${OrderId} AND ProductId = ${ProductId}`, (err, result) =>{
+            if (err) {
+                console.error("Error executing query:", err);
+                return res.status(500).json({ success: false, message: "Internal server error." });
+            };
+
+            if (result.rowsAffected[0] === 0) {
+                return res.status(404).json({ 
+                    success: false,
+                    message: "Item not found in cart."
+                });
+            };
+
+            res.status(200).json({
+                success: true,
+                message: "Item removed successfully from cart."
+            });
+
+        }
+    );
+};
 
 
 module.exports= {
     ordersAndTotalSales,
     newOrder,
     addItemsToCart,
-    orderItemsDetails
+    orderItemsDetails,
+    removeItemFromCart
 };
