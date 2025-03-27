@@ -114,9 +114,9 @@ function addItemsToCart(req, res) {
 //order item details
 function orderItemsDetails(req, res) {
     let pool = req.pool;
-    let orderDetails = req.body;
+    const { OrderId, UserId } = req.query;
 
-    const {error, value } = orderDetailsSchema.validate(orderDetails, {
+    const { error, value } = orderDetailsSchema.validate({ OrderId, UserId }, {
         abortEarly: false
     });
 
@@ -131,8 +131,12 @@ function orderItemsDetails(req, res) {
             oi.OrderId,
             oi.ProductId,
             oi.Quantity,
+            p.Price As OriginalPrice,
+            p.ProductDiscount,
+            p.Category,
             p.ProductName,
             p.ProductImage,
+            p.Description,
             o.ShippingAddress,
             ROUND(p.Price * (1 - p.ProductDiscount / 100), 0) AS DiscountedPrice
         FROM 
