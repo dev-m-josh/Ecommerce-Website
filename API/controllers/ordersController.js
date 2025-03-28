@@ -1,4 +1,4 @@
-const { newOrderSchema, orderItemSchema, orderDetailsSchema } = require("../validators/validators")
+const { newOrderSchema, orderItemSchema, orderDetailsSchema, updateItemQuantitySchema } = require("../validators/validators")
 
 function ordersAndTotalSales(req, res) {
     let pool = req.pool;
@@ -189,11 +189,50 @@ function removeItemFromCart(req, res) {
     );
 };
 
+function updateItemQuantity(req, res) {
+    let pool = req.pool;
+    let { OrderId, ProductId, Quantity } = req.body;
+
+    const { error, value } = updateItemQuantitySchema.validate({ OrderId, ProductId, Quantity }, {
+        abortEarly: false
+    });
+
+    if (error) {
+        console.log(error);
+        return res.status(400).json({ errors: error.details });
+    };
+
+    pool.query(
+        `UPDATE order_items
+        SET Quantity = ${value.Quantity}
+        WHERE ProductId = ${value.ProductId} AND OrderId = ${value.OrderId}`, (err, result) => {
+            if (err) {
+                console.error("Error executing query:", err);
+                return res.status(500).json({ success: false, message: "Internal server error." });
+            }
+
+            if (result.rowsAffected[0] === 0) {
+                return res.status(404).json({ 
+                    success: false,
+                    message: "Item not found in cart."
+                });
+            };
+
+            res.status(200).json({
+                success: true,
+                message: "Item quantity updated successfully."
+            });
+        }
+    );
+};
+
+
 
 module.exports= {
     ordersAndTotalSales,
     newOrder,
     addItemsToCart,
     orderItemsDetails,
-    removeItemFromCart
+    removeItemFromCart,
+    updateItemQuantity
 };

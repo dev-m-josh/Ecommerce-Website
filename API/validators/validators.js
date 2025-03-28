@@ -51,6 +51,13 @@ const orderDetailsSchema = joi.object({
   UserId: joi.number().integer().required().label('UserId')
 });
 
+//UPDATE ITEM QUANTITY SCHEMA
+const updateItemQuantitySchema = joi.object({
+  OrderId: joi.number().integer().required().label('OrderId'),
+  ProductId: joi.number().integer().required().label('ProductId'),
+  Quantity: joi.number().integer().required().label('Quantity')
+});
+
 module.exports = { 
   newUserSchema,
   loginSchema,
@@ -58,5 +65,6 @@ module.exports = {
   newProductSchema,
   newOrderSchema,
   orderItemSchema,
-  orderDetailsSchema
+  orderDetailsSchema,
+  updateItemQuantitySchema
 };
