@@ -82,7 +82,7 @@ export default function OpenCart() {
 
     }, [token, navigate, UserId, pendingCart]);
 
-        const removeItem = async (ProductId) => {
+    const removeItem = async (ProductId) => {
         if (!token) {
             navigate('/login');
         };

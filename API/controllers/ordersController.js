@@ -1,4 +1,4 @@
-const { newOrderSchema, orderItemSchema, orderDetailsSchema, updateItemQuantitySchema } = require("../validators/validators")
+const { newOrderSchema, orderItemSchema, orderDetailsSchema, updateItemQuantitySchema, updateOrderStatusSchema } = require("../validators/validators")
 
 function ordersAndTotalSales(req, res) {
     let pool = req.pool;
@@ -226,7 +226,49 @@ function updateItemQuantity(req, res) {
     );
 };
 
+//update order status
+function updateOrder(req, res) {
+    let pool = req.pool;
+    let { OrderId, UserId, OrderStatus, PaymentStatus } = req.body;
+    
+    const { error, value } = updateOrderStatusSchema.validate({ OrderId, UserId, OrderStatus, PaymentStatus }, {
+        abortEarly: false
+    });
 
+    if (error) {
+        console.log(error);
+        return res.status(400).json({ errors: error.details });
+    };
+
+    pool.query(
+        `UPDATE orders
+         SET OrderStatus = '${value.OrderStatus}',
+             PaymentStatus = '${value.PaymentStatus}',
+             UpdatedAt = GETDATE()
+         WHERE OrderId = ${value.OrderId} AND UserId = ${value.UserId}`, (err, result) => {
+            if (err) {
+                console.error("Error executing query:", err);
+                return res.status(500).json({
+                    success: false,
+                    message: "Internal server error."
+                });
+            }
+
+            if (result.rowsAffected[0] === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Order not found!"
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                message: "Order status updated successfully."
+            });
+        }
+    );
+    
+}
 
 module.exports= {
     ordersAndTotalSales,
@@ -234,5 +276,6 @@ module.exports= {
     addItemsToCart,
     orderItemsDetails,
     removeItemFromCart,
-    updateItemQuantity
+    updateItemQuantity,
+    updateOrder
 };
