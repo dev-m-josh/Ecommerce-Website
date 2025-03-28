@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from "react-router-dom";
 import './App.css';
 import Header from './Components/Header';
-import SignUp from "./Components/Users/SignUp";
+import SignUp from './Components/Users/SignUp';
 import Login from './Components/Users/Login';
 import Account from './Components/Users/Account';
 import Admin from './Components/Admin';
@@ -26,7 +26,7 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path='/account' element={<Account/>}/>
           <Route path='/admin' element={<Admin/>}/>
-          <Route path='/shop' element={<Shop/>}/>
+          <Route path='/' element={<Shop/>}/>
           <Route path='/product/:productId' element={<ProductDetails />} />
           <Route path='/about' element={<AboutUs />}/>
           <Route path='/privacy' element={<PrivacyPolicy />}/>
@@ -39,6 +39,6 @@ function App() {
         {<Footer/>}
     </>
   );
-}
+};
 
 export default App;

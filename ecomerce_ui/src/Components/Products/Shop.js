@@ -13,10 +13,6 @@ export default function Shop() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        };
 
         const fetchProducts = async () => {
             try {
@@ -80,7 +76,6 @@ export default function Shop() {
 
     return (
         <div className="products">
-            <h2>All Products</h2>
             {products.length === 0 ? (
                 <div>No products available</div>
             ) : (

@@ -11,9 +11,21 @@ export default function OpenCart() {
     const [totalCost, setTotalCost] = useState(0);
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("signedUser"));
-    const UserId = user.UserId;
+    const UserId = user ? user.UserId : null; 
     const navigate = useNavigate();
     const [pendingCart, setPendingCart] = useState(null);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("signedUser"));
+
+        if (!token || !user || !user.UserId) {
+            navigate('/login');
+            return;
+        }
+        
+    }, [navigate]);
+
 
     useEffect(() => {
         const storedCart = JSON.parse(localStorage.getItem("openedCart"));
@@ -21,7 +33,7 @@ export default function OpenCart() {
     }, []);
 
     useEffect(() => {
-        if (!token) {
+        if (!token || !user || !UserId) {
             navigate('/login');
         }
 
@@ -49,7 +61,8 @@ export default function OpenCart() {
                     );
 
                     if (!response.ok) {
-                        throw new Error("Failed to fetch order details.");
+                        const error = await response.text();
+                        throw new Error(error || "Failed to fetch order details.");
                     }
 
                     const data = await response.json();
@@ -67,7 +80,36 @@ export default function OpenCart() {
             fetchOrderDetails();
         }
 
-    }, [token, navigate, UserId, pendingCart]); 
+    }, [token, navigate, UserId, pendingCart]);
+
+        const removeItem = async (ProductId) => {
+        if (!token) {
+            navigate('/login');
+        };
+
+        try {
+            const response = await axios.delete(
+                `http://localhost:4500/orders/order-item`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    data: { OrderId: pendingCart.OrderId, ProductId }
+                }
+            );
+
+            if (response.status === 200) {
+                const updatedOrders = orders.filter(order => order.ProductId !== ProductId);
+                setOrders(updatedOrders);
+                calculateTotalCost(updatedOrders);
+            };
+
+        } catch (error) {
+            console.error("Error removing item from cart:", error);
+            setErrorMessage("There was an error removing the item from the cart.");
+        }
+    };
 
     const calculateTotalCost = (orders) => {
         const total = orders.reduce((acc, order) => {
@@ -121,7 +163,7 @@ export default function OpenCart() {
 
             localStorage.setItem("openedCart", JSON.stringify(openedCart));
             setPendingCart(openedCart);
-            navigate("/shop");
+            navigate("/");
 
             if (response.status === 200) {
                 alert(data.message);
@@ -161,72 +203,77 @@ export default function OpenCart() {
                     {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
                 </div>
             ) : (
-                <div className="order-details">
-                    <div className="selected-products">
-                        <h2>Cart({orders.length})</h2>
-                        {orders.map((order) => (
-                            <div className="order-product" key={order.ProductId}>
-                                <div className="order-product-details">
-                                    <div>
-                                        <img src={order.ProductImage} alt={order.ProductName} />
-                                        <div className="description">
-                                            <p>{order.Description}</p>
-                                            <p>
-                                                <strong>category:</strong>
-                                                {order.Category}
-                                            </p>
+                <>
+                    {orders.length === 0 ? (
+                        <div className="no-cart-items">
+                            <img src="https://www.jumia.co.ke/assets_he/images/cart.668e6453.svg" alt="cart" />
+                            <h4>Your cart is empty!</h4>
+                            <p>Browse our products and discover our best deals!</p>
+                            <button onClick={() => navigate('/')}>Start Shopping</button>
+                        </div>
+                    ) : (
+                        <div className="order-details">
+                            <div className="selected-products">
+                                <h2>Cart({orders.length})</h2>
+                                {orders.map((order) => (
+                                    <div className="order-product" key={order.ProductId}>
+                                        <div className="order-product-details">
+                                            <div>
+                                                <img src={order.ProductImage} alt={order.ProductName} />
+                                                <div className="description">
+                                                    <p>{order.Description}</p>
+                                                    <p>
+                                                        <strong>Category:</strong>
+                                                        {order.Category}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <button onClick={() => removeItem(order.ProductId)}>Remove</button>
+                                        </div>
+                                        <div className="order-totals">
+                                            <h3>Ksh {order.DiscountedPrice.toLocaleString()}</h3>
+                                            <div className="discount">
+                                                <p>Ksh {order.OriginalPrice.toLocaleString()}</p>
+                                                <span>-{order.ProductDiscount}%</span>
+                                            </div>
+                                            <div className="quantity-selection">
+                                                <button>-</button>
+                                                <span>{order.Quantity}</span>
+                                                <button>+</button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <button>
-                                        Remove
-                                    </button>
-                                </div>
-                                <div className="order-totals">
-                                    <h3>
-                                        Ksh {order.DiscountedPrice.toLocaleString()}
-                                    </h3>
-                                    <div className="discount">
-                                        <p>
-                                            Ksh {order.OriginalPrice.toLocaleString()}
-                                        </p>
-                                        <span>-{order.ProductDiscount}%</span>
-                                    </div>
-                                    <div className="quantity-selection">
-                                        <button>-</button>
-                                        <span>{order.Quantity}</span>
-                                        <button>+</button>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                    <div className="cart-summary">
-                        <h3>CART SUMMARY</h3>
-                        <hr />
-                        <div className="cart-totals">
-                            <p>Item's total ({orders.length})</p>
-                            <span>Ksh {totalCost.toLocaleString()}</span>
+                            <div className="cart-summary">
+                                <h3>CART SUMMARY</h3>
+                                <hr />
+                                <div className="cart-totals">
+                                    <p>Item's total ({orders.length})</p>
+                                    <span>Ksh {totalCost.toLocaleString()}</span>
+                                </div>
+                                <hr />
+                                <div className="cart-totals">
+                                    <h4>Subtotal</h4>
+                                    <h2>Ksh {totalCost.toLocaleString()}</h2>
+                                </div>
+                                <hr />
+                                <button
+                                    onClick={() => {
+                                        localStorage.removeItem("openedCart");
+                                        setPendingCart(null);
+                                        alert("Order confirmed!");
+                                        navigate('/cart');
+                                    }}
+                                >
+                                    Confirm Order
+                                </button>
+                            </div>
                         </div>
-                        <hr />
-                        <div className="cart-totals">
-                            <h4>Subtotal</h4>
-                            <h2>Ksh {totalCost.toLocaleString()}</h2>
-                        </div>
-                        <hr />
-                        <button
-                            onClick={() => {
-                                localStorage.removeItem("openedCart")
-                                setPendingCart(null);  // Update state to remove cart
-                                alert("Order confirmed!")
-                                navigate('/cart')
-                            }}
-                        >
-                            Confirm Order
-                        </button>
-
-                    </div>
-                </div>
+                    )}
+                </>
             )}
         </div>
     );
+    
 }

@@ -82,14 +82,6 @@ export default function Header() {
                             </li>
                             <li>
                                 <Link
-                                    to="/shop"
-                                    className={`${currentPath === '/shop' ? 'active' : ''}`}
-                                >
-                                    Shop
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
                                     to="/categories"
                                     className={`${currentPath === '/categories' ? 'active' : ''}`}
                                 >
@@ -148,7 +140,7 @@ export default function Header() {
                                 {user ? (
                                     <>
                                         <span>
-                                            {currentPath === '/' ? 'Home' : currentPath === '/shop' ? 'Shop' : currentPath === '/categories' ? 'Categories' : 'Home'}
+                                            { currentPath === '/' ? 'Shop' : currentPath === '/categories' ? 'Categories' : '/'}
                                         </span>
                                         <Link to="/account">
                                             <FontAwesomeIcon className={`icon ${currentPath === '/account' ? 'user-icon' : ''}`} icon={faUser} />
@@ -180,19 +172,10 @@ export default function Header() {
                             <li>
                                 <Link
                                     to="/"
-                                    className={`${currentPath === '/' ? 'active' : ''}`}
-                                    onClick={toggleMenu}
-                                >
-                                    Home
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/shop"
                                     className={`${currentPath === '/shop' ? 'active' : ''}`}
                                     onClick={toggleMenu}
                                 >
-                                    Shop
+                                    Home
                                 </Link>
                             </li>
                             <li>
