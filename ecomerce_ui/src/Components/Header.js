@@ -12,6 +12,55 @@ export default function Header() {
     const user = JSON.parse(localStorage.getItem("signedUser"));
     const token = localStorage.getItem("token");
     const [errorMessage, setErrorMessage] = useState("");
+    const UserId = user ? user.UserId : null; 
+    const [orders, setOrders] = useState([]);
+    const pendingCart = JSON.parse(localStorage.getItem("openedCart"));
+    
+    useEffect(() => {
+        if (!token || !user || !UserId) {
+            navigate('/login');
+        }
+    
+        if (pendingCart) {
+            const fetchOrderDetails = async () => {
+                const details = {
+                    OrderId: pendingCart.OrderId,
+                    UserId: UserId
+                };
+
+                try {
+
+                    const params = new URLSearchParams(details).toString();
+
+                    const response = await fetch(
+                        `http://localhost:4500/orders/order-details?${params}`,
+                        {
+                            method: "GET",
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "application/json",
+                            }
+                        }
+                    );
+
+                    if (!response.ok) {
+                        const error = await response.text();
+                        throw new Error(error || "Failed to fetch order details.");
+                    }
+
+                    const data = await response.json();
+                    setOrders(data.orderDetails);    
+                } catch (error) {
+                    console.error("Error fetching order details:", error);
+                    setErrorMessage("There was an error fetching the order details.");
+                }
+            };
+
+            fetchOrderDetails();
+        }
+    
+    }, [token, navigate, UserId, pendingCart, user]);
+    
 
     const toggleMenu = useCallback(() => {
         setIsMenuOpen(prevState => !prevState);
@@ -109,7 +158,7 @@ export default function Header() {
                     <div className="user-actions">
                         <Link className="cart" to="/cart">
                             <FontAwesomeIcon className="icon " icon={faShoppingBasket} />
-                            <div className="cart-number">{0}</div>
+                            <div className="cart-number">{orders.length}</div>
                         </Link>
                         {user ? (
                             <>

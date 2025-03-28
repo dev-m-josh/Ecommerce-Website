@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import '../Products/Shop.css';
 
 export default function OpenCart() {
@@ -25,7 +27,6 @@ export default function OpenCart() {
         }
         
     }, [navigate]);
-
 
     useEffect(() => {
         const storedCart = JSON.parse(localStorage.getItem("openedCart"));
@@ -81,6 +82,53 @@ export default function OpenCart() {
         }
 
     }, [token, navigate, UserId, pendingCart]);
+
+    const updateItemQuantity = async (ProductId, newQuantity) => {
+        if (newQuantity <= 0) {
+            setErrorMessage("Quantity must be greater than zero.");
+            return;
+        }
+
+        if (!token || !UserId || !pendingCart) {
+            navigate('/login');
+            return;
+        }
+
+        const updatedItem = {
+            OrderId: pendingCart.OrderId,
+            ProductId,
+            Quantity: newQuantity,
+        };
+
+        try {
+            const response = await axios.put(
+                "http://localhost:4500/orders/order-item/quantity",
+                updatedItem,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                const updatedOrders = orders.map((order) =>
+                    order.ProductId === ProductId
+                        ? { ...order, Quantity: newQuantity }
+                        : order
+                );
+                setOrders(updatedOrders);
+                calculateTotalCost(updatedOrders);
+                toast.success("Item quantity updated successfully!");
+            } else {
+                setErrorMessage("Failed to update item quantity.");
+            }
+        } catch (error) {
+            console.error("Error updating item quantity:", error);
+            setErrorMessage("There was an error updating the quantity.");
+        }
+    };
 
     const removeItem = async (ProductId) => {
         if (!token) {
@@ -166,7 +214,7 @@ export default function OpenCart() {
             navigate("/");
 
             if (response.status === 200) {
-                alert(data.message);
+                toast.success(data.message);
             } else {
                 setErrorMessage("There was an issue with opening the cart.");
             }
@@ -175,6 +223,40 @@ export default function OpenCart() {
             console.error("Error opening cart:", error);
         }
     };
+
+    const updateOrder = async () => {
+        if (!token || !user || !UserId) {
+            navigate('/login');
+        };
+
+        const orderUpdateDetails = {
+            OrderId: pendingCart.OrderId,
+            UserId: UserId,
+            OrderStatus: 'Delivered',
+            PaymentStatus: 'Paid'
+        };
+
+        if (!pendingCart) {
+            console.error("No pending cart available to update.");
+            return;
+        }
+
+        try {
+            const response = await axios.put(
+                `http://localhost:4500/orders`, 
+                orderUpdateDetails,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error updating order:', error.response ? error.response.data : error.message);
+        }
+    }
 
     if (loading) {
         return <div className="loading">Loading...</div>;
@@ -237,9 +319,9 @@ export default function OpenCart() {
                                                 <span>-{order.ProductDiscount}%</span>
                                             </div>
                                             <div className="quantity-selection">
-                                                <button>-</button>
+                                                <button disabled={order.Quantity === 1} onClick={() => updateItemQuantity(order.ProductId, order.Quantity - 1)}>-</button>
                                                 <span>{order.Quantity}</span>
-                                                <button>+</button>
+                                                <button disabled={order.Quantity === 10} onClick={() => updateItemQuantity(order.ProductId, order.Quantity + 1)}>+</button>
                                             </div>
                                         </div>
                                     </div>
@@ -264,6 +346,7 @@ export default function OpenCart() {
                                         setPendingCart(null);
                                         alert("Order confirmed!");
                                         navigate('/cart');
+                                        updateOrder();
                                     }}
                                 >
                                     Confirm Order
@@ -275,5 +358,4 @@ export default function OpenCart() {
             )}
         </div>
     );
-    
 }
