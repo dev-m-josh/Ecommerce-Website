@@ -48,7 +48,6 @@ const orderItemSchema = joi.object({
 //ORDER AND ORDER ITEMS SCHEMA
 const orderDetailsSchema = joi.object({
   OrderId: joi.number().integer().required().label('OrderId'),
-  UserId: joi.number().integer().required().label('UserId')
 });
 
 //UPDATE ITEM QUANTITY SCHEMA

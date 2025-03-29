@@ -12,20 +12,15 @@ export default function Header() {
     const user = JSON.parse(localStorage.getItem("signedUser"));
     const token = localStorage.getItem("token");
     const [errorMessage, setErrorMessage] = useState("");
-    const UserId = user ? user.UserId : null; 
     const [orders, setOrders] = useState([]);
     const pendingCart = JSON.parse(localStorage.getItem("openedCart"));
     
     useEffect(() => {
-        if (!token || !user || !UserId) {
-            navigate('/login');
-        }
     
         if (pendingCart) {
             const fetchOrderDetails = async () => {
                 const details = {
                     OrderId: pendingCart.OrderId,
-                    UserId: UserId
                 };
 
                 try {
@@ -37,7 +32,6 @@ export default function Header() {
                         {
                             method: "GET",
                             headers: {
-                                Authorization: `Bearer ${token}`,
                                 "Content-Type": "application/json",
                             }
                         }
@@ -57,11 +51,11 @@ export default function Header() {
             };
 
             fetchOrderDetails();
-        }
+        };
     
-    }, [token, navigate, UserId, pendingCart, user]);
-    
+    }, [pendingCart]);
 
+    
     const toggleMenu = useCallback(() => {
         setIsMenuOpen(prevState => !prevState);
     }, []);
@@ -76,7 +70,6 @@ export default function Header() {
 
     // Handle logout
     const handleLogout = async (e) => {
-        // Clear user data from localStorage
         localStorage.removeItem("token");
         localStorage.removeItem("signedUser");
         setIsAdmin(false);

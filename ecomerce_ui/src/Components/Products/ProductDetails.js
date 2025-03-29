@@ -12,7 +12,7 @@ export default function ProductDetails() {
     const navigate = useNavigate();
     const { productId } = useParams();
     const order = JSON.parse(localStorage.getItem("openedCart"));
-    const orderId = order.OrderId;
+    const orderId = order ? order.OrderId : null;
     const [orders, setOrders] = useState([]);
     const user = JSON.parse(localStorage.getItem("signedUser"));
     const UserId = user ? user.UserId : null; 
@@ -24,15 +24,11 @@ export default function ProductDetails() {
     }, []);
 
     useEffect(() => {
-        if (!token || !user || !UserId) {
-            navigate('/login');
-        }
 
         if (pendingCart) {
             const fetchOrderDetails = async () => {
                 const details = {
                     OrderId: pendingCart.OrderId,
-                    UserId: UserId
                 };
 
                 try {
@@ -93,11 +89,10 @@ export default function ProductDetails() {
 
             try {
                 const response = await axios.put(
-                    `http://localhost:4500/orders/order-item/quantity`,
+                    `http://localhost:4500/order-item/quantity`,
                     updatedItem,
                     {
                         headers: {
-                            "Authorization": `Bearer ${token}`,
                             "Content-Type": "application/json",
                         }
                     }
@@ -124,11 +119,10 @@ export default function ProductDetails() {
     
             try {
                 const response = await axios.post(
-                    "http://localhost:4500/orders/order-item",
+                    "http://localhost:4500/order-item",
                     newOrderItem,
                     {
                         headers: {
-                            "Authorization": `Bearer ${token}`,
                             "Content-Type": "application/json",
                         }
                     }
@@ -146,20 +140,15 @@ export default function ProductDetails() {
     
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
 
         const fetchProduct = async () => {
             try {
                 setLoading(true);
                 const response = await fetch(
-                    `http://localhost:4500/products/product/${productId}`,
+                    `http://localhost:4500/product/${productId}`,
                     {
                         method: "GET",
                         headers: {
-                            Authorization: `Bearer ${token}`,
                             "Content-Type": "application/json",
                         }
                     }
@@ -181,7 +170,7 @@ export default function ProductDetails() {
         };
 
         fetchProduct();
-    }, [productId, token, navigate]);
+    }, [productId, navigate]);
 
     const handleIncreaseQuantity = () => {
         if (quantity < product.StockQuantity) {
@@ -231,10 +220,6 @@ export default function ProductDetails() {
 
                 <div className="add-btns">
                     <div className="quantity-selection">
-                        {quantity > 0 && !orderId && (
-                            <p style={{ color: "red" }}>You need to have an active cart to add items.</p>
-                        )}
-
                         <button disabled={product.StockQuantity <= 0 || quantity === 0} onClick={handleDecreaseQuantity}>
                             -
                         </button>

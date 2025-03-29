@@ -114,9 +114,9 @@ function addItemsToCart(req, res) {
 //order item details
 function orderItemsDetails(req, res) {
     let pool = req.pool;
-    const { OrderId, UserId } = req.query;
+    const { OrderId } = req.query;
 
-    const { error, value } = orderDetailsSchema.validate({ OrderId, UserId }, {
+    const { error, value } = orderDetailsSchema.validate({ OrderId }, {
         abortEarly: false
     });
 
@@ -146,7 +146,7 @@ function orderItemsDetails(req, res) {
         JOIN 
             products p ON oi.ProductId = p.ProductId
         WHERE 
-            oi.OrderId = '${value.OrderId}' AND o.UserId = ${value.UserId}`, (err, result) => {
+            oi.OrderId = '${value.OrderId}'`, (err, result) => {
             if (err) {
                 console.error("Error executing query:", err);
                 return res.status(500).json({ success: false, message: "Internal server error." });

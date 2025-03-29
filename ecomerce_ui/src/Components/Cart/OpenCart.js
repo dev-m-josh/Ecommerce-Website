@@ -18,31 +18,16 @@ export default function OpenCart() {
     const [pendingCart, setPendingCart] = useState(null);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        const user = JSON.parse(localStorage.getItem("signedUser"));
-
-        if (!token || !user || !user.UserId) {
-            navigate('/login');
-            return;
-        }
-        
-    }, [navigate]);
-
-    useEffect(() => {
         const storedCart = JSON.parse(localStorage.getItem("openedCart"));
         setPendingCart(storedCart);
     }, []);
 
     useEffect(() => {
-        if (!token || !user || !UserId) {
-            navigate('/login');
-        }
 
         if (pendingCart) {
             const fetchOrderDetails = async () => {
                 const details = {
                     OrderId: pendingCart.OrderId,
-                    UserId: UserId
                 };
 
                 try {
@@ -55,7 +40,6 @@ export default function OpenCart() {
                         {
                             method: "GET",
                             headers: {
-                                Authorization: `Bearer ${token}`,
                                 "Content-Type": "application/json",
                             }
                         }
@@ -81,7 +65,7 @@ export default function OpenCart() {
             fetchOrderDetails();
         }
 
-    }, [token, navigate, UserId, pendingCart]);
+    }, [token, navigate, pendingCart]);
 
     const updateItemQuantity = async (ProductId, newQuantity) => {
         if (newQuantity <= 0) {
@@ -89,7 +73,7 @@ export default function OpenCart() {
             return;
         }
 
-        if (!token || !UserId || !pendingCart) {
+        if (!pendingCart) {
             navigate('/login');
             return;
         }
@@ -102,11 +86,10 @@ export default function OpenCart() {
 
         try {
             const response = await axios.put(
-                "http://localhost:4500/orders/order-item/quantity",
+                "http://localhost:4500/order-item/quantity",
                 updatedItem,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 }
@@ -131,16 +114,12 @@ export default function OpenCart() {
     };
 
     const removeItem = async (ProductId) => {
-        if (!token) {
-            navigate('/login');
-        };
 
         try {
             const response = await axios.delete(
-                `http://localhost:4500/orders/order-item`,
+                `http://localhost:4500/order-item`,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                     data: { OrderId: pendingCart.OrderId, ProductId }
@@ -252,7 +231,19 @@ export default function OpenCart() {
                     }
                 }
             );
-            console.log(response.data);
+
+            if (response.status === 200) {
+                console.log(response.data);
+                localStorage.removeItem("openedCart");
+                setPendingCart(null);
+                setOrders([]);
+                navigate('/cart');
+                // alert("Order confirmed!");
+            } else {
+                setErrorMessage("Failed to confirm order. Please try again.");
+                navigate("/login");
+            }
+
         } catch (error) {
             console.error('Error updating order:', error.response ? error.response.data : error.message);
         }
@@ -270,7 +261,7 @@ export default function OpenCart() {
         <div className='cart'>
             {!pendingCart ? (
                 <div className='new-cart'>
-                    <h3>Please enter your address to open a new cart.</h3>
+                    <h3>Please enter your address to open a new cart and add items.</h3>
                     <form onSubmit={handleOpenCart}>
                         <div>
                             <input
@@ -297,35 +288,45 @@ export default function OpenCart() {
                         <div className="order-details">
                             <div className="selected-products">
                                 <h2>Cart({orders.length})</h2>
+                                <hr/>
                                 {orders.map((order) => (
-                                    <div className="order-product" key={order.ProductId}>
-                                        <div className="order-product-details">
-                                            <div>
-                                                <img src={order.ProductImage} alt={order.ProductName} />
-                                                <div className="description">
-                                                    <p>{order.Description}</p>
-                                                    <p>
-                                                        <strong>Category:</strong>
-                                                        {order.Category}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <button onClick={() => removeItem(order.ProductId)}>Remove</button>
-                                        </div>
-                                        <div className="order-totals">
-                                            <h3>Ksh {order.DiscountedPrice.toLocaleString()}</h3>
-                                            <div className="discount">
-                                                <p>Ksh {order.OriginalPrice.toLocaleString()}</p>
-                                                <span>-{order.ProductDiscount}%</span>
-                                            </div>
-                                            <div className="quantity-selection">
-                                                <button disabled={order.Quantity === 1} onClick={() => updateItemQuantity(order.ProductId, order.Quantity - 1)}>-</button>
-                                                <span>{order.Quantity}</span>
-                                                <button disabled={order.Quantity === 10} onClick={() => updateItemQuantity(order.ProductId, order.Quantity + 1)}>+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+    <div className="order-product" key={order.ProductId}>
+        <div className="product-sections">
+        <div className="order-product-details">
+            <div className="doe">
+                <img src={order.ProductImage} alt={order.ProductName} />
+                <div className="description">
+                    <p>{order.Description}</p>
+                    <label>
+                        In Stock
+                    </label>
+                    <span>
+                        <strong>Category: </strong>
+                        {order.Category}
+                    </span>
+                </div>
+            </div>
+            <button className="remove" onClick={() => removeItem(order.ProductId)}>Remove</button>
+        </div>
+        <div className="order-totals">
+            <h3>Ksh {order.DiscountedPrice.toLocaleString()}</h3>
+            <div className="discount">
+                <p>Ksh {order.OriginalPrice.toLocaleString()}</p>
+                <span>-{order.ProductDiscount}%</span>
+            </div>
+            <div className="quantity-selection">
+                <button disabled={order.Quantity === 1} onClick={() => updateItemQuantity(order.ProductId, order.Quantity - 1)}>-</button>
+                <span>{order.Quantity}</span>
+                <button disabled={order.Quantity === 10} onClick={() => updateItemQuantity(order.ProductId, order.Quantity + 1)}>+</button>
+            </div>
+        </div>
+        </div>
+        <hr/>
+    </div>
+    
+))}
+
+
                             </div>
                             <div className="cart-summary">
                                 <h3>CART SUMMARY</h3>
@@ -342,10 +343,6 @@ export default function OpenCart() {
                                 <hr />
                                 <button
                                     onClick={() => {
-                                        localStorage.removeItem("openedCart");
-                                        setPendingCart(null);
-                                        alert("Order confirmed!");
-                                        navigate('/cart');
                                         updateOrder();
                                     }}
                                 >
