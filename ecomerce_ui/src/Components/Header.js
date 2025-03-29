@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingBasket, faSearch, faUser, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingBasket, faSearch, faUser, faBars, faCaretDown  } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import "../Styles/Header.css";
 import axios from 'axios';
 
-export default function Header() {
+export default function Header({ showOptions, setShowOptions }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const navigate = useNavigate();
@@ -14,9 +14,8 @@ export default function Header() {
     const [errorMessage, setErrorMessage] = useState("");
     const [orders, setOrders] = useState([]);
     const pendingCart = JSON.parse(localStorage.getItem("openedCart"));
-    
+
     useEffect(() => {
-    
         if (pendingCart) {
             const fetchOrderDetails = async () => {
                 const details = {
@@ -24,9 +23,7 @@ export default function Header() {
                 };
 
                 try {
-
                     const params = new URLSearchParams(details).toString();
-
                     const response = await fetch(
                         `http://localhost:4500/orders/order-details?${params}`,
                         {
@@ -52,10 +49,8 @@ export default function Header() {
 
             fetchOrderDetails();
         };
-    
     }, [pendingCart]);
 
-    
     const toggleMenu = useCallback(() => {
         setIsMenuOpen(prevState => !prevState);
     }, []);
@@ -90,8 +85,6 @@ export default function Header() {
                 alert(data.message);
                 navigate("/");
             };
-
-
         } catch (error) {
             console.log("Login error:", error);
             if (error.response.data) {
@@ -99,6 +92,11 @@ export default function Header() {
                 alert(errorMessage);
             } 
         }
+    };
+
+    // Toggle the display of options
+    const toggleOptions = () => {
+        setShowOptions(prev => !prev);
     };
 
     return (
@@ -153,20 +151,26 @@ export default function Header() {
                             <FontAwesomeIcon className="icon " icon={faShoppingBasket} />
                             <div className="cart-number">{orders.length}</div>
                         </Link>
-                        {user ? (
-                            <>
-                                <Link to="/account">
-                                    <FontAwesomeIcon className="icon user-icon" icon={faUser} />
-                                </Link>
-                                <button onClick={handleLogout} className='logout'>LogOut</button>
-                            </>
-                        ) : (
-                            <>
-                                <Link className='user-btns' to="/login">Login</Link>
-                                <Link className='user-btns' to="/register">Sign Up</Link>
-                            </>
-                        )}
                     </div>
+                    <h5
+                        onClick={toggleOptions}>Options <FontAwesomeIcon className="icon user-icon" icon={faCaretDown} />
+                    </h5>
+                    {showOptions && (
+                        <div className={`options-dropdown ${showOptions ? 'show' : ''}`}>
+                            {user ? (
+                                <>
+                                    <Link onClick={() => setShowOptions(false)} to="/account">View Profile</Link>
+                                    <span onClick={() => { setShowOptions(false); handleLogout(); }}>Logout</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Link onClick={() => setShowOptions(false)} className='user-btns' to="/login">Login</Link>
+                                    <Link onClick={() => setShowOptions(false)} className='user-btns' to="/register">Sign Up</Link>
+                                </>
+                            )}
+                        </div>
+                    )}
+
                 </div>
 
                 {/* Smaller Screen Layout */}

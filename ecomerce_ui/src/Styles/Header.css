@@ -235,51 +235,6 @@ a.active {
     font-weight: bold;
 }
 
-.user-btns, .logout{
-    background-color: rgb(10, 190, 10);
-    padding: 6px 10px;
-    font-size: 17px;
-    border-radius: 5px;
-    transition: all .3s ease-in-out;
-}
-
-.user-btns:hover{
-    background-color: #1fa005;
-}
-
-.logout{
-    background-color: rgb(255, 0, 0);
-    cursor: pointer;
-    outline: none;
-    border: 0;
-    font-weight: bold;
-    color: #333;
-    transition: all .3s ease-in-out;
-    margin-left: 10px;
-}
-
-.logout:hover{
-    background-color: rgb(230, 3, 3);
-}
-
-.user-icon{
-    margin-left: 15px;
-    margin-right: 5px;
-    font-size: 22px;
-    color: blue;
-    background-color: whitesmoke;
-    border-radius: 50%;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.user-icon:hover{
-    color: blue;
-}
-
-
 /* Mobile breakpoints */
 @media screen and (max-width: 768px) {
     .larger-screen {
@@ -334,3 +289,60 @@ a.active {
         margin-top: 20px;
     }
 }
+
+.options-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: 200px;
+    display: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+}
+
+.options-dropdown.show {
+    display: block;
+}
+
+.options-dropdown a, .options-dropdown span {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.options-dropdown a:hover, .options-dropdown span:hover {
+    background-color: #f0f0f0;
+    color: #007bff;
+}
+
+h5 {
+    cursor: pointer;
+    margin: 0;
+}
+
+.options-dropdown {
+    transition: all 0.3s ease-in-out;
+}
+
+
+.close {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    z-index: 1;
+    display: none;
+  }
+  
+  .close.active {
+    display: block;
+  }
+  

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route } from "react-router-dom";
 import './App.css';
 import Header from './Components/Header';
@@ -17,10 +17,14 @@ import ReturnPolicy from './Components/Footer/ReturnPolicy';
 import OpenCart from './Components/Cart/OpenCart';
 
 function App() {
+
+  const [showOptions, setShowOptions] = useState(false);
+
   return (
     <>
-      <Header/>
-      <div className="App">
+      <Header showOptions={showOptions} setShowOptions={setShowOptions} />
+      <div className={`close ${showOptions ? 'active' : ''}`} onClick={() => setShowOptions(false)}></div>
+      <div onClick={() => setShowOptions(false)} className="App">
         <Routes>
           <Route path="/register" element={<SignUp/>}/>
           <Route path="/login" element={<Login/>}/>
