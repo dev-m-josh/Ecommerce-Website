@@ -169,7 +169,7 @@ function addNewProduct(req, res) {
                 console.log("Error occured in query.", err.message);
                 res.json({
                   success: false,
-                  message: err
+                  message: err.message
                 });
             } else {
                 res.json({

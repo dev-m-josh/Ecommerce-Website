@@ -32,4 +32,47 @@ const newProductSchema = joi.object({
   ProductDiscount: joi.number().integer().min(0)
 });
 
-module.exports = { newUserSchema, loginSchema, editUserRoleSchema, newProductSchema };
+//NEW ORDER SCHEMA
+const newOrderSchema = joi.object({
+  UserId: joi.number().integer().required().label('UserId'),
+  ShippingAddress: joi.string().max(255).required().label('Shipping Address'),
+});
+
+//ORDER ITEM SCHEMA
+const orderItemSchema = joi.object({
+  OrderId: joi.number().integer().required().label('OrderId'),
+  ProductId: joi.number().integer().required().label('ProductId'),
+  Quantity: joi.number().integer().required().label('Quantity'),
+});
+
+//ORDER AND ORDER ITEMS SCHEMA
+const orderDetailsSchema = joi.object({
+  OrderId: joi.number().integer().required().label('OrderId'),
+});
+
+//UPDATE ITEM QUANTITY SCHEMA
+const updateItemQuantitySchema = joi.object({
+  OrderId: joi.number().integer().required().label('OrderId'),
+  ProductId: joi.number().integer().required().label('ProductId'),
+  Quantity: joi.number().integer().required().label('Quantity')
+});
+
+// UPDATE ORDER STATUS SCHEMA
+const updateOrderStatusSchema = joi.object({
+  OrderId: joi.number().integer().required().label('OrderId'),
+  UserId: joi.number().integer().required().label('UserId'),
+  OrderStatus: joi.string().valid('Pending', 'Delivered').required().label('OrderStatus'),
+  PaymentStatus: joi.string().valid('Pending', 'Paid').required().label('PaymentStatus')
+});
+
+module.exports = { 
+  newUserSchema,
+  loginSchema,
+  editUserRoleSchema,
+  newProductSchema,
+  newOrderSchema,
+  orderItemSchema,
+  orderDetailsSchema,
+  updateItemQuantitySchema,
+  updateOrderStatusSchema
+};

@@ -1,5 +1,6 @@
 .App{
     min-width: fit-content;
+    max-width: 100%;
     margin-top: 75px;
     border-radius: 10px;
     min-height: fit-content;

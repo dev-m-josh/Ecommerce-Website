@@ -1,33 +1,154 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import './Shop.css'
+import './Shop.css';
+import axios from "axios";
 
 export default function ProductDetails() {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
-    const [addedToCart, setAddedToCart] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
     const { productId } = useParams();
+    const order = JSON.parse(localStorage.getItem("openedCart"));
+    const orderId = order ? order.OrderId : null;
+    const [orders, setOrders] = useState([]);
+    const user = JSON.parse(localStorage.getItem("signedUser"));
+    const UserId = user ? user.UserId : null; 
+    const [pendingCart, setPendingCart] = useState(null);
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
+        const storedCart = JSON.parse(localStorage.getItem("openedCart"));
+        setPendingCart(storedCart);
+    }, []);
+
+    useEffect(() => {
+
+        if (pendingCart) {
+            const fetchOrderDetails = async () => {
+                const details = {
+                    OrderId: pendingCart.OrderId,
+                };
+
+                try {
+                    setLoading(true);
+
+                    const params = new URLSearchParams(details).toString();
+
+                    const response = await fetch(
+                        `http://localhost:4500/orders/order-details?${params}`,
+                        {
+                            method: "GET",
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "application/json",
+                            }
+                        }
+                    );
+
+                    if (!response.ok) {
+                        const error = await response.text();
+                        throw new Error(error || "Failed to fetch order details.");
+                    }
+
+                    const data = await response.json();
+                    setOrders(data.orderDetails);
+
+                } catch (error) {
+                    console.error("Error fetching order details:", error);
+                    setErrorMessage("There was an error fetching the order details.");
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchOrderDetails();
+        }
+
+    }, [token, navigate, UserId, pendingCart]);
+
+    const handleAddItemToCart = async (e) => {
+        e.preventDefault();
+        setErrorMessage("");
+    
+        if (!orderId) {
+            setErrorMessage("There is no active cart. Please open a new cart.");
+            navigate("/cart");
             return;
         }
+        
+        const existingItems = orders.filter(item => item.ProductId === productId);
+
+        if (existingItems.length > 0) {
+            const updatedItem = {
+                OrderId: existingItems[0].OrderId,
+                ProductId: existingItems[0].ProductId,
+                Quantity: existingItems.reduce((sum, item) => sum + item.Quantity, 0) + quantity
+            };
+
+            try {
+                const response = await axios.put(
+                    `http://localhost:4500/order-item/quantity`,
+                    updatedItem,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    }
+                );
+
+                alert(response.data.message);
+                setOrders(prevOrders =>
+                    prevOrders.map(order =>
+                        order.ProductId === updatedItem.ProductId ? { ...order, Quantity: updatedItem.Quantity } : order
+                    )
+                );
+            } catch (error) {
+                console.error("Error updating cart item:", error);
+                setErrorMessage("There was an error updating the cart. Please try again.");
+            }
+        }
+
+        else {
+            const newOrderItem = {
+                OrderId: orderId,
+                ProductId: productId,
+                Quantity: quantity
+            };
+    
+            try {
+                const response = await axios.post(
+                    "http://localhost:4500/order-item",
+                    newOrderItem,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    }
+                );
+    
+                alert(response.data.message);
+                setOrders(prevOrders => [...prevOrders, response.data.newOrderItem]);
+            } catch (error) {
+                console.error("Error adding item to cart:", error);
+                setErrorMessage("There was an error adding the item to the cart. Please try again.");
+            }
+        }
+    };
+    
+    
+
+    useEffect(() => {
 
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-
                 const response = await fetch(
-                    `http://localhost:4500/products/product/${productId}`,
+                    `http://localhost:4500/product/${productId}`,
                     {
                         method: "GET",
                         headers: {
-                            Authorization: `Bearer ${token}`,
                             "Content-Type": "application/json",
                         }
                     }
@@ -49,25 +170,19 @@ export default function ProductDetails() {
         };
 
         fetchProduct();
-    }, [productId, token, navigate]);
-
-    const handleAddToCart = () => {
-        setAddedToCart(true); 
-        setQuantity(1)
-    };
+    }, [productId, navigate]);
 
     const handleIncreaseQuantity = () => {
-        if (quantity < 10) {
-            setQuantity(quantity + 1); 
+        if (quantity < product.StockQuantity) {
+            setQuantity(quantity + 1);
         }
     };
 
     const handleDecreaseQuantity = () => {
         if (quantity > 1) {
-            setQuantity(quantity - 1); 
+            setQuantity(quantity - 1);
         } else {
-            setAddedToCart(false); 
-            setQuantity(0); 
+            setQuantity(0);
         }
     };
 
@@ -87,10 +202,7 @@ export default function ProductDetails() {
         <div className="single-product" key={product.ProductId}>
             <div className="offer">-{product.ProductDiscount}%</div>
             {product.ProductImage && (
-                <img
-                    src={product.ProductImage}
-                    alt={product.ProductName}
-                />
+                <img src={product.ProductImage} alt={product.ProductName} />
             )}
             <div className="product-details">
                 <h2>{product.ProductName}</h2>
@@ -106,18 +218,29 @@ export default function ProductDetails() {
                     <strong>{product.StockQuantity}</strong> items left.
                 </p>
 
-                {!addedToCart ? (
-                    <div className="add-to-cart">
-                        <button className="add-btn" onClick={handleAddToCart}>Add to cart</button>
-                    </div>
-                ) : (
-                    <div className="add-btns">
-                        <button onClick={handleDecreaseQuantity}>-</button>
+                <div className="add-btns">
+                    <div className="quantity-selection">
+                        <button disabled={product.StockQuantity <= 0 || quantity === 0} onClick={handleDecreaseQuantity}>
+                            -
+                        </button>
                         <span>{quantity}</span>
-                        <button disabled={quantity >= 10} onClick={handleIncreaseQuantity}>+</button>
+                        <button
+                            disabled={quantity >= product.StockQuantity || quantity === 10}
+                            onClick={handleIncreaseQuantity}
+                        >
+                            +
+                        </button>
                         <p>({quantity} item(s) added)</p>
                     </div>
-                )}
+
+                    <button
+                        className="add-btn"
+                        onClick={handleAddItemToCart}
+                        disabled={quantity === 0 || product.StockQuantity <= 0}
+                    >
+                        Add Item to Cart
+                    </button>
+                </div>
             </div>
         </div>
     );

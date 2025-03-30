@@ -32,7 +32,13 @@ function undefinedRouteHandler(req, res, next) {
 
 //handle all errors
 function allErrorsHandler(err, req, res, next) {
-    res.sendStatus(err.status);
+    console.error(err);
+
+    if (err.status) {
+        return res.status(err.status).send(err.message || 'Something went wrong');
+    }
+
+    return res.status(500).send('Internal server error');
 };
 
 module.exports = { verifyToken, undefinedRouteHandler, allErrorsHandler};

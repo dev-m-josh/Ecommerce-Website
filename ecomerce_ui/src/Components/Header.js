@@ -12,7 +12,50 @@ export default function Header() {
     const user = JSON.parse(localStorage.getItem("signedUser"));
     const token = localStorage.getItem("token");
     const [errorMessage, setErrorMessage] = useState("");
+    const [orders, setOrders] = useState([]);
+    const pendingCart = JSON.parse(localStorage.getItem("openedCart"));
+    
+    useEffect(() => {
+    
+        if (pendingCart) {
+            const fetchOrderDetails = async () => {
+                const details = {
+                    OrderId: pendingCart.OrderId,
+                };
 
+                try {
+
+                    const params = new URLSearchParams(details).toString();
+
+                    const response = await fetch(
+                        `http://localhost:4500/orders/order-details?${params}`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                            }
+                        }
+                    );
+
+                    if (!response.ok) {
+                        const error = await response.text();
+                        throw new Error(error || "Failed to fetch order details.");
+                    }
+
+                    const data = await response.json();
+                    setOrders(data.orderDetails);    
+                } catch (error) {
+                    console.error("Error fetching order details:", error);
+                    setErrorMessage("There was an error fetching the order details.");
+                }
+            };
+
+            fetchOrderDetails();
+        };
+    
+    }, [pendingCart]);
+
+    
     const toggleMenu = useCallback(() => {
         setIsMenuOpen(prevState => !prevState);
     }, []);
@@ -27,7 +70,6 @@ export default function Header() {
 
     // Handle logout
     const handleLogout = async (e) => {
-        // Clear user data from localStorage
         localStorage.removeItem("token");
         localStorage.removeItem("signedUser");
         setIsAdmin(false);
@@ -82,14 +124,6 @@ export default function Header() {
                             </li>
                             <li>
                                 <Link
-                                    to="/shop"
-                                    className={`${currentPath === '/shop' ? 'active' : ''}`}
-                                >
-                                    Shop
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
                                     to="/categories"
                                     className={`${currentPath === '/categories' ? 'active' : ''}`}
                                 >
@@ -117,7 +151,7 @@ export default function Header() {
                     <div className="user-actions">
                         <Link className="cart" to="/cart">
                             <FontAwesomeIcon className="icon " icon={faShoppingBasket} />
-                            <div className="cart-number">{0}</div>
+                            <div className="cart-number">{orders.length}</div>
                         </Link>
                         {user ? (
                             <>
@@ -148,7 +182,7 @@ export default function Header() {
                                 {user ? (
                                     <>
                                         <span>
-                                            {currentPath === '/' ? 'Home' : currentPath === '/shop' ? 'Shop' : currentPath === '/categories' ? 'Categories' : 'Home'}
+                                            { currentPath === '/' ? 'Shop' : currentPath === '/categories' ? 'Categories' : '/'}
                                         </span>
                                         <Link to="/account">
                                             <FontAwesomeIcon className={`icon ${currentPath === '/account' ? 'user-icon' : ''}`} icon={faUser} />
@@ -180,19 +214,10 @@ export default function Header() {
                             <li>
                                 <Link
                                     to="/"
-                                    className={`${currentPath === '/' ? 'active' : ''}`}
-                                    onClick={toggleMenu}
-                                >
-                                    Home
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/shop"
                                     className={`${currentPath === '/shop' ? 'active' : ''}`}
                                     onClick={toggleMenu}
                                 >
-                                    Shop
+                                    Home
                                 </Link>
                             </li>
                             <li>
