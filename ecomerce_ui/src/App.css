@@ -5,6 +5,7 @@
     border-radius: 10px;
     min-height: fit-content;
     padding: 20px;
+    margin-bottom: 50px;
 }
 
 @media screen and (max-width: 600px) {

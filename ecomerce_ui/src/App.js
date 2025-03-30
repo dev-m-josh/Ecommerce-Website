@@ -15,6 +15,9 @@ import TermsAndConditions from './Components/Footer/TermsAndConditions';
 import ContactUs from './Components/Footer/Contacts';
 import ReturnPolicy from './Components/Footer/ReturnPolicy';
 import OpenCart from './Components/Cart/OpenCart';
+import Dashboard from './Components/Dashboard';
+import Users from './Components/Users/Users';
+import UserRoles from './Components/Users/UserRoles';
 
 function App() {
 
@@ -38,6 +41,9 @@ function App() {
           <Route path='/contact' element={<ContactUs />}/>
           <Route path='/returns-policy' element={<ReturnPolicy />}/>
           <Route path='/cart' element={<OpenCart />}/>
+          <Route path='/dashboard' element={<Dashboard />}/>
+          <Route path='/users' element={<Users />}/>
+          <Route path='/users-role' element={<UserRoles />}/>
         </Routes>
       </div>
         {<Footer/>}

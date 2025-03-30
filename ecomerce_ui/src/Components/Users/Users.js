@@ -79,7 +79,9 @@ export default function Users() {
         <div className="users">
             <h2>Active Users</h2>
             {users.length === 0 ? (
-                <div>No users available to display.</div>
+                <div>
+                    No users available to display.
+                </div>
             ) : (
                 <table className="users-table">
                     <thead>

@@ -292,7 +292,7 @@ a.active {
 
 .options-dropdown {
     position: absolute;
-    top: 50px;
+    top: 55px;
     right: 0;
     background-color: #fff;
     border: 1px solid #ddd;
@@ -345,4 +345,20 @@ h5 {
   .close.active {
     display: block;
   }
+
+  .dashboard-link{
+    text-decoration: none;
+    color: #777777;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #333;
+    transition: all .3s ease-in-out;
+  }
   
+  .dashboard-link:hover{
+    color: #333;
+  }
