@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown  } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 export default function Users() {
     const [users, setUsers] = useState([]);
@@ -10,12 +10,37 @@ export default function Users() {
     const [page, setPage] = useState(1);
     const [pageSize] = useState(10);
     const [noMoreUsers, setNoMoreUsers] = useState(false);
+    const [showUserOptions, setShowUserOptions] = useState(null);
+    const [userDetails, setUserDetails] = useState(null);
+    const [showUserDetails, setShowUserDetails] = useState(false);
+
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
-    const [showUserOptions, setShowUserOptions] = useState(null);
 
     const toggleUserOptions = (userId) => {
         setShowUserOptions((prev) => (prev === userId ? null : userId));
+    };
+
+    const fetchUserDetails = async (userId) => {
+        try {
+            const response = await fetch(`http://localhost:4500/users/${userId}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch user details");
+            }
+
+            const data = await response.json();
+            setUserDetails(data[0]);
+            setShowUserDetails(true);
+        } catch (error) {
+            setErrorMessage(error.message);
+        }
     };
 
     useEffect(() => {
@@ -74,6 +99,11 @@ export default function Users() {
         }
     };
 
+    const closeModal = () => {
+        setShowUserDetails(false);
+        setUserDetails(null);
+    };
+
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -114,9 +144,9 @@ export default function Users() {
 
                                     {showUserOptions === user.UserId && (
                                         <div className="user-options">
-                                            <p onClick={() => navigate('/users-role')}>Update user role.</p>
+                                            <p onClick={() => navigate('/users-role') && setShowUserOptions(false)}>Update user role.</p>
                                             <p>Delete user.</p>
-                                            <p>View profile.</p>
+                                            <p onClick={() => fetchUserDetails(user.UserId) && setShowUserOptions(false)}>View profile.</p>
                                         </div>
                                     )}
                                 </td>
@@ -143,6 +173,25 @@ export default function Users() {
                     Next
                 </button>
             </div>
+
+            {showUserDetails && (
+                <div className="modal-overlay" onClick={closeModal}>
+                    <div className="modal-content">
+                        <h2>User Profile</h2>
+                        <button className="close-btn" onClick={closeModal}>X</button>
+                        {userDetails && (
+                            <div>
+                                <p><strong>First Name:</strong> {userDetails.FirstName}</p>
+                                <p><strong>Last Name:</strong> {userDetails.LastName}</p>
+                                <p><strong>Email:</strong> {userDetails.Email}</p>
+                                <p><strong>Phone Number:</strong> {userDetails.PhoneNumber}</p>
+                                <p><strong>Role:</strong> {userDetails.UserRole}</p>
+                                <p><strong>Created At:</strong> {userDetails.created_at}</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

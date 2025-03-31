@@ -25,6 +25,27 @@ function getAllUsers(req, res) {
     );
 };
 
+//get user profile
+function getUserProfile(req, res) {
+  let pool = req.pool;
+  let reqUser = req.params.userId;
+  pool.query(
+    `SELECT UserId, FirstName, LastName, Email, PhoneNumber, UserRole, created_at
+    FROM users
+    WHERE UserStatus = 'Active' AND UserId = ${reqUser}`, (err, result) =>{
+        if (err) {
+          res.status(500).json({
+              success: false,
+              message: "Internal server error."
+          });
+          console.log("Error occured in query", err);
+      } else {
+          res.json(result.recordset);
+      };
+    }
+  );
+};
+
 //sign-up for a new user
 async function addNewUser(req, res) {
     let pool = req.pool;
@@ -298,4 +319,4 @@ function updateUserRole(req, res) {
   )
 }
 
-module.exports = { getAllUsers, addNewUser, deleteUser, deactivateUser, userLogin, updateUserPassword, updateUserRole };
+module.exports = { getAllUsers, addNewUser, deleteUser, deactivateUser, userLogin, updateUserPassword, updateUserRole, getUserProfile };
