@@ -12,7 +12,7 @@ export default function AdminDash() {
                 <Link to='/users'>
                     Users
                 </Link>
-                <Link to='/products'>
+                <Link to='/stock'>
                     Products
                 </Link>
             </div>

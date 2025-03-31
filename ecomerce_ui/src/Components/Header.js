@@ -114,7 +114,7 @@ export default function Header({ showOptions, setShowOptions }) {
                         <ul>
                             <li>
                                 <Link
-                                    to="/"
+                                    to="/products"
                                     className={`${currentPath === '/' ? 'active' : ''}`}
                                 >
                                     Home

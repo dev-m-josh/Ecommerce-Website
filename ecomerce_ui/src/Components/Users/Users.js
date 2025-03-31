@@ -207,7 +207,7 @@ export default function Users() {
 
             {showUserDetails && (
                 <div className="modal-overlay" onClick={closeModal}>
-                    <div className="modal-content">
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <h2>User Profile</h2>
                         <button className="close-btn" onClick={closeModal}>X</button>
                         {userDetails && (

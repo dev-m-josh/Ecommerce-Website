@@ -18,6 +18,35 @@ function getAllActiveProducts(req, res) {
     );
 };
 
+//delete a product compeletely
+function deleteProduct(req, res) {
+    let pool = req.pool;
+    let requestedId = req.params.productId;
+    pool.query(`DELETE FROM products WHERE ProductId = ${requestedId}`, (err, result) =>{
+        if (err) {
+            res.status(500).json({
+              success: false,
+              message: "Internal server error.",
+            });
+            console.log("Error occured in query", err);
+          }
+
+        if (result.rowsAffected[0] === 0) {
+            res.status(400).json({
+            success: false,
+            message: "Product not found!",
+            });
+            return;
+        }
+
+        res.json({
+            success: true,
+            message: "Product deleted successfully!",
+            result: result.rowsAffected,
+        });
+    });
+};
+
 function getAllProducts(req, res) {
     let pool = req.pool;
     let { page, pageSize } = req.query;
@@ -202,6 +231,7 @@ function getProductDetails(req, res) {
 
 module.exports = {
     getAllActiveProducts,
+    deleteProduct,
     getAllProducts,
     getMostSellingProduct,
     getLowQuantityProducts,
