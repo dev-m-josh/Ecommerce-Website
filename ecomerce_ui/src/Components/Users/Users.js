@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretDown  } from '@fortawesome/free-solid-svg-icons';
 
 export default function Users() {
     const [users, setUsers] = useState([]);
@@ -10,6 +12,11 @@ export default function Users() {
     const [noMoreUsers, setNoMoreUsers] = useState(false);
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
+    const [showUserOptions, setShowUserOptions] = useState(null);
+
+    const toggleUserOptions = (userId) => {
+        setShowUserOptions((prev) => (prev === userId ? null : userId));
+    };
 
     useEffect(() => {
         if (!token) {
@@ -79,9 +86,7 @@ export default function Users() {
         <div className="users">
             <h2>Active Users</h2>
             {users.length === 0 ? (
-                <div>
-                    No users available to display.
-                </div>
+                <div>No users available to display.</div>
             ) : (
                 <table className="users-table">
                     <thead>
@@ -91,6 +96,7 @@ export default function Users() {
                             <th>Role</th>
                             <th>Email</th>
                             <th>PhoneNumber</th>
+                            <th className="actions">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,11 +107,25 @@ export default function Users() {
                                 <td>{user.UserRole}</td>
                                 <td>{user.Email}</td>
                                 <td>{user.PhoneNumber}</td>
+                                <td className="options">
+                                    <button onClick={() => toggleUserOptions(user.UserId)}>
+                                        Options <FontAwesomeIcon className="icon user-icon" icon={faCaretDown} />
+                                    </button>
+
+                                    {showUserOptions === user.UserId && (
+                                        <div className="user-options">
+                                            <p onClick={() => navigate('/users-role')}>Update user role.</p>
+                                            <p>Delete user.</p>
+                                            <p>View profile.</p>
+                                        </div>
+                                    )}
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             )}
+
             <div className="pagination">
                 <button
                     onClick={handlePreviousPage}
@@ -125,4 +145,4 @@ export default function Users() {
             </div>
         </div>
     );
-};
+}

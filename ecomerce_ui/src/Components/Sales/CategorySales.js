@@ -95,7 +95,7 @@ export default function CategorySales() {
                         {products.map((product) => (
                             <tr key={product.Category}>
                                 <td>{product.Category}</td>
-                                <td>Ksh {product.TotalRevenue}</td>
+                                <td>Ksh {product.TotalRevenue.toLocaleString()}</td>
                             </tr>
                         ))}
                     </tbody>

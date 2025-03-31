@@ -81,6 +81,7 @@ export default function ProductSales() {
     return(
         <div className="users">
             <h2>Products sales.</h2>
+            <button onClick={() => navigate('/dashboard')}>X</button>
             {products.length === 0 ? (
                 <div>No products to display.</div>
             ) : (
@@ -95,7 +96,7 @@ export default function ProductSales() {
                         {products.map((product) => (
                             <tr key={product.ProductId}>
                                 <td>{product.ProductName}</td>
-                                <td>Ksh {product.TotalRevenue}</td>
+                                <td>Ksh {product.TotalRevenue.toLocaleString()}</td>
                             </tr>
                         ))}
                     </tbody>

@@ -1,4 +1,4 @@
-.dashboard{
+/* .dashboard{
     width: 100%;
     width: 800px;
     min-width: fit-content;
@@ -89,4 +89,46 @@
 .dashboard-options li a:hover {
     background-color: #f0f0f0;
     color: #007bff;
+} */
+
+
+.admin-dash{
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    align-items: start;
+    height: 90vh;
 }
+
+.admin-links{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 10px 15px;
+    min-width: 150px;
+    width: fit-content;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 0;
+}
+
+.admin-links a{
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    width: 87%;
+    padding: 10px;
+    margin: 0;
+}
+
+.admin-links a:hover{
+    background-color: #f7f7f7;
+}
+
+.dashboard-content{
+    width: 100%;
+    padding: 20px;
+}
+

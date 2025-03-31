@@ -128,16 +128,6 @@ export default function Header({ showOptions, setShowOptions }) {
                                     Categories
                                 </Link>
                             </li>
-                            <li>
-                                {isAdmin && (
-                                    <Link
-                                        to="/admin"
-                                        className={`${currentPath === '/admin' ? 'active' : ''}`}
-                                    >
-                                        Admin
-                                    </Link>
-                                )}
-                            </li>
                         </ul>
                     </div>
 
@@ -152,9 +142,11 @@ export default function Header({ showOptions, setShowOptions }) {
                             <div className="cart-number">{orders.length}</div>
                         </Link>
                     </div>
-                    <Link className='dashboard-link' to="/dashboard">
-                        Dashboard
-                    </Link>
+                    {isAdmin && (
+                        <Link className='dashboard-link' to="/">
+                            Dashboard
+                        </Link>
+                    )}
                     <h5
                         onClick={toggleOptions}>Options <FontAwesomeIcon className="icon user-icon" icon={faCaretDown} />
                     </h5>
@@ -236,17 +228,11 @@ export default function Header({ showOptions, setShowOptions }) {
                                     Categories
                                 </Link>
                             </li>
-                            <li>
-                                {isAdmin && (
-                                    <Link
-                                        to="/admin"
-                                        className={`${currentPath === '/admin' ? 'active' : ''}`}
-                                        onClick={toggleMenu}
-                                    >
-                                        Admin
-                                    </Link>
-                                )}
-                            </li>
+                            {isAdmin && (
+                                <Link className='dashboard-link' to="/dashboard">
+                                    Dashboard
+                                </Link>
+                            )}
                             <li>
                                 <span onClick={handleLogout}>LogOut</span>
                             </li>
