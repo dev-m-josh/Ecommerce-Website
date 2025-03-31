@@ -43,11 +43,42 @@ export default function Users() {
         }
     };
 
+    const deleteUser = async (userId) => {
+
+        const confirmDelete = window.confirm('Are you sure you want to delete this user?');
+
+        if (!confirmDelete) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:4500/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to delete user');
+            }
+    
+            setUsers((prevUsers) => prevUsers.filter(user => user.UserId !== userId));
+            setShowUserOptions(null);
+            alert('User deleted successfully!');
+        } catch (error) {
+            setErrorMessage(error.message);
+            alert('Error deleting user: ' + error.message);
+        };
+    };
+    
+
     useEffect(() => {
         if (!token) {
             navigate("/login");
             return;
-        }
+        };
 
         const fetchUsers = async () => {
             try {
@@ -145,7 +176,7 @@ export default function Users() {
                                     {showUserOptions === user.UserId && (
                                         <div className="user-options">
                                             <p onClick={() => navigate('/users-role') && setShowUserOptions(false)}>Update user role.</p>
-                                            <p>Delete user.</p>
+                                            <p onClick={() => deleteUser(user.UserId) && setShowUserOptions(false)}>Delete user.</p>
                                             <p onClick={() => fetchUserDetails(user.UserId) && setShowUserOptions(false)}>View profile.</p>
                                         </div>
                                     )}

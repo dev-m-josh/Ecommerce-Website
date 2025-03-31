@@ -98,7 +98,6 @@ function deleteUser(req, res) {
             console.log("Error occured in query", err);
           }
 
-        //CHECK IF REQUESTED USER IS AVAILABLE
         if (result.rowsAffected[0] === 0) {
             res.status(400).json({
             success: false,
@@ -106,8 +105,6 @@ function deleteUser(req, res) {
             });
             return;
         }
-
-        //RESPONSE
         res.json({
             success: true,
             message: "Account deleted successfully!",

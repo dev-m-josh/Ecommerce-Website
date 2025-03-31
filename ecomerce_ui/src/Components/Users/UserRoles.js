@@ -134,6 +134,7 @@ export default function UserRoles() {
     return (
         <div className="users">
             <h2>Active Users</h2>
+            <button onClick={() => navigate('/users')}>X</button>
             {users.length === 0 ? (
                 <div>No users available to display.</div>
             ) : (
