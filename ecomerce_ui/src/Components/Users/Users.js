@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import './Users.css'
 
 export default function Users() {
     const [users, setUsers] = useState([]);
@@ -13,9 +14,56 @@ export default function Users() {
     const [showUserOptions, setShowUserOptions] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
     const [showUserDetails, setShowUserDetails] = useState(false);
-
+    const [editingUser, setEditingUser] = useState(null);
+    const [newRole, setNewRole] = useState("");
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
+
+    const handleRoleUpdate = async () => {
+        if (!newRole) {
+            alert("Please select a role.");
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `http://localhost:4500/users/role/${editingUser.UserId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ UserRole: newRole }),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to update role");
+            }
+
+            const data = await response.json();
+            alert(data.message);
+            setEditingUser(null);
+            setNewRole("");
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user.UserId === editingUser.UserId
+                        ? { ...user, UserRole: newRole }
+                        : user
+                )
+            ); 
+        } catch (err) {
+            console.error("Error updating role:", err);
+            alert("Error updating role");
+        }
+    };
+
+    useEffect(() => {
+        if (editingUser) {
+            setNewRole(editingUser.UserRole);
+        }
+    }, [editingUser]);
 
     const toggleUserOptions = (userId) => {
         setShowUserOptions((prev) => (prev === userId ? null : userId));
@@ -133,6 +181,7 @@ export default function Users() {
     const closeModal = () => {
         setShowUserDetails(false);
         setUserDetails(null);
+        setEditingUser(null);
     };
 
     if (loading) {
@@ -175,9 +224,9 @@ export default function Users() {
 
                                     {showUserOptions === user.UserId && (
                                         <div className="user-options">
-                                            <p onClick={() => navigate('/users-role') && setShowUserOptions(false)}>Update user role.</p>
-                                            <p onClick={() => deleteUser(user.UserId) && setShowUserOptions(false)}>Delete user.</p>
-                                            <p onClick={() => fetchUserDetails(user.UserId) && setShowUserOptions(false)}>View profile.</p>
+                                            <p onClick={() =>{ setEditingUser(user); setShowUserOptions(false)}}>Update user role.</p>
+                                            <p onClick={() =>{ deleteUser(user.UserId); setShowUserOptions(false)}}>Delete user.</p>
+                                            <p onClick={() =>{ fetchUserDetails(user.UserId); setShowUserOptions(false)}}>View profile.</p>
                                         </div>
                                     )}
                                 </td>
@@ -220,6 +269,66 @@ export default function Users() {
                                 <p><strong>Created At:</strong> {userDetails.created_at}</p>
                             </div>
                         )}
+                    </div>
+                </div>
+            )}
+
+            {editingUser && (
+                <div onClick={closeModal} className={`edit-modal ${editingUser ? "visible" : ""}`}>
+                    <div onClick={(e) => e.stopPropagation()} className="modal-content">
+                        <div>
+                            <h2>Edit User Role</h2>
+                            <div className="modal-close" onClick={closeModal}>X</div>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="username">FirstName:</label>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                value={editingUser.FirstName}
+                                disabled
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="username">LastName:</label>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                value={editingUser.LastName}
+                                disabled
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="username">LastName:</label>
+                            <input
+                                type="email"
+                                id="Email"
+                                name="Email"
+                                value={editingUser.Email}
+                                disabled
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="role">Role:</label>
+                            <select
+                                id="role"
+                                name="role"
+                                value={newRole}
+                                onChange={(e) => setNewRole(e.target.value)}
+                            >
+                                <option value="">Select a role</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Customer">Customer</option>
+                            </select>
+                        </div>
+                        <div className="modal-actions">
+                            <button onClick={handleRoleUpdate} disabled={!newRole}>
+                                Save Changes
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

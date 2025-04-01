@@ -163,7 +163,7 @@ export default function Products() {
 
         fetchProducts();
     }, [page, pageSize, token, navigate]);
-    
+
 
     const handleNextPage = () => {
         if (!noMoreProducts && !loading) {
