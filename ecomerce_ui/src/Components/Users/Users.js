@@ -16,6 +16,8 @@ export default function Users() {
     const [showUserDetails, setShowUserDetails] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
     const [newRole, setNewRole] = useState("");
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
 
@@ -59,12 +61,6 @@ export default function Users() {
         }
     };
 
-    useEffect(() => {
-        if (editingUser) {
-            setNewRole(editingUser.UserRole);
-        }
-    }, [editingUser]);
-
     const toggleUserOptions = (userId) => {
         setShowUserOptions((prev) => (prev === userId ? null : userId));
     };
@@ -91,36 +87,40 @@ export default function Users() {
         }
     };
 
-    const deleteUser = async (userId) => {
+    const confirmDeleteUser = (userId) => {
+        setUserToDelete(userId);
+        setShowDeleteModal(true);
+    };
 
-        const confirmDelete = window.confirm('Are you sure you want to delete this user?');
-
-        if (!confirmDelete) {
-            return;
-        }
+    const deleteUser = async () => {
+        if (!userToDelete) return;
 
         try {
-            const response = await fetch(`http://localhost:4500/users/${userId}`, {
+            const response = await fetch(`http://localhost:4500/users/${userToDelete}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
             });
-    
+
             if (!response.ok) {
                 throw new Error('Failed to delete user');
             }
-    
-            setUsers((prevUsers) => prevUsers.filter(user => user.UserId !== userId));
+
+            setUsers((prevUsers) => prevUsers.filter(user => user.UserId !== userToDelete));
             setShowUserOptions(null);
+            setShowDeleteModal(false);
             alert('User deleted successfully!');
         } catch (error) {
             setErrorMessage(error.message);
-            alert('Error deleting user: ' + error.message);
+            alert('Error deleting user!');
         };
     };
-    
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+    };
 
     useEffect(() => {
         if (!token) {
@@ -225,7 +225,7 @@ export default function Users() {
                                     {showUserOptions === user.UserId && (
                                         <div className="user-options">
                                             <p onClick={() =>{ setEditingUser(user); setShowUserOptions(false)}}>Update user role.</p>
-                                            <p onClick={() =>{ deleteUser(user.UserId); setShowUserOptions(false)}}>Delete user.</p>
+                                            <p onClick={() =>{ confirmDeleteUser(user.UserId); setShowUserOptions(false)}}>Delete user.</p>
                                             <p onClick={() =>{ fetchUserDetails(user.UserId); setShowUserOptions(false)}}>View profile.</p>
                                         </div>
                                     )}
@@ -328,6 +328,18 @@ export default function Users() {
                             <button onClick={handleRoleUpdate} disabled={!newRole}>
                                 Save Changes
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showDeleteModal && (
+                <div className="modal-overlay" onClick={handleDeleteCancel}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h3>Are you sure you want to delete this user?</h3>
+                        <div className="modal-actions">
+                            <button onClick={deleteUser}>Yes, delete</button>
+                            <button onClick={handleDeleteCancel}>Cancel</button>
                         </div>
                     </div>
                 </div>

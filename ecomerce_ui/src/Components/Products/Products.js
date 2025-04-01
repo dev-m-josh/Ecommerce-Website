@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import ActivateProduct from "./ActivateProduct";
 import NewProduct from "./NewProduct";
 import { toast } from "react-toastify";
 import axios from 'axios';
@@ -17,7 +16,6 @@ export default function Products() {
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
     const [showUserOptions, setShowUserOptions] = useState(null);
-    const [showRestoreProduct, setShowRestoreProduct] = useState(false);
     const [showAddProduct, setShowAddProduct] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const [newPrice, setNewPrice] = useState("");
@@ -103,7 +101,6 @@ export default function Products() {
     };
 
     const closeModal = () => {
-        setShowRestoreProduct(false);
         setShowAddProduct(false);
         setShowProductEdit(false);
     };
@@ -325,15 +322,6 @@ export default function Products() {
                     Next
                 </button>
             </div>
-
-            {showRestoreProduct && (
-                <div className="modal-overlay" onClick={() => closeModal()}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button onClick={() => closeModal()}>X</button>
-                        <ActivateProduct />
-                    </div>
-                </div>
-            )}
 
             {showAddProduct && (
                 <div className="modal-overlay" onClick={() => closeModal()}>
