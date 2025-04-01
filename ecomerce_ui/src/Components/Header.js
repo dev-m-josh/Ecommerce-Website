@@ -82,8 +82,7 @@ export default function Header({ showOptions, setShowOptions }) {
             const data = response.data;
 
             if (data.success) {
-                alert(data.message);
-                navigate("/");
+                navigate("/products");
             };
         } catch (error) {
             console.log("Login error:", error);

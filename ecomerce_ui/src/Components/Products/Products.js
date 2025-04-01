@@ -22,6 +22,8 @@ export default function Products() {
     const [newStockQuantity, setNewStockQuantity] = useState("");
     const [newProductDiscount, setNewProductDiscount] = useState("");
     const [showProductEdit, setShowProductEdit] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [productToDelete, setProductToDelete] = useState(null);
 
     const handleProductRestore = async (ProductId) => {
         try {
@@ -166,16 +168,17 @@ export default function Products() {
             setNewProductDiscount(editingProduct.ProductDiscount);
         }
     }, [editingProduct]);
-    
-    const deleteProduct = async (productId) => {
-        const confirmDelete = window.confirm('Are you sure you want to delete this product?');
 
-        if (!confirmDelete) {
-            return;
-        }
+    const confirmDeleteProduct = (productId) => {
+        setProductToDelete(productId);
+        setShowDeleteModal(true);
+    };
+    
+    const deleteProduct = async () => {
+        if (!productToDelete) return;
 
         try {
-            const response = await fetch(`http://localhost:4500/products/${productId}`, {
+            const response = await fetch(`http://localhost:4500/products/${productToDelete}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -187,13 +190,18 @@ export default function Products() {
                 throw new Error('Failed to delete product');
             }
 
-            setProducts((prevProducts) => prevProducts.filter(product => product.ProductId !== productId));
+            setProducts((prevProducts) => prevProducts.filter(product => product.ProductId !== productToDelete));
             setShowUserOptions(null);
+            setShowDeleteModal(false);
             alert('Product deleted successfully!');
         } catch (error) {
             setErrorMessage(error.message);
             alert('Error deleting product: ' + error.message);
-        }
+        };
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
     };
 
     useEffect(() => {
@@ -301,7 +309,7 @@ export default function Products() {
                                                     Restore product.
                                                 </p>
                                             )}
-                                            <p onClick={() => {deleteProduct(product.ProductId); setShowUserOptions(false);}}>Delete product.</p>
+                                            <p onClick={() => {confirmDeleteProduct(product.ProductId); setShowUserOptions(false);}}>Delete product.</p>
                                             <p onClick={() => {setShowAddProduct(true); setShowUserOptions(false)}}>New product.</p>
                                             <p onClick={() => {setEditingProduct(product); setShowProductEdit(true); setShowUserOptions(false)}}>Edit product.</p>
                                         </div>
@@ -390,6 +398,18 @@ export default function Products() {
                         <button onClick={handleProductEdit}>
                             Save changes
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {showDeleteModal && (
+                <div className="modal-overlay" onClick={handleDeleteCancel}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h3>Are you sure you want to delete this product?</h3>
+                        <div className="modal-actions">
+                            <button onClick={deleteProduct}>Yes, delete</button>
+                            <button onClick={handleDeleteCancel}>Cancel</button>
+                        </div>
                     </div>
                 </div>
             )}
