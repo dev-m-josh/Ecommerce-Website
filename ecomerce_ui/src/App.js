@@ -18,7 +18,6 @@ import AdminDash from './Components/AdminDash';
 import Products from './Components/Products/Products';
 
 function App() {
-
   const [showOptions, setShowOptions] = useState(false);
 
   return (
@@ -27,25 +26,27 @@ function App() {
       <div className={`close ${showOptions ? 'active' : ''}`} onClick={() => setShowOptions(false)}></div>
       <div className="App">
         <Routes>
-          <Route path="/register" element={<SignUp/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path='/account' element={<Account/>}/>
-          <Route path='/products' element={<Shop/>}/>
-          <Route path='/products/:productId' element={<ProductDetails />} />
-          <Route path='/cart' element={<OpenCart />}/>
-          <Route path='/most-selling-product' element={<MostSelling />}/>
-          <Route path='/low-stock' element={<LowStock />}/>
-          <Route path='/product-sales' element={<ProductSales />}/>
-          <Route path='/category-sales' element={<CategorySales />}/>
-          <Route path='/' element={<AdminDash/>}>
-            <Route index path='/dashboard' element={<Dashboard/>}/>
-            <Route path='/users' element={<Users/>}/>
-            <Route path='/stock' element={<Products/>}/>
+          <Route path="/register" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/products" element={<Shop />} />
+          <Route path="/products/:productId" element={<ProductDetails />} />
+          <Route path="/cart" element={<OpenCart />} />
+          <Route path="/most-selling-product" element={<MostSelling />} />
+          <Route path="/low-stock" element={<LowStock />} />
+          <Route path="/product-sales" element={<ProductSales />} />
+          <Route path="/category-sales" element={<CategorySales />} />
+          
+          <Route path="/" element={<AdminDash />}>
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="users" element={<Users />} />
+            <Route path="stock" element={<Products />} />
           </Route>
         </Routes>
       </div>
     </>
   );
-};
+}
 
 export default App;

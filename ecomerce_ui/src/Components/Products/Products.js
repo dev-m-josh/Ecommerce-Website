@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import ActivateProduct from "./ActivateProduct";
 import NewProduct from "./NewProduct";
+import { toast } from "react-toastify";
+import axios from 'axios';
 
 export default function Products() {
     const [products, setProducts] = useState([]);
@@ -22,6 +24,79 @@ export default function Products() {
     const [newStockQuantity, setNewStockQuantity] = useState("");
     const [newProductDiscount, setNewProductDiscount] = useState("");
     const [showProductEdit, setShowProductEdit] = useState(false);
+
+    const handleProductRestore = async (ProductId) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:4500/products/activate-product/${ProductId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    }
+                }
+            );
+
+            const data = response.data;
+            toast.success(data.message);
+            
+            setProducts(prevProducts =>
+                prevProducts.map(product =>
+                    product.ProductId === ProductId
+                        ? { ...product, ProductStatus: 'Active' }
+                        : product
+                )
+            );
+
+        } catch (error) {
+            console.log("Activate error:", error);
+            if (error.response && error.response.data) {
+                setErrorMessage(error.response.data.message);
+                alert(error.response.data.message);
+            } else {
+                setErrorMessage('An unexpected error occurred.');
+                alert('An unexpected error occurred.');
+            }
+        }
+    };
+
+    const handleProductDeactivate = async (ProductId) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:4500/products/deactivate-product/${ProductId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    }
+                    
+                }
+            );
+
+            const data = response.data;
+            toast.success(data.message);
+            
+            setProducts(prevProducts =>
+                prevProducts.map(product =>
+                    product.ProductId === ProductId
+                        ? { ...product, ProductStatus: 'Inactive' }
+                        : product
+                )
+            );
+            
+        } catch (error) {
+            console.log("Deactivate error:", error);
+            if (error.response && error.response.data) {
+                setErrorMessage(error.response.data.message);
+                alert(error.response.data.message);
+            } else {
+                setErrorMessage('An unexpected error occurred.');
+                alert('An unexpected error occurred.');
+            }
+        }
+    };
 
     const toggleUserOptions = (productId) => {
         setShowUserOptions((prev) => (prev === productId ? null : productId));
@@ -214,9 +289,21 @@ export default function Products() {
                                         Options <FontAwesomeIcon className="icon user-icon" icon={faCaretDown} />
                                     </button>
 
-                                    {showUserOptions === product.ProductId && (
-                                        <div className="user-options">
-                                            <p onClick={() => { setShowRestoreProduct(true); setShowUserOptions(false); }}>Restore product.</p>
+                                            {showUserOptions === product.ProductId && (
+                                                <div className="user-options">
+                                            {product.ProductStatus === 'Active' ? (
+                                                <p style={{color: 'red'}}
+                                                    onClick={() => handleProductDeactivate(product.ProductId)}
+                                                >
+                                                    Deactivate product.
+                                                </p>
+                                            ) : (
+                                                <p
+                                                    onClick={() => handleProductRestore(product.ProductId)}
+                                                >
+                                                    Restore product.
+                                                </p>
+                                            )}
                                             <p onClick={() => {deleteProduct(product.ProductId); setShowUserOptions(false);}}>Delete product.</p>
                                             <p onClick={() => {setShowAddProduct(true); setShowUserOptions(false)}}>New product.</p>
                                             <p onClick={() => {setEditingProduct(product); setShowProductEdit(true); setShowUserOptions(false)}}>Edit product.</p>
@@ -312,12 +399,12 @@ export default function Products() {
                                 onChange={(e) => setNewProductDiscount(e.target.value)}
                             />
                         </div>
-                        <button onClick={handleProductEdit}
-                            // disabled={!newPrice || !newStockQuantity || newProductDiscount}
-                        >Save changes</button>
+                        <button onClick={handleProductEdit}>
+                            Save changes
+                        </button>
                     </div>
                 </div>
             )}
         </div>
     );
-}
+};
