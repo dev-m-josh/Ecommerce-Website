@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import ActivateProduct from "./ActivateProduct";
+import NewProduct from "./NewProduct";
 
 export default function Products() {
     const [products, setProducts] = useState([]);
@@ -15,7 +16,12 @@ export default function Products() {
     const navigate = useNavigate();
     const [showUserOptions, setShowUserOptions] = useState(null);
     const [showRestoreProduct, setShowRestoreProduct] = useState(false);
-    const [productToRestore, setProductToRestore] = useState(null);
+    const [showAddProduct, setShowAddProduct] = useState(false);
+    const [editingProduct, setEditingProduct] = useState(null);
+    const [newPrice, setNewPrice] = useState("");
+    const [newStockQuantity, setNewStockQuantity] = useState("");
+    const [newProductDiscount, setNewProductDiscount] = useState("");
+    const [showProductEdit, setShowProductEdit] = useState(false);
 
     const toggleUserOptions = (productId) => {
         setShowUserOptions((prev) => (prev === productId ? null : productId));
@@ -23,14 +29,72 @@ export default function Products() {
 
     const closeModal = () => {
         setShowRestoreProduct(false);
-        setProductToRestore(null);
+        setShowAddProduct(false);
+        setShowProductEdit(false);
     };
 
-    const handleRestoreProduct = (productId) => {
-        setShowRestoreProduct(true);
-        setProductToRestore(productId);
+    const productEdits ={
+        Price: newPrice,
+        StockQuantity:newStockQuantity,
+        ProductDiscount:newProductDiscount
+    }
+
+    const handleProductEdit = async () => {
+        if (!newPrice || !newStockQuantity || !newProductDiscount) {
+            alert("Please fill all the inputs!")
+            return;
+        };
+
+        try {
+            const response = await fetch(
+                `http://localhost:4500/products/edit/${editingProduct.ProductId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ 
+                        Price: productEdits.Price,
+                        StockQuantity: productEdits.StockQuantity,
+                        ProductDiscount: productEdits.ProductDiscount
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to edit product.");
+            };
+
+            setNewPrice("");
+            setNewStockQuantity("");
+            setNewProductDiscount("");
+            setShowProductEdit(false);
+            setProducts((prevProducts) =>
+                prevProducts.map((product) =>
+                    product.ProductId === editingProduct.ProductId
+                        ? { ...product, 
+                            Price: newPrice.toLocaleString(),
+                            StockQuantity: newStockQuantity, ProductDiscount:newProductDiscount 
+                        }
+                        : product
+                )
+            );
+
+        } catch (err) {
+            console.error("Error updating product:", err);
+            alert("Error updating product");
+        };
     };
 
+    useEffect(() => {
+        if (editingProduct) {
+            setNewPrice(editingProduct.Price);
+            setNewStockQuantity(editingProduct.StockQuantity);
+            setNewProductDiscount(editingProduct.ProductDiscount);
+        }
+    }, [editingProduct]);
+    
     const deleteProduct = async (productId) => {
         const confirmDelete = window.confirm('Are you sure you want to delete this product?');
 
@@ -99,6 +163,7 @@ export default function Products() {
 
         fetchProducts();
     }, [page, pageSize, token, navigate]);
+    
 
     const handleNextPage = () => {
         if (!noMoreProducts && !loading) {
@@ -151,10 +216,10 @@ export default function Products() {
 
                                     {showUserOptions === product.ProductId && (
                                         <div className="user-options">
-                                            <p onClick={() => { handleRestoreProduct(product.ProductId); setShowUserOptions(false); }}>Restore product.</p>
+                                            <p onClick={() => { setShowRestoreProduct(true); setShowUserOptions(false); }}>Restore product.</p>
                                             <p onClick={() => {deleteProduct(product.ProductId); setShowUserOptions(false);}}>Delete product.</p>
-                                            <p>New product.</p>
-                                            <p>Edit product.</p>
+                                            <p onClick={() => {setShowAddProduct(true); setShowUserOptions(false)}}>New product.</p>
+                                            <p onClick={() => {setEditingProduct(product); setShowProductEdit(true); setShowUserOptions(false)}}>Edit product.</p>
                                         </div>
                                     )}
                                 </td>
@@ -178,7 +243,78 @@ export default function Products() {
                 <div className="modal-overlay" onClick={() => closeModal()}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <button onClick={() => closeModal()}>X</button>
-                        <ActivateProduct productId={productToRestore} />
+                        <ActivateProduct />
+                    </div>
+                </div>
+            )}
+
+            {showAddProduct && (
+                <div className="modal-overlay" onClick={() => closeModal()}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button onClick={() => closeModal()}>X</button>
+                        <NewProduct />
+                    </div>
+                </div>
+            )}
+
+            {showProductEdit && (
+                <div className="modal-overlay" onClick={() => closeModal()}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button onClick={() => closeModal()}>X</button>
+                        <h4>Editing of {editingProduct.ProductName} will be done here.</h4>
+                        <div className="form-group">
+                            <label htmlFor="ProductName">ProductName:</label>
+                            <input 
+                                type="text"
+                                id="productName"
+                                name="productName"
+                                value={editingProduct.ProductName}
+                                disabled
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="description">Description:</label>
+                            <input 
+                                type="text"
+                                id="description"
+                                name="description"
+                                value={editingProduct.Description}
+                                disabled
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="price">Price:</label>
+                            <input 
+                                type="number"
+                                id="Price"
+                                name="Price"
+                                value={newPrice}
+                                onChange={(e) => setNewPrice(e.target.value)}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="stockQuantity">StockQuantity:</label>
+                            <input 
+                                type="number"
+                                id="stockQuantity"
+                                name="stockQuantity"
+                                value={newStockQuantity}
+                                onChange={(e) => setNewStockQuantity(e.target.value)}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="discount">ProductDiscount:</label>
+                            <input 
+                                type="number"
+                                id="discount"
+                                name="discount"
+                                value={newProductDiscount}
+                                onChange={(e) => setNewProductDiscount(e.target.value)}
+                            />
+                        </div>
+                        <button onClick={handleProductEdit}
+                            // disabled={!newPrice || !newStockQuantity || newProductDiscount}
+                        >Save changes</button>
                     </div>
                 </div>
             )}

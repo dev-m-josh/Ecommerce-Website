@@ -8,6 +8,7 @@ const {
     addNewProduct,
     getAllProducts,
     deleteProduct,
+    editProduct,
 } = require("../controllers/productsController");
 
 productsRouter.get('/inactive', getAllProducts);
@@ -17,5 +18,6 @@ productsRouter.get('/low-quantity', getLowQuantityProducts);
 productsRouter.put('/deactivate-product/:productId', deactivateProduct);
 productsRouter.put('/activate-product/:productId', activateProduct);
 productsRouter.post('/',addNewProduct);
+productsRouter.put('/edit/:productId', editProduct);
 
 module.exports = { productsRouter };

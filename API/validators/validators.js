@@ -27,7 +27,8 @@ const newProductSchema = joi.object({
   ProductName: joi.string().min(2).max(50).required(),
   Description: joi.string().min(2).max(250).required(),
   Price: joi.number().precision(2).positive().required(),
-  StockQuantity: joi.number().integer().min(1).required(),  Category: joi.string().max(50).required(),
+  StockQuantity: joi.number().integer().min(1).required(),
+  Category: joi.string().max(50).required(),
   ProductImage: joi.string().max(255),
   ProductDiscount: joi.number().integer().min(0)
 });
@@ -65,6 +66,13 @@ const updateOrderStatusSchema = joi.object({
   PaymentStatus: joi.string().valid('Pending', 'Paid').required().label('PaymentStatus')
 });
 
+// EDIT PRODUCT SCHEMA
+const editProductSchema = joi.object({
+  Price: joi.number().precision(2).positive().required(),
+  StockQuantity: joi.number().integer().min(1).required(),
+  ProductDiscount: joi.number().integer().min(0)
+});
+
 module.exports = { 
   newUserSchema,
   loginSchema,
@@ -74,5 +82,6 @@ module.exports = {
   orderItemSchema,
   orderDetailsSchema,
   updateItemQuantitySchema,
-  updateOrderStatusSchema
+  updateOrderStatusSchema,
+  editProductSchema
 };

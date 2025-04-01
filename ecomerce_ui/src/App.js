@@ -11,7 +11,6 @@ import OpenCart from './Components/Cart/OpenCart';
 import Dashboard from './Components/Dashboard';
 import Users from './Components/Users/Users';
 import UserRoles from './Components/Users/UserRoles';
-import NewProduct from './Components/Products/NewProduct';
 import MostSelling from './Components/Sales/MostSelling';
 import LowStock from './Components/Products/LowStock';
 import ProductSales from './Components/Sales/ProductSales';
@@ -36,7 +35,6 @@ function App() {
           <Route path='/products/:productId' element={<ProductDetails />} />
           <Route path='/cart' element={<OpenCart />}/>
           <Route path='/users-role' element={<UserRoles />}/>
-          <Route path='/new-product' element={<NewProduct />}/>
           <Route path='/most-selling-product' element={<MostSelling />}/>
           <Route path='/low-stock' element={<LowStock />}/>
           <Route path='/product-sales' element={<ProductSales />}/>

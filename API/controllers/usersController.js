@@ -281,10 +281,11 @@ function updateUserRole(req, res) {
   const { error, value } = editUserRoleSchema.validate(userEdits, {
     abortEarly: false,
   });
+
   if (error) {
     console.log(error);
     return res.status(400).json({ errors: error.details });
-  }
+  };
 
   pool.query(`
     UPDATE users
@@ -296,13 +297,13 @@ function updateUserRole(req, res) {
             message: "Internal server error.",
           });
           console.log("Error occured in query", err);
-          return
+          return;
         }
         // Check if any rows were affected
         if (result.rowsAffected[0] === 0) {
           return res.status(404).json({
             success: false,
-            message: `User with ID ${requestedUserId} not found.`,
+            message: `User with ID ${requestedUserId} not found.`
           });
         } else {
           res.json({

@@ -1,4 +1,4 @@
-const { newProductSchema } = require("../validators/validators");
+const { newProductSchema, editProductSchema } = require("../validators/validators");
 
 //display all products
 function getAllActiveProducts(req, res) {
@@ -229,6 +229,51 @@ function getProductDetails(req, res) {
     );
 };
 
+// edit product
+function editProduct(req, res) {
+    let pool = req.pool;
+    let productToEdit = req.params.productId;
+    let productEdits = req.body;
+
+    const {error, value } = editProductSchema.validate(productEdits, {
+        abortEarly: false
+    });
+
+    if (error) {
+        console.log(error);
+        return res.status(400).json({ errors: error.details });
+    };
+
+    pool.query(
+        `UPDATE products
+        SET Price = '${value.Price}', StockQuantity = '${value.StockQuantity}', ProductDiscount = '${value.ProductDiscount}'
+        WHERE ProductId = '${productToEdit}'`, (err, result) =>{
+            if (err) {
+                res.status(500).json({
+                  success: false,
+                  message: "Internal server error.",
+                });
+                console.log("Error occured in query", err);
+                return;
+            }
+
+            if (result.rowsAffected[0] === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Product with ID ${productToEdit} not found.`
+                });
+              } else {
+                res.json({
+                  success: true,
+                  message: "Update successfully done.",
+                  rowsAffected: result.rowsAffected,
+                  newProductDetails: productEdits,
+                });
+            };
+        } 
+    );
+};
+
 module.exports = {
     getAllActiveProducts,
     deleteProduct,
@@ -238,5 +283,6 @@ module.exports = {
     deactivateProduct,
     activateProduct,
     addNewProduct,
-    getProductDetails
+    getProductDetails,
+    editProduct
 };
