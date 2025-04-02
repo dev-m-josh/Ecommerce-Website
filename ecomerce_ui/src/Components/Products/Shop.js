@@ -82,7 +82,7 @@ export default function Shop() {
                 <div className="products-list">
                     {products.map((product) => (
                         <div 
-                            onClick={() => navigate(`/product/${product.ProductId}`)} className="product" 
+                            onClick={() => navigate(`/products/${product.ProductId}`)} className="product" 
                             key={product.ProductId}
                         >
                             <div className="offer">-{product.ProductDiscount}%</div>
