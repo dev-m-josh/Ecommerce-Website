@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -23,7 +21,6 @@ export default function SignUp() {
     const togglePassword = () => setShowPassword((prev) => !prev);
     const toggleConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
 
-    //submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage("");
@@ -73,13 +70,12 @@ export default function SignUp() {
                 Email: data.Email,
                 PhoneNumber: data.PhoneNumber,
                 UserRole: data.UserRole,
-                UserStatus: data.UserStatus
+                isActive: data.isActive
             };
 
             localStorage.setItem("signedUser", JSON.stringify(signedUpUser));
 
-            toast.success("You have successfully signed in!");
-            navigate("/products");
+            navigate("/");
             
         } catch (error) {
             console.error("There was an error during sign-up", error);

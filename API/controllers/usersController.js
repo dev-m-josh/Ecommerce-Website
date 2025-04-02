@@ -8,9 +8,8 @@ function getAllUsers(req, res) {
     let { page, pageSize } = req.query;
     let offset = (Number(page) - 1) * Number(pageSize);
     pool.query(
-        `SELECT UserId, FirstName, LastName, Email, PhoneNumber, UserRole, created_at
+        `SELECT *
         FROM users
-        WHERE UserStatus = 'Active'
         ORDER BY UserId ASC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`, (err, result) => {
             if (err) {
                 res.status(500).json({
@@ -24,6 +23,7 @@ function getAllUsers(req, res) {
         }
     );
 };
+
 
 //get user profile
 function getUserProfile(req, res) {
@@ -50,6 +50,8 @@ function getUserProfile(req, res) {
 async function addNewUser(req, res) {
     let pool = req.pool;
     let addedUser = req.body;
+
+    console.log(addedUser)
 
     const { error, value } = newUserSchema.validate(addedUser, {
         abortEarly: false
@@ -142,6 +144,38 @@ function deactivateUser(req, res) {
             result: result.rowsAffected,
         });
     });
+};
+
+//deactivate user account
+function restoreUser(req, res) {
+  let pool = req.pool;
+  let requestedId = req.params.userId;
+  pool.query(`
+    UPDATE users SET UserStatus = 'Active' WHERE UserId = ${requestedId}`, (err, result) =>{
+      if (err) {
+          res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+          });
+          console.log("Error occured in query", err);
+        }
+
+      //CHECK IF REQUESTED USER IS AVAILABLE
+      if (result.rowsAffected[0] === 0) {
+          res.status(400).json({
+          success: false,
+          message: "User not found!",
+          });
+          return;
+      }
+
+      //RESPONSE
+      res.json({
+          success: true,
+          message: "User restored successfully!",
+          result: result.rowsAffected,
+      });
+  });
 };
 
 //login user
@@ -271,6 +305,7 @@ async function userLogin(req, res) {
   }
   
   
+  
   // EDIT USER ROLE
 function updateUserRole(req, res) {
   let pool = req.pool;
@@ -317,4 +352,14 @@ function updateUserRole(req, res) {
   )
 }
 
-module.exports = { getAllUsers, addNewUser, deleteUser, deactivateUser, userLogin, updateUserPassword, updateUserRole, getUserProfile };
+module.exports = { 
+  getAllUsers,
+  addNewUser, 
+  deleteUser,
+  deactivateUser,
+  userLogin,
+  updateUserPassword,
+  updateUserRole,
+  getUserProfile,
+  restoreUser 
+};
