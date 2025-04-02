@@ -89,8 +89,8 @@ export default function Header({ showOptions, setShowOptions }) {
             if (error.response.data) {
                 setErrorMessage(error.response.data.message);
                 alert(errorMessage);
-            } 
-        }
+            };
+        };
     };
 
     // Toggle the display of options
@@ -104,7 +104,7 @@ export default function Header({ showOptions, setShowOptions }) {
                 {/* Larger Screen Layout */}
                 <div className="larger-screen">
                     <div className="logo">
-                        <Link to="/">
+                        <Link to="/product">
                             <img src="/logo.webp" alt="Logo" />
                         </Link>
                     </div>

@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState, useCallback  } from "react";
 import NewProduct from "./NewProduct";
 import { toast } from "react-toastify";
 import axios from 'axios';
+import '../Users/Users.css'
 
 export default function Products() {
     const [products, setProducts] = useState([]);
@@ -14,7 +12,6 @@ export default function Products() {
     const [pageSize] = useState(10);
     const [noMoreProducts, setNoMoreProducts] = useState(false);
     const token = localStorage.getItem('token');
-    const navigate = useNavigate();
     const [showUserOptions, setShowUserOptions] = useState(null);
     const [showAddProduct, setShowAddProduct] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
@@ -24,42 +21,34 @@ export default function Products() {
     const [showProductEdit, setShowProductEdit] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
+    const [statusFilter, setStatusFilter] = useState("active");
 
-    const handleProductRestore = async (ProductId) => {
+    const fetchUpdatedProducts = useCallback(async () => {
         try {
-            const response = await axios.put(
-                `http://localhost:4500/products/activate-product/${ProductId}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    }
-                }
-            );
-
-            const data = response.data;
-            toast.success(data.message);
-            
-            setProducts(prevProducts =>
-                prevProducts.map(product =>
-                    product.ProductId === ProductId
-                        ? { ...product, ProductStatus: 'Active' }
-                        : product
-                )
-            );
-
-        } catch (error) {
-            console.log("Activate error:", error);
-            if (error.response && error.response.data) {
-                setErrorMessage(error.response.data.message);
-                alert(error.response.data.message);
-            } else {
-                setErrorMessage('An unexpected error occurred.');
-                alert('An unexpected error occurred.');
-            }
+            const endpoint =
+                statusFilter === "active"
+                    ? `http://localhost:4500/products?page=${page}&pageSize=${pageSize}`
+                    : `http://localhost:4500/products/inactive?page=${page}&pageSize=${pageSize}`;
+        
+            const response = await fetch(endpoint, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+        
+            const data = await response.json();
+            setProducts(data);
+        } catch (err) {
+            console.error("Error fetching products:", err);
         }
-    };
+    }, [statusFilter, page, pageSize, token]);
+    
+    useEffect(() => {
+        fetchUpdatedProducts();
+    }, [statusFilter, fetchUpdatedProducts]);
+    
 
     const handleProductDeactivate = async (ProductId) => {
         try {
@@ -70,22 +59,25 @@ export default function Products() {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
-                    }
-                    
+                    },
                 }
             );
-
+        
             const data = response.data;
             toast.success(data.message);
             
-            setProducts(prevProducts =>
-                prevProducts.map(product =>
+            setProducts((prevProducts) => {
+                const updatedProducts = prevProducts.map((product) =>
                     product.ProductId === ProductId
                         ? { ...product, ProductStatus: 'Inactive' }
                         : product
-                )
-            );
+                );
+                return updatedProducts;
+            });
+
+            fetchUpdatedProducts();
             
+            console.log(products)
         } catch (error) {
             console.log("Deactivate error:", error);
             if (error.response && error.response.data) {
@@ -97,6 +89,47 @@ export default function Products() {
             }
         }
     };
+    
+    
+    const handleProductRestore = async (ProductId) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:4500/products/activate-product/${ProductId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+        
+            const data = response.data;
+            toast.success(data.message);
+            
+            setProducts((prevProducts) => {
+                const updatedProducts = prevProducts.map((product) =>
+                    product.ProductId === ProductId
+                        ? { ...product, ProductStatus: 'Active' }
+                        : product
+                );
+                return updatedProducts;
+            });
+
+            fetchUpdatedProducts();
+            
+        } catch (error) {
+            console.log("Activate error:", error);
+            if (error.response && error.response.data) {
+                setErrorMessage(error.response.data.message);
+                alert(error.response.data.message);
+            } else {
+                setErrorMessage('An unexpected error occurred.');
+                alert('An unexpected error occurred.');
+            }
+        }
+    };
+        
 
     const toggleUserOptions = (productId) => {
         setShowUserOptions((prev) => (prev === productId ? null : productId));
@@ -193,7 +226,6 @@ export default function Products() {
             setProducts((prevProducts) => prevProducts.filter(product => product.ProductId !== productToDelete));
             setShowUserOptions(null);
             setShowDeleteModal(false);
-            alert('Product deleted successfully!');
         } catch (error) {
             setErrorMessage(error.message);
             alert('Error deleting product: ' + error.message);
@@ -208,42 +240,50 @@ export default function Products() {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-
-                const response = await fetch(
-                    `http://localhost:4500/products/inactive?page=${page}&pageSize=${pageSize}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        }
-                    }
-                );
-
+                const endpoint =
+                    statusFilter === "active"
+                        ? `http://localhost:4500/products?page=${page}&pageSize=${pageSize}`
+                        : `http://localhost:4500/products/inactive?page=${page}&pageSize=${pageSize}`;
+    
+                const response = await fetch(endpoint, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+    
                 if (!response.ok) {
                     throw new Error(`${response.statusText}`);
                 }
-
+    
                 const data = await response.json();
-
+    
                 if (data.length < pageSize) {
                     setNoMoreProducts(true);
                 } else {
                     setNoMoreProducts(false);
                 }
-
+    
                 setProducts(data);
             } catch (err) {
                 console.error("Error fetching products:", err);
-                setErrorMessage("There was an error fetching the products. Please try again later.");
+                setErrorMessage(
+                    "There was an error fetching the products. Please try again later."
+                );
             } finally {
                 setLoading(false);
             }
         };
-
+    
         fetchProducts();
-    }, [page, pageSize, token, navigate]);
+    }, [page, pageSize, token, statusFilter]);
+    
 
+    const handleFilterChange = (e) => {
+        setStatusFilter(e.target.value);
+        setPage(1);
+    };
 
     const handleNextPage = () => {
         if (!noMoreProducts && !loading) {
@@ -267,58 +307,69 @@ export default function Products() {
 
     return (
         <div className="products">
+            <div className="products-header">
+                <h2>Products</h2>
+                <select value={statusFilter} onChange={handleFilterChange}>
+                    <option value="active">Active products</option>
+                    <option value="inactive">Inactive products</option>
+                </select>
+                <button onClick={() => { setShowAddProduct(true); setShowUserOptions(false) }}>New product</button>
+            </div>
             {products.length === 0 ? (
                 <div>No products available to display.</div>
             ) : (
-                <table className="users-table">
-                    <thead>
-                        <tr>
-                            <th>Product Name</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Stock Quantity</th>
-                            <th>Discount</th>
-                            <th className="actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products.map((product) => (
-                            <tr key={product.ProductId}>
-                                <td>{product.ProductName}</td>
-                                <td>{product.Category}</td>
-                                <td>{product.Price.toLocaleString()}</td>
-                                <td>{product.StockQuantity}</td>
-                                <td>{product.ProductDiscount}</td>
-                                <td className="options">
-                                    <button onClick={() => toggleUserOptions(product.ProductId)}>
-                                        Options <FontAwesomeIcon className="icon user-icon" icon={faCaretDown} />
-                                    </button>
-
-                                            {showUserOptions === product.ProductId && (
-                                                <div className="user-options">
-                                            {product.ProductStatus === 'Active' ? (
-                                                <p style={{color: 'red'}}
-                                                    onClick={() => handleProductDeactivate(product.ProductId)}
-                                                >
-                                                    Deactivate product.
-                                                </p>
-                                            ) : (
-                                                <p
-                                                    onClick={() => handleProductRestore(product.ProductId)}
-                                                >
-                                                    Restore product.
-                                                </p>
-                                            )}
-                                            <p onClick={() => {confirmDeleteProduct(product.ProductId); setShowUserOptions(false);}}>Delete product.</p>
-                                            <p onClick={() => {setShowAddProduct(true); setShowUserOptions(false)}}>New product.</p>
-                                            <p onClick={() => {setEditingProduct(product); setShowProductEdit(true); setShowUserOptions(false)}}>Edit product.</p>
-                                        </div>
+            <table className="users-table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock Quantity</th>
+                        <th>Discount</th>
+                        <th className="actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {products.map((product) => (
+                        <tr key={product.ProductId}>
+                            <td>{product.ProductName}</td>
+                            <td>{product.Category}</td>
+                            <td>{product.Price.toLocaleString()}</td>
+                            <td>{product.StockQuantity}</td>
+                            <td>{product.ProductDiscount}</td>
+                            <td className="options">
+                                <select
+                                    value={showUserOptions === product.ProductId ? product.ProductId : ''}
+                                    onChange={(e) => {
+                                        const selectedOption = e.target.value;
+                                        if (selectedOption === "deactivate" && product.ProductStatus === 'Active') {
+                                            handleProductDeactivate(product.ProductId);
+                                        } else if (selectedOption === "restore" && product.ProductStatus === 'Inactive') {
+                                            handleProductRestore(product.ProductId);
+                                        } else if (selectedOption === "delete") {
+                                            confirmDeleteProduct(product.ProductId);
+                                        } else if (selectedOption === "edit") {
+                                            setEditingProduct(product);
+                                            setShowProductEdit(true);
+                                        }
+                                        setShowUserOptions(null);
+                                    }}
+                                    onClick={() => toggleUserOptions(product.ProductId)}
+                                >
+                                    <option value="">Select Action</option>
+                                    {product.ProductStatus === 'Active' ? (
+                                        <option value="deactivate">Deactivate product</option>
+                                    ) : (
+                                        <option value="restore">Restore product</option>
                                     )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                    <option value="delete">Delete product</option>
+                                    <option value="edit">Edit product</option>
+                                </select>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
             )}
 
             <div className="pagination">
@@ -334,7 +385,7 @@ export default function Products() {
             {showAddProduct && (
                 <div className="modal-overlay" onClick={() => closeModal()}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button onClick={() => closeModal()}>X</button>
+                        <button className="modal-close" onClick={() => closeModal()}>X</button>
                         <NewProduct />
                     </div>
                 </div>
@@ -343,8 +394,7 @@ export default function Products() {
             {showProductEdit && (
                 <div className="modal-overlay" onClick={() => closeModal()}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button onClick={() => closeModal()}>X</button>
-                        <h4>Editing of {editingProduct.ProductName} will be done here.</h4>
+                        <button className="modal-close" onClick={() => closeModal()}>X</button>
                         <div className="form-group">
                             <label htmlFor="ProductName">ProductName:</label>
                             <input 
@@ -405,7 +455,7 @@ export default function Products() {
             {showDeleteModal && (
                 <div className="modal-overlay" onClick={handleDeleteCancel}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h3>Are you sure you want to delete this product?</h3>
+                        <h3>Are you sure you want to delete this product completely?</h3>
                         <div className="modal-actions">
                             <button onClick={deleteProduct}>Yes, delete</button>
                             <button onClick={handleDeleteCancel}>Cancel</button>

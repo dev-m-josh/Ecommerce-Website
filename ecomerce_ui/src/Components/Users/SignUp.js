@@ -38,8 +38,8 @@ export default function SignUp() {
             return;
         };
 
-        if (password.length < 6) {
-            setErrorMessage("Password should be at least 6 characters long");
+        if (password.length < 8) {
+            setErrorMessage("Password should be at least 8 characters long");
             return;
         };
 
@@ -79,14 +79,14 @@ export default function SignUp() {
             localStorage.setItem("signedUser", JSON.stringify(signedUpUser));
 
             toast.success("You have successfully signed in!");
-            navigate("/");
+            navigate("/products");
             
         } catch (error) {
             console.error("There was an error during sign-up", error);
             setErrorMessage("An error occurred. Please try again.");
         };
 
-    }
+    };
 
     return(
         <div className="login-form">

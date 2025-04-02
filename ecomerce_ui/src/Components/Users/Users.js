@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import './Users.css'
 
 export default function Users() {
+    const user = JSON.parse(localStorage.getItem("signedUser"));
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -20,6 +19,13 @@ export default function Users() {
     const [userToDelete, setUserToDelete] = useState(null);
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!token || !user.UserRole === "Admin") {
+            navigate('/products');
+            return;
+        };
+    });
 
     const handleRoleUpdate = async () => {
         if (!newRole) {
@@ -111,7 +117,6 @@ export default function Users() {
             setUsers((prevUsers) => prevUsers.filter(user => user.UserId !== userToDelete));
             setShowUserOptions(null);
             setShowDeleteModal(false);
-            alert('User deleted successfully!');
         } catch (error) {
             setErrorMessage(error.message);
             alert('Error deleting user!');
@@ -218,17 +223,26 @@ export default function Users() {
                                 <td>{user.Email}</td>
                                 <td>{user.PhoneNumber}</td>
                                 <td className="options">
-                                    <button onClick={() => toggleUserOptions(user.UserId)}>
-                                        Options <FontAwesomeIcon className="icon user-icon" icon={faCaretDown} />
-                                    </button>
-
-                                    {showUserOptions === user.UserId && (
-                                        <div className="user-options">
-                                            <p onClick={() =>{ setEditingUser(user); setShowUserOptions(false)}}>Update user role.</p>
-                                            <p onClick={() =>{ confirmDeleteUser(user.UserId); setShowUserOptions(false)}}>Delete user.</p>
-                                            <p onClick={() =>{ fetchUserDetails(user.UserId); setShowUserOptions(false)}}>View profile.</p>
-                                        </div>
-                                    )}
+                                    <select
+                                        value={showUserOptions === user.UserId ? user.UserId : ''}
+                                        onChange={(e) => {
+                                            const selectedOption = e.target.value;
+                                            if (selectedOption === "details") {
+                                                fetchUserDetails(user.UserId);
+                                            } else if (selectedOption === "delete") {
+                                                confirmDeleteUser(user.UserId);
+                                            } else if (selectedOption === "edit") {
+                                                setEditingUser(user);
+                                            }
+                                            setShowUserOptions(null);
+                                        }}
+                                        onClick={() => toggleUserOptions(user.UserId)}
+                                    >
+                                        <option value="">Select Action</option>
+                                        <option value="details">View profile.</option>
+                                        <option value="delete">Delete User.</option>
+                                        <option value="edit">Edit user.</option>
+                                    </select>
                                 </td>
                             </tr>
                         ))}
@@ -258,15 +272,15 @@ export default function Users() {
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <h2>User Profile</h2>
-                        <button className="close-btn" onClick={closeModal}>X</button>
+                        <button className="modal-close" onClick={closeModal}>X</button>
                         {userDetails && (
-                            <div>
+                            <div className="user-details">
                                 <p><strong>First Name:</strong> {userDetails.FirstName}</p>
                                 <p><strong>Last Name:</strong> {userDetails.LastName}</p>
                                 <p><strong>Email:</strong> {userDetails.Email}</p>
                                 <p><strong>Phone Number:</strong> {userDetails.PhoneNumber}</p>
                                 <p><strong>Role:</strong> {userDetails.UserRole}</p>
-                                <p><strong>Created At:</strong> {userDetails.created_at}</p>
+                                <p><strong>Created At:</strong> {userDetails.created_at.split('T')[0]}</p>
                             </div>
                         )}
                     </div>
@@ -319,7 +333,7 @@ export default function Users() {
                                 value={newRole}
                                 onChange={(e) => setNewRole(e.target.value)}
                             >
-                                <option value="">Select a role</option>
+                                <option value="">{editingUser.UserRole}</option>
                                 <option value="Admin">Admin</option>
                                 <option value="Customer">Customer</option>
                             </select>

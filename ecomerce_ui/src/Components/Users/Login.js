@@ -53,7 +53,7 @@ export default function Login() {
 
                 localStorage.setItem("signedUser", JSON.stringify(loggedInUser));
 
-                navigate("/");
+                navigate("/products");
             };
             
         } catch (error) {

@@ -28,8 +28,8 @@ export default function Account() {
         setLoading(true);
         setErrorMessage(""); 
 
-        if (newPassword.length < 6) {
-            setErrorMessage("New password must be at least 6 characters long.");
+        if (newPassword.length < 8) {
+            setErrorMessage("New password must be at least 8 characters long.");
             setLoading(false);
             return;
         }

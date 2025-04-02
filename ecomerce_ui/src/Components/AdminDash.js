@@ -5,10 +5,11 @@ import '../Styles/Dashboard.css'
 
 export default function AdminDash() {
     const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem("signedUser"));
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!token) {
+        if (!token || !user.UserRole === "Admin") {
             navigate('/products');
             return;
         };
@@ -33,5 +34,5 @@ export default function AdminDash() {
                 </Outlet>
             </div>
         </div>
-    )
-}
+    );
+};
