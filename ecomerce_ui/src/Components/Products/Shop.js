@@ -19,7 +19,7 @@ export default function Shop() {
                 setLoading(true);
 
                 const response = await fetch(
-                    `http://localhost:4500/products?page=${page}&pageSize=${pageSize}`,
+                    `http://localhost:4500/products/instock?page=${page}&pageSize=${pageSize}&inStock='1'`,
                     {
                         method: "GET",
                         headers: {

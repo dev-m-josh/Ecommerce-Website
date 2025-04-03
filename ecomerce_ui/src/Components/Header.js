@@ -71,7 +71,7 @@ export default function Header({ showOptions, setShowOptions }) {
 
         try {
             const response = await axios.put(
-                `http://localhost:4500/users/deactivate-user/${user.UserId}`,
+                `http://localhost:4500/users/deactivate-user/${user.UserId}?isActive=0`,
                 {},
                 {
                     headers: {

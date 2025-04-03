@@ -5,11 +5,12 @@ const { newUserSchema, loginSchema, editUserRoleSchema } = require("../validator
 //get all users
 function getAllUsers(req, res) {
     let pool = req.pool;
-    let { page, pageSize } = req.query;
+    let { page, pageSize, activeUsers } = req.query;
     let offset = (Number(page) - 1) * Number(pageSize);
     pool.query(
         `SELECT *
         FROM users
+        WHERE isActive = ${activeUsers}
         ORDER BY UserId ASC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`, (err, result) => {
             if (err) {
                 res.status(500).json({
@@ -112,11 +113,12 @@ function deleteUser(req, res) {
     });
 };
 
-//deactivate user account
+//deactivate or restore user account
 function deactivateUser(req, res) {
     let pool = req.pool;
+    let { isActive } = req.query;
     let requestedId = req.params.userId;
-    pool.query(`UPDATE users SET isActive = 0 WHERE UserId = ${requestedId}`, (err, result) =>{
+    pool.query(`UPDATE users SET isActive = ${isActive} WHERE UserId = ${requestedId}`, (err, result) =>{
         if (err) {
             res.status(500).json({
               success: false,
@@ -141,38 +143,6 @@ function deactivateUser(req, res) {
             result: result.rowsAffected,
         });
     });
-};
-
-//deactivate user account
-function restoreUser(req, res) {
-  let pool = req.pool;
-  let requestedId = req.params.userId;
-  pool.query(`
-    UPDATE users SET isActive = 1 WHERE UserId = ${requestedId}`, (err, result) =>{
-      if (err) {
-          res.status(500).json({
-            success: false,
-            message: "Internal server error.",
-          });
-          console.log("Error occured in query", err);
-        }
-
-      //CHECK IF REQUESTED USER IS AVAILABLE
-      if (result.rowsAffected[0] === 0) {
-          res.status(400).json({
-          success: false,
-          message: "User not found!",
-          });
-          return;
-      }
-
-      //RESPONSE
-      res.json({
-          success: true,
-          message: "User restored successfully!",
-          result: result.rowsAffected,
-      });
-  });
 };
 
 async function userLogin(req, res) {
@@ -362,5 +332,4 @@ module.exports = {
   updateUserPassword,
   updateUserRole,
   getUserProfile,
-  restoreUser 
 };

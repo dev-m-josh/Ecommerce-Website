@@ -22,17 +22,8 @@ export default function Users() {
     const [userToDelete, setUserToDelete] = useState(null);
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
-    const [showAddUser, setShowAddUser] = useState(false);
-    const [userStatusFilter, setUserStatusFilter] = useState('active');
-
-    const handleStatusFilterChange = (event) => {
-        setUserStatusFilter(event.target.value);
-        setPage(1);
-    };
-
-    const filteredUsers = users.filter((user) => {
-        return userStatusFilter === 'active' ? user.isActive === true : user.isActive === false;
-    });    
+    const [showAddUser, setShowAddUser] = useState(false);  
+    const [activeUsers, setActiveUsers] = useState('active');
 
     useEffect(() => {
         if (!token || user.UserRole !== "Admin") {
@@ -44,7 +35,7 @@ export default function Users() {
     const fetchUpdatedUsers = useCallback(async () => {
         try {
             const endpoint =
-                    `http://localhost:4500/users?page=${page}&pageSize=${pageSize}`
+                    `http://localhost:4500/users?page=${page}&pageSize=${pageSize}&activeUsers=${activeUsers === 'active' ? '1' : '0'}`
         
             const response = await fetch(endpoint, {
                 method: "GET",
@@ -57,18 +48,20 @@ export default function Users() {
             const data = await response.json();
             setUsers(data);
         } catch (err) {
-            console.error("Error fetching products:", err);
+            console.error("Error fetching users:", err);
         }
-    }, [page, pageSize, token]);
+    }, [page, pageSize, token, activeUsers]);
 
     useEffect(() => {
         fetchUpdatedUsers();
     }, [fetchUpdatedUsers]);
 
-    const handleUserDeactivate = async (UserId) => {
+    const handleUserDeactivateOrRestore = async (UserId, action) => {
         try {
+            const isActive = (action === 'deactivate' ? '0' : '1');
+    
             const response = await axios.put(
-                `http://localhost:4500/users/deactivate-user/${UserId}`,
+                `http://localhost:4500/users/deactivate-user/${UserId}?isActive=${isActive}`,
                 {},
                 {
                     headers: {
@@ -77,23 +70,23 @@ export default function Users() {
                     },
                 }
             );
-        
+    
             const data = response.data;
             toast.success(data.message);
-            
+    
             setUsers((prevUsers) => {
                 const updatedUsers = prevUsers.map((user) =>
                     user.UserId === UserId
-                        ? { ...user, UserStatus: 'Inactive' }
+                        ? { ...user, isActive: action === 'deactivate' ? false : true }
                         : user
                 );
                 return updatedUsers;
             });
-
+    
             fetchUpdatedUsers();
-            
+    
         } catch (error) {
-            console.log("Deactivate error:", error);
+            console.log("Error:", error);
             if (error.response && error.response.data) {
                 setErrorMessage(error.response.data.message);
                 alert(error.response.data.message);
@@ -103,46 +96,7 @@ export default function Users() {
             }
         }
     };
-
-    const handleUserRestore = async (UserId) => {
-        try {
-            const response = await axios.put(
-                `http://localhost:4500/users/activate-user/${UserId}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-        
-            const data = response.data;
-            toast.success(data.message);
-            
-            setUsers((prevUsers) => {
-                const updatedUsers = prevUsers.map((user) =>
-                    user.UserId === UserId
-                        ? { ...user, UserStatus: 'Active' }
-                        : user
-                );
-                return updatedUsers;
-            });
-
-            fetchUpdatedUsers();
-            
-        } catch (error) {
-            console.log("Deactivate error:", error);
-            if (error.response && error.response.data) {
-                setErrorMessage(error.response.data.message);
-                alert(error.response.data.message);
-            } else {
-                setErrorMessage('An unexpected error occurred.');
-                alert('An unexpected error occurred.');
-            }
-        }
-    };
-
+       
     const handleRoleUpdate = async () => {
         if (!newRole) {
             alert("Please select a role.");
@@ -254,7 +208,7 @@ export default function Users() {
             try {
                 setLoading(true);
                 const endpoint =
-                 `http://localhost:4500/users?page=${page}&pageSize=${pageSize}`
+                 `http://localhost:4500/users?page=${page}&pageSize=${pageSize}&activeUsers=${activeUsers === 'active' ? '1' : '0'}`
 
                 const response = await fetch(endpoint,
                     {
@@ -287,7 +241,7 @@ export default function Users() {
         };
 
         fetchUsers();
-    }, [page, pageSize, navigate, token]);
+    }, [page, pageSize, navigate, token, activeUsers]);
 
     const handleNextPage = () => {
         if (!noMoreUsers && !loading) {
@@ -320,15 +274,15 @@ export default function Users() {
         <div className="users">
             <div className="products-header">
                 <h2>Users</h2>
-                <select value={userStatusFilter} onChange={handleStatusFilterChange}>
+                <select onChange={(e) => setActiveUsers(e.target.value)} value={activeUsers}>
                     <option value="active">Active users</option>
                     <option value="inactive">Inactive users</option>
                 </select>
                 <button onClick={() => setShowAddUser(true)}>New User</button>
             </div>
             
-            {filteredUsers.length === 0 ? (
-                <div>No {userStatusFilter} users available to display.</div>
+            {users.length === 0 ? (
+                <div>No {activeUsers} users available to display.</div>
             ) : (
                 <table className="users-table">
                     <thead>
@@ -342,7 +296,7 @@ export default function Users() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredUsers.map((user) => (
+                        {users.map((user) => (
                             <tr key={user.UserId}>
                                 <td>{user.FirstName}</td>
                                 <td>{user.LastName}</td>
@@ -355,9 +309,9 @@ export default function Users() {
                                         onChange={(e) => {
                                             const selectedOption = e.target.value;
                                             if (selectedOption === "deactivate" && user.isActive === true) {
-                                                handleUserDeactivate(user.UserId);
+                                                handleUserDeactivateOrRestore(user.UserId, 'deactivate');
                                             } else if (selectedOption === "restore" && user.isActive === false) {
-                                                handleUserRestore(user.UserId);
+                                                handleUserDeactivateOrRestore(user.UserId, 'restore');
                                             } else if (selectedOption === "details") {
                                                 fetchUserDetails(user.UserId);
                                             } else if (selectedOption === "delete") {
@@ -376,11 +330,9 @@ export default function Users() {
                                             <option value="restore">Restore user</option>
                                         )}
                                         <option value="details">View profile</option>
-                                        {/* <option value="delete">Delete User</option> */}
                                         <option value="edit">Edit user</option>
                                     </select>
                                 </td>
-
                             </tr>
                         ))}
                     </tbody>

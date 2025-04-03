@@ -1,23 +1,5 @@
 const { newProductSchema, editProductSchema } = require("../validators/validators");
 
-//display all products
-function getAllActiveProducts(req, res) {
-    let pool = req.pool;
-    let { page, pageSize } = req.query;
-    let offset = (Number(page) - 1) * Number(pageSize);
-    pool.query(
-        `SELECT * FROM products WHERE inStock = 1 ORDER BY ProductId OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
-        (err, result) =>{
-            if (err) {
-                console.log("Error occured in query:", err);
-                return res.status(500).json({ message: "Error fetching products!"});
-            } else {
-                res.json(result.recordset);
-            };
-        }
-    );
-};
-
 //delete a product compeletely
 function deleteProduct(req, res) {
     let pool = req.pool;
@@ -49,10 +31,10 @@ function deleteProduct(req, res) {
 
 function getAllProducts(req, res) {
     let pool = req.pool;
-    let { page, pageSize } = req.query;
+    let { page, pageSize, inStock } = req.query;
     let offset = (Number(page) - 1) * Number(pageSize);
     pool.query(
-        `SELECT * FROM products ORDER BY ProductId OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+        `SELECT * FROM products WHERE inStock = ${inStock} ORDER BY ProductId OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
         (err, result) =>{
             if (err) {
                 console.log("Error occured in query:", err);
@@ -112,11 +94,12 @@ function getLowQuantityProducts(req, res) {
 //deactivate a product
 function deactivateProduct(req, res) {
     let pool = req.pool;
+    let { inStock } = req.query;
     let requestedProductId = req.params.productId;
 
     pool.query(
         `UPDATE products
-        SET ProductStatus = 'Inactive'
+        SET inStock = ${inStock}
         WHERE ProductId = ${requestedProductId}`, (err, result) =>{
             if (err) {
                 res.status(500).json({
@@ -141,39 +124,6 @@ function deactivateProduct(req, res) {
             }
         }
     );
-};
-
-function activateProduct (req, res){
-    let pool = req.pool;
-    let requestedProductId = req.params.productId;
-
-    pool.query(
-        `UPDATE products
-        SET ProductStatus = 'Active'
-        WHERE ProductId = ${requestedProductId}`, (err, result) =>{
-            if (err) {
-                res.status(500).json({
-                    success: false,
-                    message: "Internal server error."
-                });
-                console.log("Error occured in query", err);
-                return;
-            };
-
-            if (result.rowsAffected[0] === 0) {
-                return res.status(404).json({
-                success: false,
-                message: `Product with ID ${requestedProductId} not found.`,
-                });
-            } else {
-                res.json({
-                success: true,
-                message: "Product was successfully restored.",
-                rowsAffected: result.rowsAffected,
-                });
-            }
-        }
-    )
 };
 
 //add new product
@@ -275,13 +225,11 @@ function editProduct(req, res) {
 };
 
 module.exports = {
-    getAllActiveProducts,
     deleteProduct,
     getAllProducts,
     getMostSellingProduct,
     getLowQuantityProducts,
     deactivateProduct,
-    activateProduct,
     addNewProduct,
     getProductDetails,
     editProduct,

@@ -7,6 +7,5 @@ usersRouter.delete('/:userId');
 usersRouter.put('/deactivate-user/:userId', deactivateUser);
 usersRouter.put('/password/:userId', updateUserPassword);
 usersRouter.put('/role/:userId', updateUserRole);
-usersRouter.put('/activate-user/:userId', restoreUser);
 
 module.exports = { usersRouter };
