@@ -71,7 +71,7 @@ export default function Header({ showOptions, setShowOptions }) {
 
         try {
             const response = await axios.put(
-                `http://localhost:4500/users/deactivate/${user.UserId}`,
+                `http://localhost:4500/users/deactivate-user/${user.UserId}`,
                 {},
                 {
                     headers: {
@@ -114,7 +114,7 @@ export default function Header({ showOptions, setShowOptions }) {
                             <li>
                                 <Link
                                     to="/products"
-                                    className={`${currentPath === '/' ? 'active' : ''}`}
+                                    className={`${currentPath === '/products' ? 'active' : ''}`}
                                 >
                                     Home
                                 </Link>
@@ -171,7 +171,7 @@ export default function Header({ showOptions, setShowOptions }) {
                 <div className="smaller-screen">
                     <div className="mini-header">
                         <div className="logo">
-                            <Link to="/">
+                            <Link to="/products">
                                 <img src="/logo.webp" alt="Logo" />
                             </Link>
                         </div>
@@ -211,7 +211,7 @@ export default function Header({ showOptions, setShowOptions }) {
                         <ul>
                             <li>
                                 <Link
-                                    to="/"
+                                    to="/products"
                                     className={`${currentPath === '/shop' ? 'active' : ''}`}
                                     onClick={toggleMenu}
                                 >
@@ -228,7 +228,7 @@ export default function Header({ showOptions, setShowOptions }) {
                                 </Link>
                             </li>
                             {isAdmin && (
-                                <Link className='dashboard-link' to="/dashboard">
+                                <Link className='dashboard-link' to="/">
                                     Dashboard
                                 </Link>
                             )}

@@ -62,8 +62,6 @@ const updateItemQuantitySchema = joi.object({
 const updateOrderStatusSchema = joi.object({
   OrderId: joi.number().integer().required().label('OrderId'),
   UserId: joi.number().integer().required().label('UserId'),
-  OrderStatus: joi.string().valid('Pending', 'Delivered').required().label('OrderStatus'),
-  PaymentStatus: joi.string().valid('Pending', 'Paid').required().label('PaymentStatus')
 });
 
 // EDIT PRODUCT SCHEMA

@@ -9,13 +9,11 @@ const {
     getAllProducts,
     deleteProduct,
     editProduct,
-    getInctiveProducts,
     getAllActiveProducts,
 } = require("../controllers/productsController");
 
 productsRouter.get('/', getAllActiveProducts);
-productsRouter.get('/inactive', getInctiveProducts);
-productsRouter.delete('/:productId', deleteProduct)
+productsRouter.delete('/:productId', deleteProduct);
 productsRouter.get('/most-selling', getMostSellingProduct);
 productsRouter.get('/low-quantity', getLowQuantityProducts);
 productsRouter.put('/deactivate-product/:productId', deactivateProduct);

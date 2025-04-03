@@ -7,9 +7,8 @@ export default function AdminDash() {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem("signedUser"));
     const navigate = useNavigate();
-
     useEffect(() => {
-        if (!token || !user.UserRole === "Admin") {
+        if (!token || user.UserRole !== "Admin") {
             navigate('/products');
             return;
         };

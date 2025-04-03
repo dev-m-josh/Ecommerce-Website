@@ -48,12 +48,13 @@ export default function Login() {
                     PhoneNumber: data.user.phoneNumber,
                     UserPassword: data.user.Password,
                     UserRole: data.user.UserRole,
-                    UserStatus: data.user.UserStatus
+                    isActive: data.user.isActive
                 };
+
 
                 localStorage.setItem("signedUser", JSON.stringify(loggedInUser));
 
-                navigate("/products");
+                navigate("/");
             };
             
         } catch (error) {

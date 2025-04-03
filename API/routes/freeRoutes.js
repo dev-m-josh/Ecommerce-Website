@@ -7,7 +7,7 @@ const { orderItemsDetails, updateItemQuantity, addItemsToCart, removeItemFromCar
 freeRouter.post('/users', addNewUser);
 freeRouter.get('/products', getAllActiveProducts);
 freeRouter.get("/orders/order-details", orderItemsDetails);
-freeRouter.get('/product/:productId', getProductDetails);
+freeRouter.get('/products/:productId', getProductDetails);
 freeRouter.put("/order-item/quantity", updateItemQuantity);
 freeRouter.post("/order-item", addItemsToCart);
 freeRouter.delete("/order-item", removeItemFromCart);

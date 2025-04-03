@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import './Users.css'
+import axios from "axios";
+import { toast } from "react-toastify";
+import SignUp from "./SignUp";
 
 export default function Users() {
     const user = JSON.parse(localStorage.getItem("signedUser"));
@@ -19,6 +22,7 @@ export default function Users() {
     const [userToDelete, setUserToDelete] = useState(null);
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
+    const [showAddUser, setShowAddUser] = useState(false);
 
     useEffect(() => {
         if (!token || !user.UserRole === "Admin") {
@@ -26,6 +30,108 @@ export default function Users() {
             return;
         };
     });
+
+    const fetchUpdatedUsers = useCallback(async () => {
+        try {
+            const endpoint =
+                    `http://localhost:4500/users?page=${page}&pageSize=${pageSize}`
+        
+            const response = await fetch(endpoint, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+        
+            const data = await response.json();
+            setUsers(data);
+        } catch (err) {
+            console.error("Error fetching products:", err);
+        }
+    }, [page, pageSize, token]);
+
+    useEffect(() => {
+        fetchUpdatedUsers();
+    }, [fetchUpdatedUsers]);
+
+    const handleUserDeactivate = async (UserId) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:4500/users/deactivate-user/${UserId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+        
+            const data = response.data;
+            toast.success(data.message);
+            
+            setUsers((prevUsers) => {
+                const updatedUsers = prevUsers.map((user) =>
+                    user.UserId === UserId
+                        ? { ...user, UserStatus: 'Inactive' }
+                        : user
+                );
+                return updatedUsers;
+            });
+
+            fetchUpdatedUsers();
+            
+        } catch (error) {
+            console.log("Deactivate error:", error);
+            if (error.response && error.response.data) {
+                setErrorMessage(error.response.data.message);
+                alert(error.response.data.message);
+            } else {
+                setErrorMessage('An unexpected error occurred.');
+                alert('An unexpected error occurred.');
+            }
+        }
+    };
+
+    const handleUserRestore = async (UserId) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:4500/users/activate-user/${UserId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+        
+            const data = response.data;
+            toast.success(data.message);
+            
+            setUsers((prevUsers) => {
+                const updatedUsers = prevUsers.map((user) =>
+                    user.UserId === UserId
+                        ? { ...user, UserStatus: 'Active' }
+                        : user
+                );
+                return updatedUsers;
+            });
+
+            fetchUpdatedUsers();
+            
+        } catch (error) {
+            console.log("Deactivate error:", error);
+            if (error.response && error.response.data) {
+                setErrorMessage(error.response.data.message);
+                alert(error.response.data.message);
+            } else {
+                setErrorMessage('An unexpected error occurred.');
+                alert('An unexpected error occurred.');
+            }
+        }
+    };
 
     const handleRoleUpdate = async () => {
         if (!newRole) {
@@ -136,9 +242,10 @@ export default function Users() {
         const fetchUsers = async () => {
             try {
                 setLoading(true);
+                const endpoint =
+                 `http://localhost:4500/users?page=${page}&pageSize=${pageSize}`
 
-                const response = await fetch(
-                    `http://localhost:4500/users?page=${page}&pageSize=${pageSize}`,
+                const response = await fetch(endpoint,
                     {
                         method: "GET",
                         headers: {
@@ -187,6 +294,7 @@ export default function Users() {
         setShowUserDetails(false);
         setUserDetails(null);
         setEditingUser(null);
+        setShowAddUser(false);
     };
 
     if (loading) {
@@ -199,7 +307,15 @@ export default function Users() {
 
     return (
         <div className="users">
-            <h2>Active Users</h2>
+            <div className="products-header">
+                <h2>Users</h2>
+                <select>
+                    <option value="active">Active users</option>
+                    <option value="inactive">Inactive users</option>
+                </select>
+                <button onClick={() => setShowAddUser(true)}>New User</button>
+            </div>
+            
             {users.length === 0 ? (
                 <div>No users available to display.</div>
             ) : (
@@ -227,7 +343,11 @@ export default function Users() {
                                         value={showUserOptions === user.UserId ? user.UserId : ''}
                                         onChange={(e) => {
                                             const selectedOption = e.target.value;
-                                            if (selectedOption === "details") {
+                                            if (selectedOption === "deactivate" && user.isActive === true) {
+                                                handleUserDeactivate(user.UserId);
+                                            } else if (selectedOption === "restore" && user.isActive === false) {
+                                                handleUserRestore(user.UserId);
+                                            } else if (selectedOption === "details") {
                                                 fetchUserDetails(user.UserId);
                                             } else if (selectedOption === "delete") {
                                                 confirmDeleteUser(user.UserId);
@@ -239,11 +359,17 @@ export default function Users() {
                                         onClick={() => toggleUserOptions(user.UserId)}
                                     >
                                         <option value="">Select Action</option>
-                                        <option value="details">View profile.</option>
-                                        <option value="delete">Delete User.</option>
-                                        <option value="edit">Edit user.</option>
+                                        {user.isActive === true ? (
+                                            <option value="deactivate">Delete user</option>
+                                        ) : (
+                                            <option value="restore">Restore user</option>
+                                        )}
+                                        <option value="details">View profile</option>
+                                        {/* <option value="delete">Delete User</option> */}
+                                        <option value="edit">Edit user</option>
                                     </select>
                                 </td>
+
                             </tr>
                         ))}
                     </tbody>
@@ -358,6 +484,15 @@ export default function Users() {
                     </div>
                 </div>
             )}
+
+            {showAddUser && (
+                <div className="modal-overlay" onClick={() => closeModal()}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="modal-close" onClick={() => closeModal()}>X</button>
+                        <SignUp/>
+                    </div>
+                </div>
+            )}
         </div>
     );
-}
+};

@@ -53,8 +53,8 @@ function newOrder(req, res) {
     pool.query(
         `INSERT INTO orders (UserId, ShippingAddress)
         OUTPUT Inserted.OrderId, Inserted.UserId, Inserted.ShippingAddress, 
-               Inserted.OrderDate, Inserted.TotalAmount, Inserted.OrderStatus, 
-               Inserted.PaymentStatus, Inserted.CreatedAt, Inserted.UpdatedAt
+               Inserted.OrderDate, Inserted.TotalAmount, Inserted.isCompeleted, 
+               Inserted.PaymentCompeleted, Inserted.CreatedAt, Inserted.UpdatedAt
         VALUES ('${value.UserId}', '${value.ShippingAddress}')`,
         (err, result) => {
             if (err) {
@@ -229,9 +229,9 @@ function updateItemQuantity(req, res) {
 //update order status
 function updateOrder(req, res) {
     let pool = req.pool;
-    let { OrderId, UserId, OrderStatus, PaymentStatus } = req.body;
+    let { OrderId, UserId } = req.body;
     
-    const { error, value } = updateOrderStatusSchema.validate({ OrderId, UserId, OrderStatus, PaymentStatus }, {
+    const { error, value } = updateOrderStatusSchema.validate({ OrderId, UserId }, {
         abortEarly: false
     });
 
@@ -242,8 +242,8 @@ function updateOrder(req, res) {
 
     pool.query(
         `UPDATE orders
-         SET OrderStatus = '${value.OrderStatus}',
-             PaymentStatus = '${value.PaymentStatus}',
+         SET isCompeleted = 1,
+             PaymentCompeleted = 1,
              UpdatedAt = GETDATE()
          WHERE OrderId = ${value.OrderId} AND UserId = ${value.UserId}`, (err, result) => {
             if (err) {

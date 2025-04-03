@@ -145,7 +145,7 @@ export default function ProductDetails() {
             try {
                 setLoading(true);
                 const response = await fetch(
-                    `http://localhost:4500/product/${productId}`,
+                    `http://localhost:4500/products/${productId}`,
                     {
                         method: "GET",
                         headers: {
