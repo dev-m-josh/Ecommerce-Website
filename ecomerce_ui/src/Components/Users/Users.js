@@ -23,9 +23,19 @@ export default function Users() {
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
     const [showAddUser, setShowAddUser] = useState(false);
+    const [userStatusFilter, setUserStatusFilter] = useState('active');
+
+    const handleStatusFilterChange = (event) => {
+        setUserStatusFilter(event.target.value);
+        setPage(1);
+    };
+
+    const filteredUsers = users.filter((user) => {
+        return userStatusFilter === 'active' ? user.isActive === true : user.isActive === false;
+    });    
 
     useEffect(() => {
-        if (!token || !user.UserRole === "Admin") {
+        if (!token || user.UserRole !== "Admin") {
             navigate('/products');
             return;
         };
@@ -167,6 +177,7 @@ export default function Users() {
                         : user
                 )
             ); 
+            toast.success("Role updated successfully");
         } catch (err) {
             console.error("Error updating role:", err);
             alert("Error updating role");
@@ -295,7 +306,7 @@ export default function Users() {
         setUserDetails(null);
         setEditingUser(null);
         setShowAddUser(false);
-    };
+    };    
 
     if (loading) {
         return <div className="loading">Loading...</div>;
@@ -309,15 +320,15 @@ export default function Users() {
         <div className="users">
             <div className="products-header">
                 <h2>Users</h2>
-                <select>
+                <select value={userStatusFilter} onChange={handleStatusFilterChange}>
                     <option value="active">Active users</option>
                     <option value="inactive">Inactive users</option>
                 </select>
                 <button onClick={() => setShowAddUser(true)}>New User</button>
             </div>
             
-            {users.length === 0 ? (
-                <div>No users available to display.</div>
+            {filteredUsers.length === 0 ? (
+                <div>No {userStatusFilter} users available to display.</div>
             ) : (
                 <table className="users-table">
                     <thead>
@@ -331,7 +342,7 @@ export default function Users() {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user) => (
+                        {filteredUsers.map((user) => (
                             <tr key={user.UserId}>
                                 <td>{user.FirstName}</td>
                                 <td>{user.LastName}</td>
