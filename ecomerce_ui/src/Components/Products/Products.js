@@ -255,7 +255,7 @@ export default function Products() {
     }
 
     return (
-        <div className="products">
+        <div className="products-table">
             <div className="products-header">
                 <h2>Products</h2>
                 <select onChange={(e) => setInStock(e.target.value)} value={inStock}>
@@ -394,7 +394,7 @@ export default function Products() {
                                 onChange={(e) => setNewProductDiscount(e.target.value)}
                             />
                         </div>
-                        <button onClick={handleProductEdit}>
+                        <button className="save" onClick={handleProductEdit}>
                             Save changes
                         </button>
                     </div>

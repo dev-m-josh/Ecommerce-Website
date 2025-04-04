@@ -190,7 +190,7 @@ export default function OpenCart() {
 
             localStorage.setItem("openedCart", JSON.stringify(openedCart));
             setPendingCart(openedCart);
-            navigate("/");
+            navigate("/products");
 
             if (response.status === 200) {
                 toast.success(data.message);
@@ -208,11 +208,11 @@ export default function OpenCart() {
             navigate('/login');
         };
 
+        console.log(pendingCart)
+
         const orderUpdateDetails = {
             OrderId: pendingCart.OrderId,
-            UserId: UserId,
-            OrderStatus: 'Delivered',
-            PaymentStatus: 'Paid'
+            UserId: UserId
         };
 
         if (!pendingCart) {
@@ -282,7 +282,7 @@ export default function OpenCart() {
                             <img src="https://www.jumia.co.ke/assets_he/images/cart.668e6453.svg" alt="cart" />
                             <h4>Your cart is empty!</h4>
                             <p>Browse our products and discover our best deals!</p>
-                            <button onClick={() => navigate('/')}>Start Shopping</button>
+                            <button onClick={() => navigate('/products')}>Start Shopping</button>
                         </div>
                     ) : (
                         <div className="order-details">
@@ -290,43 +290,40 @@ export default function OpenCart() {
                                 <h2>Cart({orders.length})</h2>
                                 <hr/>
                                 {orders.map((order) => (
-    <div className="order-product" key={order.ProductId}>
-        <div className="product-sections">
-        <div className="order-product-details">
-            <div className="doe">
-                <img src={order.ProductImage} alt={order.ProductName} />
-                <div className="description">
-                    <p>{order.Description}</p>
-                    <label>
-                        In Stock
-                    </label>
-                    <span>
-                        <strong>Category: </strong>
-                        {order.Category}
-                    </span>
-                </div>
-            </div>
-            <button className="remove" onClick={() => removeItem(order.ProductId)}>Remove</button>
-        </div>
-        <div className="order-totals">
-            <h3>Ksh {order.DiscountedPrice.toLocaleString()}</h3>
-            <div className="discount">
-                <p>Ksh {order.OriginalPrice.toLocaleString()}</p>
-                <span>-{order.ProductDiscount}%</span>
-            </div>
-            <div className="quantity-selection">
-                <button disabled={order.Quantity === 1} onClick={() => updateItemQuantity(order.ProductId, order.Quantity - 1)}>-</button>
-                <span>{order.Quantity}</span>
-                <button disabled={order.Quantity === 10} onClick={() => updateItemQuantity(order.ProductId, order.Quantity + 1)}>+</button>
-            </div>
-        </div>
-        </div>
-        <hr/>
-    </div>
-    
-))}
-
-
+                                    <div className="order-product" key={order.ProductId}>
+                                        <div className="product-sections">
+                                        <div className="order-product-details">
+                                            <div className="doe">
+                                                <img src={order.ProductImage} alt={order.ProductName} />
+                                                <div className="description">
+                                                    <p>{order.Description}</p>
+                                                    <label>
+                                                        In Stock
+                                                    </label>
+                                                    <span>
+                                                        <strong>Category: </strong>
+                                                        {order.Category}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <button className="remove" onClick={() => removeItem(order.ProductId)}>Remove</button>
+                                        </div>
+                                        <div className="order-totals">
+                                            <h3>Ksh {order.DiscountedPrice.toLocaleString()}</h3>
+                                            <div className="discount">
+                                                <p>Ksh {order.OriginalPrice.toLocaleString()}</p>
+                                                <span>-{order.ProductDiscount}%</span>
+                                            </div>
+                                            <div className="quantity-selection">
+                                                <button disabled={order.Quantity === 1} onClick={() => updateItemQuantity(order.ProductId, order.Quantity - 1)}>-</button>
+                                                <span>{order.Quantity}</span>
+                                                <button disabled={order.Quantity === 10} onClick={() => updateItemQuantity(order.ProductId, order.Quantity + 1)}>+</button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <hr/>
+                                    </div>
+                                ))}
                             </div>
                             <div className="cart-summary">
                                 <h3>CART SUMMARY</h3>

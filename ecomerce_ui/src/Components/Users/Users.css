@@ -148,94 +148,6 @@
     margin: 0 10px;
 }
 
-.delete{
-    background-color: red;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    color: gainsboro;
-    font-size: 14px;
-    cursor: pointer;
-    transition: .3s ease-in-out;
-}
-
-.delete:hover{
-    background-color: rgb(255, 20, 20);
-}
-
-.restore{
-    background-color: #3498db;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    color: gainsboro;
-    font-size: 14px;
-    cursor: pointer;
-    transition: .3s ease-in-out;
-}
-
-.restore:hover{
-    background-color: #2980b9;
-}
-
-
-.options{
-    position: relative;
-}
-
-.users-table .options button {
-    background-color: transparent;
-    color: #333;
-    padding: 5px;
-    border: 1px solid grey;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background-color 0.3s ease, transform 0.3s ease-in-out;
-    outline: none;
-}
-
-.options .icon{
-    font-size: 12px;
-    color: grey;
-}
-
-/* Button hover effect */
-.users-table .options button:hover {
-    background-color: #e9e9e9;
-    transform: translateY(-1px);
-}
-
-.user-options{
-    position: absolute;
-    top: 90%;
-    right: 0;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    min-width: fit-content;
-    width: 150px;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-.user-options p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #333;
-    cursor: pointer;
-    text-align: left;
-}
-
-.user-options p:hover {
-    color: #007BFF;
-}
-
 /* Modal styles */
 .modal-overlay {
     position: fixed;
@@ -260,15 +172,7 @@
     position: relative;
   }
   
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    border: none;
-    background: none;
-    font-size: 20px;
-    cursor: pointer;
-  }
+
   
 
 .modal-overlay {
@@ -356,15 +260,6 @@
     align-items: start;
 }
 
-.user-details {
-    background-color: #f9f9f9;
-    /* padding: 20px; */
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    font-family: 'Arial', sans-serif;
-}
-
 .user-details p {
     font-size: 16px;
     line-height: 1.6;
@@ -390,6 +285,31 @@
     color: #555;
 }
 
-.products-header{
-    margin-top: 15px;
+.products{
+    width: 100%;
+}
+
+
+select{
+    border-radius: 5px;
+    outline: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid gainsboro;
+}
+
+.modal-content .save{
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content .save:hover{
+    background-color: #2980B9;
 }
