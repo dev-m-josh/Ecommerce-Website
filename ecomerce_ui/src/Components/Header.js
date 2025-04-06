@@ -12,44 +12,44 @@ export default function Header({ showOptions, setShowOptions }) {
     const user = JSON.parse(localStorage.getItem("signedUser"));
     const token = localStorage.getItem("token");
     const [errorMessage, setErrorMessage] = useState("");
-    const [orders, setOrders] = useState([]);
-    const pendingCart = JSON.parse(localStorage.getItem("openedCart"));
+    // const [orders, setOrders] = useState([]);
+    // const pendingCart = JSON.parse(localStorage.getItem("openedCart"));
 
-    useEffect(() => {
-        if (pendingCart) {
-            const fetchOrderDetails = async () => {
-                const details = {
-                    OrderId: pendingCart.OrderId,
-                };
+    // useEffect(() => {
+    //     if (pendingCart) {
+    //         const fetchOrderDetails = async () => {
+    //             const details = {
+    //                 OrderId: pendingCart.OrderId,
+    //             };
 
-                try {
-                    const params = new URLSearchParams(details).toString();
-                    const response = await fetch(
-                        `http://localhost:4500/orders/order-details?${params}`,
-                        {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json",
-                            }
-                        }
-                    );
+    //             try {
+    //                 const params = new URLSearchParams(details).toString();
+    //                 const response = await fetch(
+    //                     `http://localhost:4500/orders/order-details?${params}`,
+    //                     {
+    //                         method: "GET",
+    //                         headers: {
+    //                             "Content-Type": "application/json",
+    //                         }
+    //                     }
+    //                 );
 
-                    if (!response.ok) {
-                        const error = await response.text();
-                        throw new Error(error || "Failed to fetch order details.");
-                    }
+    //                 if (!response.ok) {
+    //                     const error = await response.text();
+    //                     throw new Error(error || "Failed to fetch order details.");
+    //                 }
 
-                    const data = await response.json();
-                    setOrders(data.orderDetails);    
-                } catch (error) {
-                    console.error("Error fetching order details:", error);
-                    setErrorMessage("There was an error fetching the order details.");
-                }
-            };
+    //                 const data = await response.json();
+    //                 setOrders(data.orderDetails);    
+    //             } catch (error) {
+    //                 console.error("Error fetching order details:", error);
+    //                 setErrorMessage("There was an error fetching the order details.");
+    //             }
+    //         };
 
-            fetchOrderDetails();
-        };
-    }, [pendingCart]);
+    //         fetchOrderDetails();
+    //     };
+    // }, [pendingCart]);
 
     const toggleMenu = useCallback(() => {
         setIsMenuOpen(prevState => !prevState);
@@ -138,7 +138,7 @@ export default function Header({ showOptions, setShowOptions }) {
                     <div className="user-actions">
                         <Link className="cart" to="/cart">
                             <FontAwesomeIcon className="icon " icon={faShoppingBasket} />
-                            <div className="cart-number">{orders.length}</div>
+                            <div className="cart-number">{0}</div>
                         </Link>
                     </div>
                     {isAdmin && (

@@ -1,7 +1,7 @@
 const productsRouter = require("express").Router();
 
 const {
-    getMostSellingProduct,
+    getMostSellingProducts,
     getLowQuantityProducts,
     deactivateProduct,
     addNewProduct,
@@ -12,7 +12,7 @@ const {
 
 productsRouter.get('/', getAllProducts);
 productsRouter.delete('/:productId', deleteProduct);
-productsRouter.get('/most-selling', getMostSellingProduct);
+productsRouter.get('/most-selling', getMostSellingProducts);
 productsRouter.get('/low-quantity', getLowQuantityProducts);
 productsRouter.put('/deactivate-product/:productId', deactivateProduct);
 productsRouter.post('/',addNewProduct);

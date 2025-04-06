@@ -12,70 +12,70 @@ export default function ProductSales() {
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
 
-        useEffect(() => {
-            if (!token) {
-                navigate('/login');
-            };
-    
-            const fetchProducts = async () => {
-                try {
-                    setLoading(true);
-    
-                    const response = await fetch(
-                        `http://localhost:4500/sales/products?page=${page}&pageSize=${pageSize}`,
-                        {
-                            method: "GET",
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                                "Content-Type": "application/json",
-                            }
+    useEffect(() => {
+        if (!token) {
+            navigate('/login');
+        };
+
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+
+                const response = await fetch(
+                    `http://localhost:4500/sales/products?page=${page}&pageSize=${pageSize}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
                         }
-                    );
-    
-                    if (!response.ok) {
-                        throw new Error(`${response.statusText}`)
-                    };
-    
-                    const data = await response.json();
-    
-                    setProducts(data);
-    
-                    if (data.length < pageSize) {
-                        setNoMoreProducts(true);
-                    } else {
-                        setNoMoreProducts(false);
-                    };
-                    
-                } catch (err) {
-                    console.error("Error fetching products:", err);
-                    setErrorMessage("There was an error fetching the products. Please try again later.");
-                } finally {
-                    setLoading(false);
-                }
-            }
-    
-            fetchProducts()
-        }, [page, pageSize, token, navigate]);
+                    }
+                );
 
-        const handleNextPage= () =>{
-            if (!noMoreProducts && !loading) {
-                setPage((nextPage) => nextPage + 1);
-            };
-        };
-    
-        const handlePreviousPage = () => {
-            if (page > 1 && !loading) {
-                setPage((prevPage) => prevPage - 1);
-            }
-        };
+                if (!response.ok) {
+                    throw new Error(`${response.statusText}`)
+                };
 
-        if (loading) {
-            return <div className="loading">Loading...</div>;
+                const data = await response.json();
+
+                setProducts(data);
+
+                if (data.length < pageSize) {
+                    setNoMoreProducts(true);
+                } else {
+                    setNoMoreProducts(false);
+                };
+                
+            } catch (err) {
+                console.error("Error fetching products:", err);
+                setErrorMessage("There was an error fetching the products. Please try again later.");
+            } finally {
+                setLoading(false);
+            }
         }
-    
-        if (errorMessage) {
-            return <div className="error">{errorMessage}</div>;
+
+        fetchProducts()
+    }, [page, pageSize, token, navigate]);
+
+    const handleNextPage= () =>{
+        if (!noMoreProducts && !loading) {
+            setPage((nextPage) => nextPage + 1);
+        };
+    };
+
+    const handlePreviousPage = () => {
+        if (page > 1 && !loading) {
+            setPage((prevPage) => prevPage - 1);
         }
+    };
+
+    if (loading) {
+        return <div className="loading">Loading...</div>;
+    }
+
+    if (errorMessage) {
+        return <div className="error">{errorMessage}</div>;
+    }
     
     
     return(

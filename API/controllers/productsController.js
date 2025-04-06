@@ -47,19 +47,27 @@ function getAllProducts(req, res) {
 };
 
 //Get most selling product
-function getMostSellingProduct(req, res) {
+function getMostSellingProducts(req, res) {
     let pool = req.pool;
 
     pool.query(
-        `SELECT TOP 20 
-            p.ProductId, 
-            p.ProductName, 
-        SUM(oi.Quantity) AS TotalUnitsSold
-        FROM order_items oi
-        JOIN products p ON oi.ProductId = p.ProductId
-        WHERE p.ProductStatus = 'Active'
-        GROUP BY p.ProductId, p.ProductName
-        ORDER BY TotalUnitsSold DESC`,
+        `SELECT TOP 10
+    p.ProductId,
+    p.ProductName,
+    SUM(oi.Quantity) AS TotalQuantitySold
+FROM 
+    order_items oi
+JOIN 
+    products p ON oi.ProductId = p.ProductId
+JOIN 
+    orders o ON oi.OrderId = o.OrderId
+WHERE 
+    o.OrderDate >= DATEADD(MONTH, -1, GETDATE()) 
+    AND o.isCompeleted = 1
+GROUP BY 
+    p.ProductId, p.ProductName
+ORDER BY 
+    TotalQuantitySold DESC`,
         (err, result) =>{
             if (err) {
                 console.log("error occured in query", err);
@@ -227,7 +235,7 @@ function editProduct(req, res) {
 module.exports = {
     deleteProduct,
     getAllProducts,
-    getMostSellingProduct,
+    getMostSellingProducts,
     getLowQuantityProducts,
     deactivateProduct,
     addNewProduct,

@@ -4,11 +4,23 @@ function totalSalesOfProduct(req, res) {
     let { page, pageSize } = req.query;
     let offset = (Number(page) - 1) * Number(pageSize);
     pool.query(
-        `SELECT p.ProductId, p.ProductName, SUM(oi.Quantity * p.Price) AS TotalRevenue
-        FROM order_items oi
-        JOIN products p ON oi.ProductId = p.ProductId
-        GROUP BY p.ProductId, p.ProductName
-        ORDER BY TotalRevenue DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`, (err, result) =>{
+        `SELECT 
+    p.ProductId,
+    p.ProductName,
+    SUM(oi.Quantity * p.Price) AS TotalSales
+FROM 
+    order_items oi
+JOIN 
+    products p ON oi.ProductId = p.ProductId
+JOIN 
+    orders o ON oi.OrderId = o.OrderId
+WHERE 
+    o.OrderDate >= DATEADD(MONTH, -1, GETDATE()) 
+    AND o.isCompeleted = 1
+GROUP BY 
+    p.ProductId, p.ProductName
+ORDER BY 
+    TotalSales DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`, (err, result) =>{
             if (err) {
                 console.log("Error occured in query:", err);
                 return res.status().json({ message: "Error getting total sales!" })
@@ -18,17 +30,29 @@ function totalSalesOfProduct(req, res) {
         }
     );
 };
+
 //Revenue by Product Category
 function revenueByCategory(req, res) {
     let pool = req.pool;
     let { page, pageSize } = req.query;
     let offset = (Number(page) - 1) * Number(pageSize);
     pool.query(
-        `SELECT p.Category, SUM(oi.Quantity * p.Price) AS TotalRevenue
-        FROM order_items oi
-        JOIN products p ON oi.ProductId = p.ProductId
-        GROUP BY p.Category
-        ORDER BY TotalRevenue DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`, (err, result) =>{
+        `SELECT 
+    p.Category,
+    SUM(oi.Quantity * p.Price) AS RevenueByCategory
+FROM 
+    order_items oi
+JOIN 
+    products p ON oi.ProductId = p.ProductId
+JOIN 
+    orders o ON oi.OrderId = o.OrderId
+WHERE 
+    o.OrderDate >= DATEADD(MONTH, -1, GETDATE()) 
+    AND o.isCompeleted = 1
+GROUP BY 
+    p.Category
+ORDER BY 
+    RevenueByCategory DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`, (err, result) =>{
             if (err) {
                 console.log("Error occured in query:", err);
                 return res.status().json({ message: "Error getting total sales!" });
@@ -39,7 +63,27 @@ function revenueByCategory(req, res) {
     );
 };
 
+//revenue in last one month
+function revenueCollected(req, res) {
+    let pool = req.pool;
+    pool.query(
+        `SELECT SUM(TotalAmount) AS TotalRevenue
+    FROM orders
+    WHERE OrderDate >= DATEADD(MONTH, -1, GETDATE()) 
+    AND OrderDate < GETDATE()
+    AND isCompeleted = 1`, (err, result) => {
+        if (err) {
+            console.log("Error occured in query:", err);
+            return res.status().json({ message: "Error getting total revenue!" });
+        } else {
+            res.json(result.recordset);
+        };
+    }
+    );
+};
+
 module.exports = {
     totalSalesOfProduct,
-    revenueByCategory
+    revenueByCategory,
+    revenueCollected
 };

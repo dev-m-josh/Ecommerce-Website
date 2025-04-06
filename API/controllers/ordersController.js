@@ -229,9 +229,9 @@ function updateItemQuantity(req, res) {
 //update order status
 function updateOrder(req, res) {
     let pool = req.pool;
-    let { OrderId, UserId } = req.body;
+    let { OrderId, UserId, TotalAmount } = req.body;
     
-    const { error, value } = updateOrderStatusSchema.validate({ OrderId, UserId }, {
+    const { error, value } = updateOrderStatusSchema.validate({ OrderId, UserId, TotalAmount }, {
         abortEarly: false
     });
 
@@ -244,6 +244,7 @@ function updateOrder(req, res) {
         `UPDATE orders
          SET isCompeleted = 1,
              PaymentCompeleted = 1,
+             TotalAmount = ${value.TotalAmount},
              UpdatedAt = GETDATE()
          WHERE OrderId = ${value.OrderId} AND UserId = ${value.UserId}`, (err, result) => {
             if (err) {

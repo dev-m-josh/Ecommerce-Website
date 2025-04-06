@@ -62,6 +62,7 @@ const updateItemQuantitySchema = joi.object({
 const updateOrderStatusSchema = joi.object({
   OrderId: joi.number().integer().required().label('OrderId'),
   UserId: joi.number().integer().required().label('UserId'),
+  TotalAmount: joi.number().integer().required().label('TotalCost'),
 });
 
 // EDIT PRODUCT SCHEMA

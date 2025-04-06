@@ -212,7 +212,8 @@ export default function OpenCart() {
 
         const orderUpdateDetails = {
             OrderId: pendingCart.OrderId,
-            UserId: UserId
+            UserId: UserId,
+            TotalAmount: totalCost
         };
 
         if (!pendingCart) {
@@ -233,7 +234,7 @@ export default function OpenCart() {
             );
 
             if (response.status === 200) {
-                console.log(response.data);
+                // console.log(response.data);
                 localStorage.removeItem("openedCart");
                 setPendingCart(null);
                 setOrders([]);
