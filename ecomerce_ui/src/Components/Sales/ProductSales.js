@@ -71,11 +71,11 @@ export default function ProductSales() {
 
     if (loading) {
         return <div className="loading">Loading...</div>;
-    }
+    };
 
     if (errorMessage) {
         return <div className="error">{errorMessage}</div>;
-    }
+    };
     
     
     return(
