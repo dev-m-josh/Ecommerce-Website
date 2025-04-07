@@ -91,8 +91,8 @@ function productAndCategorySales(req, res) {
     p.ProductName,
     p.Category,
     SUM(oi.Quantity) AS TotalQuantitySold,
-    SUM(oi.Quantity * p.Price) AS ProductRevenue,
-    (SELECT SUM(oi2.Quantity * p2.Price)
+    SUM(oi.Quantity * (p.Price * ((100 - p.ProductDiscount)/100))) AS ProductRevenue,
+    (SELECT SUM(oi2.Quantity * (p2.Price * ((100 - p2.ProductDiscount)/100)))
      FROM order_items oi2
      JOIN products p2 ON oi2.ProductId = p2.ProductId
      JOIN orders o2 ON oi2.OrderId = o2.OrderId
@@ -119,8 +119,8 @@ ORDER BY
             res.json(result.recordset);
         };
     }
-    )
-}
+    );
+};
 
 module.exports = {
     totalSalesOfProduct,
