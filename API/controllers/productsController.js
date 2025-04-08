@@ -235,13 +235,13 @@ function editProduct(req, res) {
 //products by category
 function productsByCategory(req, res) {
     let pool = req.pool;
-    let { page, pageSize, category } = req.query;
+    let { page, pageSize, inStock, category } = req.query;
     let offset = (Number(page) - 1) * Number(pageSize);
 
     pool.query(
         `SELECT * 
         FROM products 
-        WHERE inStock = ${inStock} AND Category = ${category}
+        WHERE inStock = ${inStock} AND Category = '${category}'
         ORDER BY ProductId OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`, (err, result) => {
             if (err) {
                 console.log("Error occured in query:", err);

@@ -6,8 +6,9 @@ const {
     productsByCategory 
 } = require("../controllers/productsController");
 
-const { addNewUser } = require("../controllers/usersController");
-
+const { 
+    addNewUser
+} = require("../controllers/usersController");
 const { 
     orderItemsDetails, 
     updateItemQuantity, 

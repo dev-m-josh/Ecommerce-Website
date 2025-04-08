@@ -467,3 +467,53 @@ hr {
 .no-cart-items button{
     width: max-content;
 }
+
+/* Categories.css */
+.categories {
+    width: 100%;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.categories h3 {
+    font-size: 1.5em;
+    color: #333;
+    margin: 5px 0;
+    padding-left: 10px;
+}
+
+.categories ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    overflow-x: auto;
+    margin: 5px 0;
+}
+
+.categories li {
+    background-color: #fff;
+    padding: 8px 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1.1em;
+    color: #555;
+    cursor: pointer;
+    transition: transform .3s ease-in-out, background-color 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.categories li:hover {
+    background-color: #e2e2e2;
+    transform: translateY(-2px);
+}
+
+.categories p {
+    text-align: center;
+    font-size: 1.1em;
+    color: #ff0a0a;
+}
