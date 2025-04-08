@@ -16,6 +16,7 @@ import ProductSales from './Components/Sales/ProductSales';
 import CategorySales from './Components/Sales/CategorySales';
 import AdminDash from './Components/AdminDash';
 import Products from './Components/Products/Products';
+import ShopByCategories from './Components/Products/Categories';
 
 function App() {
   const [showOptions, setShowOptions] = useState(false);
@@ -32,6 +33,7 @@ function App() {
           <Route path="/products" element={<Shop />} />
           <Route path="/products/:productId" element={<ProductDetails />} />
           <Route path="/cart" element={<OpenCart />} />
+          <Route path='/categories' element={<ShopByCategories/>} />
           <Route path="/most-selling-product" element={<MostSelling />} />
           <Route path="/low-stock" element={<LowStock />} />
           <Route path="/product-sales" element={<ProductSales />} />
