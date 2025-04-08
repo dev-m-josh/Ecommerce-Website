@@ -4,7 +4,8 @@ import './Shop.css';
 
 export default function Shop() {
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loadingProducts, setLoadingProducts] = useState(false);
+    const [loadingCategories, setLoadingCategories] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const [page, setPage] = useState(1);
     const [pageSize] = useState(10);
@@ -17,9 +18,8 @@ export default function Shop() {
     // Fetch the products based on the selected category
     useEffect(() => {
         const fetchProducts = async () => {
+            setLoadingProducts(true);
             try {
-                setLoading(true);
-
                 let url = '';
 
                 if (category) {
@@ -54,19 +54,21 @@ export default function Shop() {
                 console.error("Error fetching products:", err);
                 setErrorMessage("There was an error fetching the products. Please try again later.");
             } finally {
-                setLoading(false);
+                setLoadingProducts(false);
             }
         };
 
         fetchProducts();
-    }, [page, pageSize, token, navigate, category]);
+    }, [page, pageSize, token, category]);
 
-    // Fetch all categories when the component mounts
+    // Fetch categories
     useEffect(() => {
         const fetchCategories = async () => {
+
+            setLoadingCategories(true);
             try {
                 const response = await fetch(
-                    `http://localhost:4500/products/instock?page=1&pageSize=10&inStock='1'`,
+                    `http://localhost:4500/products/instock?page=1&pageSize=1000&inStock='1'`,
                     {
                         method: "GET",
                         headers: {
@@ -81,6 +83,7 @@ export default function Shop() {
                 }
 
                 const data = await response.json();
+                console.log("Fetched data for categories:", data);
 
                 const categories = data.reduce((categoriesArr, product) => {
                     if (!categoriesArr.includes(product.Category)) {
@@ -90,29 +93,32 @@ export default function Shop() {
                 }, []);
 
                 setAllCategories(categories);
+                console.log("Categories extracted:", categories);
 
             } catch (err) {
                 console.error("Error fetching categories:", err);
                 setErrorMessage("There was an error fetching the categories. Please try again later.");
+            } finally {
+                setLoadingCategories(false);
             }
         };
 
         fetchCategories();
-    }, [token]);
+    }, [page, pageSize, token]);
 
     const handleNextPage = () => {
-        if (!noMoreProducts && !loading) {
+        if (!noMoreProducts && !loadingProducts) {
             setPage((nextPage) => nextPage + 1);
         }
     };
 
     const handlePreviousPage = () => {
-        if (page > 1 && !loading) {
+        if (page > 1 && !loadingProducts) {
             setPage((prevPage) => prevPage - 1);
         }
     };
 
-    if (loading) {
+    if (loadingProducts || loadingCategories) {
         return <div className="loading">Loading...</div>;
     }
 
@@ -124,8 +130,6 @@ export default function Shop() {
         <>
             <div className="categories">
                 <h3>Categories: </h3>
-                {loading && <p>Loading...</p>}
-                {errorMessage && <p>{errorMessage}</p>}
                 <ul>
                     <li onClick={() => setCategory(null)}>
                         All Products
@@ -137,7 +141,6 @@ export default function Shop() {
                     ))}
                 </ul>
             </div>
-
             <div className="products">
                 {products.length === 0 ? (
                     <div>No products available</div>
@@ -173,14 +176,14 @@ export default function Shop() {
                 <div className="pagination">
                     <button
                         onClick={handlePreviousPage}
-                        disabled={page === 1 || loading}
+                        disabled={page === 1 || loadingProducts}
                     >
                         Previous
                     </button>
                     <span>{`Page ${page}`}</span>
                     <button
                         onClick={handleNextPage}
-                        disabled={noMoreProducts || loading}
+                        disabled={noMoreProducts || loadingProducts}
                     >
                         Next
                     </button>
@@ -188,4 +191,4 @@ export default function Shop() {
             </div>
         </>
     );
-};
+}

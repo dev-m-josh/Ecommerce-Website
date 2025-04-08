@@ -491,8 +491,9 @@ hr {
     display: flex;
     align-items: center;
     gap: 15px;
-    overflow-x: auto;
+    overflow-x: scroll;
     margin: 5px 0;
+    margin-top: 10px;
 }
 
 .categories li {
@@ -505,6 +506,11 @@ hr {
     cursor: pointer;
     transition: transform .3s ease-in-out, background-color 0.3s ease;
     margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: nowrap;
+    min-width: fit-content;
 }
 
 .categories li:hover {
@@ -517,3 +523,4 @@ hr {
     font-size: 1.1em;
     color: #ff0a0a;
 }
+
