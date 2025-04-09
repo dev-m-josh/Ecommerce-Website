@@ -21,16 +21,22 @@ import ShopByCategories from './Components/Products/Categories';
 function App() {
   const [showOptions, setShowOptions] = useState(false);
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = (term) => {
+      setSearchTerm(term);
+  };
+
   return (
     <>
-      <Header showOptions={showOptions} setShowOptions={setShowOptions} />
+      <Header showOptions={showOptions} setShowOptions={setShowOptions} onSearch={handleSearch}/>
       <div className={`close ${showOptions ? 'active' : ''}`} onClick={() => setShowOptions(false)}></div>
       <div className="App">
         <Routes>
           <Route path="/register" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/account" element={<Account />} />
-          <Route path="/products" element={<Shop />} />
+          <Route path="/products" element={<Shop searchTerm={searchTerm}/>} />
           <Route path="/products/:productId" element={<ProductDetails />} />
           <Route path="/cart" element={<OpenCart />} />
           <Route path='/categories' element={<ShopByCategories/>} />

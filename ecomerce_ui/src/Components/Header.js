@@ -5,51 +5,62 @@ import { useNavigate, Link } from "react-router-dom";
 import "../Styles/Header.css";
 import axios from 'axios';
 
-export default function Header({ showOptions, setShowOptions }) {
+export default function Header({ showOptions, setShowOptions, onSearch }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("signedUser"));
     const token = localStorage.getItem("token");
     const [errorMessage, setErrorMessage] = useState("");
-    // const [orders, setOrders] = useState([]);
-    // const pendingCart = JSON.parse(localStorage.getItem("openedCart"));
 
-    // useEffect(() => {
-    //     if (pendingCart) {
-    //         const fetchOrderDetails = async () => {
-    //             const details = {
-    //                 OrderId: pendingCart.OrderId,
-    //             };
+    const [searchTerm, setSearchTerm] = useState("");
 
-    //             try {
-    //                 const params = new URLSearchParams(details).toString();
-    //                 const response = await fetch(
-    //                     `http://localhost:4500/orders/order-details?${params}`,
-    //                     {
-    //                         method: "GET",
-    //                         headers: {
-    //                             "Content-Type": "application/json",
-    //                         }
-    //                     }
-    //                 );
+    const handleSearchInput = (e) => {
+        const input = e.target.value;
+        setSearchTerm(input);
+        if (onSearch) {
+            onSearch(input);
+        }
+    };
 
-    //                 if (!response.ok) {
-    //                     const error = await response.text();
-    //                     throw new Error(error || "Failed to fetch order details.");
-    //                 }
+    const [orders, setOrders] = useState([]);
+    const pendingCart = JSON.parse(localStorage.getItem("openedCart"));
 
-    //                 const data = await response.json();
-    //                 setOrders(data.orderDetails);    
-    //             } catch (error) {
-    //                 console.error("Error fetching order details:", error);
-    //                 setErrorMessage("There was an error fetching the order details.");
-    //             }
-    //         };
+    useEffect(() => {
+        if (pendingCart) {
+            const fetchOrderDetails = async () => {
+                const details = {
+                    OrderId: pendingCart.OrderId,
+                };
 
-    //         fetchOrderDetails();
-    //     };
-    // }, [pendingCart]);
+                try {
+                    const params = new URLSearchParams(details).toString();
+                    const response = await fetch(
+                        `http://localhost:4500/orders/order-details?${params}`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                            }
+                        }
+                    );
+
+                    if (!response.ok) {
+                        const error = await response.text();
+                        throw new Error(error || "Failed to fetch order details.");
+                    }
+
+                    const data = await response.json();
+                    setOrders(data.orderDetails.length);    
+                } catch (error) {
+                    console.error("Error fetching order details:", error);
+                    setErrorMessage("There was an error fetching the order details.");
+                }
+            };
+
+            fetchOrderDetails();
+        };
+    }, [pendingCart]);
 
     const toggleMenu = useCallback(() => {
         setIsMenuOpen(prevState => !prevState);
@@ -119,26 +130,23 @@ export default function Header({ showOptions, setShowOptions }) {
                                     Home
                                 </Link>
                             </li>
-                            <li>
-                                <Link
-                                    to="/categories"
-                                    className={`${currentPath === '/categories' ? 'active' : ''}`}
-                                >
-                                    Categories
-                                </Link>
-                            </li>
                         </ul>
                     </div>
 
                     <div className="search-bar">
                         <FontAwesomeIcon className="icon" icon={faSearch} />
-                        <input type="text" placeholder="Search..." />
+                        <input 
+                            type="text" 
+                            placeholder="Search..." 
+                            value={searchTerm}
+                            onChange={handleSearchInput}
+                        />
                     </div>
 
                     <div className="user-actions">
                         <Link className="cart" to="/cart">
                             <FontAwesomeIcon className="icon " icon={faShoppingBasket} />
-                            <div className="cart-number">{0}</div>
+                            <div className="cart-number">{orders}</div>
                         </Link>
                     </div>
                     {isAdmin && (

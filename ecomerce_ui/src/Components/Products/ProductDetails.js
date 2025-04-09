@@ -199,47 +199,49 @@ export default function ProductDetails() {
     }
 
     return (
-        <div className="single-product" key={product.ProductId}>
-            <div className="offer">-{product.ProductDiscount}%</div>
-            {product.ProductImage && (
-                <img src={product.ProductImage} alt={product.ProductName} />
-            )}
-            <div className="product-details">
-                <h2>{product.ProductName}</h2>
-                <p className="product-description">{product.Description}</p>
-                <h5>
-                    Ksh {Math.floor(product.Price * ((100 - product.ProductDiscount) / 100)).toLocaleString()}
-                </h5>
-                <p>Ksh {product.Price.toLocaleString()}</p>
-                <div className="category">
-                    <strong>Category: </strong>{product.Category}
-                </div>
-                <p className="stock-left">
-                    <strong>{product.StockQuantity}</strong> items left.
-                </p>
-
-                <div className="add-btns">
-                    <div className="quantity-selection">
-                        <button disabled={product.StockQuantity <= 0 || quantity === 0} onClick={handleDecreaseQuantity}>
-                            -
-                        </button>
-                        <span>{quantity}</span>
-                        <button
-                            disabled={quantity >= product.StockQuantity || quantity === 10}
-                            onClick={handleIncreaseQuantity}
-                        >
-                            +
-                        </button>
-                        <p>({quantity} item(s) added)</p>
+        <div onClick={() => navigate('/products')} className="product-close">
+            <div onClick={(e) => e.stopPropagation()} className="single-product" key={product.ProductId}>
+                <div className="offer">-{product.ProductDiscount}%</div>
+                {product.ProductImage && (
+                    <img src={product.ProductImage} alt={product.ProductName} />
+                )}
+                <div className="product-details">
+                    <h2>{product.ProductName}</h2>
+                    <p className="product-description">{product.Description}</p>
+                    <h5>
+                        Ksh {Math.floor(product.Price * ((100 - product.ProductDiscount) / 100)).toLocaleString()}
+                    </h5>
+                    <p>Ksh {product.Price.toLocaleString()}</p>
+                    <div className="category">
+                        <strong>Category: </strong>{product.Category}
                     </div>
+                    <p className="stock-left">
+                        <strong>{product.StockQuantity}</strong> items left.
+                    </p>
 
-                    <button
-                        className="add-btn"
-                        onClick={handleAddItemToCart}
-                        disabled={quantity === 0 || product.StockQuantity <= 0}
-                    >
-                        Add Item to Cart
-                    </button>
+                    <div className="add-btns">
+                        <div className="quantity-selection">
+                            <button disabled={product.StockQuantity <= 0 || quantity === 0} onClick={handleDecreaseQuantity}>
+                                -
+                            </button>
+                            <span>{quantity}</span>
+                            <button
+                                disabled={quantity >= product.StockQuantity || quantity === 10}
+                                onClick={handleIncreaseQuantity}
+                            >
+                                +
+                            </button>
+                            <p>({quantity} item(s) added)</p>
+                        </div>
+
+                        <button
+                            className="add-btn"
+                            onClick={handleAddItemToCart}
+                            disabled={quantity === 0 || product.StockQuantity <= 0}
+                        >
+                            Add Item to Cart
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

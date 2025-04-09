@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './Shop.css';
 
-export default function Shop() {
+export default function Shop({ searchTerm }) {
     const [products, setProducts] = useState([]);
     const [loadingProducts, setLoadingProducts] = useState(false);
     const [loadingCategories, setLoadingCategories] = useState(false);
@@ -14,6 +14,11 @@ export default function Shop() {
     const navigate = useNavigate();
     const [allCategories, setAllCategories] = useState([]);
     const [category, setCategory] = useState(null);
+
+    // Filter products based on searchTerm
+    const filteredProducts = products.filter(product =>
+        product.ProductName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     // Fetch the products based on the selected category
     useEffect(() => {
@@ -142,11 +147,11 @@ export default function Shop() {
                 </ul>
             </div>
             <div className="products">
-                {products.length === 0 ? (
-                    <div>No products available</div>
+            {filteredProducts.length === 0 ? (
+                    <div>No products found for "{searchTerm}"</div>
                 ) : (
                     <div className="products-list">
-                        {products.map((product) => (
+                        {filteredProducts.map((product) => (
                             <div
                                 onClick={() => navigate(`/products/${product.ProductId}`)}
                                 className="product"
