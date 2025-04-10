@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import "./Login.css"
+import '../../Styles/Login.css';
 
 export default function Login() {
     const [email, setEmail] = useState("");

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import './Users.css'
 import axios from "axios";
 import { toast } from "react-toastify";
 import SignUp from "./SignUp";
+import '../../Styles/Login.css';
 
 export default function Users() {
     const user = JSON.parse(localStorage.getItem("signedUser"));

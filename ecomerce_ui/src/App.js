@@ -10,13 +10,8 @@ import ProductDetails from './Components/Products/ProductDetails';
 import OpenCart from './Components/Cart/OpenCart';
 import Dashboard from './Components/Dashboard';
 import Users from './Components/Users/Users';
-import MostSelling from './Components/Sales/MostSelling';
-import LowStock from './Components/Products/LowStock';
-import ProductSales from './Components/Sales/ProductSales';
-import CategorySales from './Components/Sales/CategorySales';
 import AdminDash from './Components/AdminDash';
 import Products from './Components/Products/Products';
-import ShopByCategories from './Components/Products/Categories';
 
 function App() {
   const [showOptions, setShowOptions] = useState(false);
@@ -39,11 +34,6 @@ function App() {
           <Route path="/products" element={<Shop searchTerm={searchTerm}/>} />
           <Route path="/products/:productId" element={<ProductDetails />} />
           <Route path="/cart" element={<OpenCart />} />
-          <Route path='/categories' element={<ShopByCategories/>} />
-          <Route path="/most-selling-product" element={<MostSelling />} />
-          <Route path="/low-stock" element={<LowStock />} />
-          <Route path="/product-sales" element={<ProductSales />} />
-          <Route path="/category-sales" element={<CategorySales />} />
           
           <Route path="/" element={<AdminDash />}>
             <Route index element={<Dashboard />} />

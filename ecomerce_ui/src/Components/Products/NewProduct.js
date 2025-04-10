@@ -102,11 +102,11 @@ export default function NewProduct() {
     };
 
     return(
-        <div className="new-product">
-            <h3>Add New Product</h3>
+        <div className="login-form">
+            <h2>Add New Product</h2>
             {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
             <form onSubmit={handleAddProduct}>
-                <div className="product-details">
+                <div className="user-details">
                     <label>Product Name:</label>
                     <input
                         type="text"
@@ -115,7 +115,7 @@ export default function NewProduct() {
                         required
                     />
                 </div>
-                <div className="product-details">
+                <div className="user-details">
                     <label>Description:</label>
                     <textarea
                         value={description}
@@ -123,7 +123,7 @@ export default function NewProduct() {
                         required
                     />
                 </div>
-                <div className="product-details">
+                <div className="user-details">
                     <label>Price:</label>
                     <input
                         type="number"
@@ -133,7 +133,7 @@ export default function NewProduct() {
                         required
                     />
                 </div>
-                <div className="product-details">
+                <div className="user-details">
                     <label>Discount:</label>
                     <input
                         type="number"
@@ -143,7 +143,7 @@ export default function NewProduct() {
                         required
                     />
                 </div>
-                <div className="product-details">
+                <div className="user-details">
                     <label>Stock Quantity:</label>
                     <input
                         type="number"
@@ -153,7 +153,7 @@ export default function NewProduct() {
                         required
                     />
                 </div>
-                <div className="product-details">
+                <div className="user-details">
                     <label>Category:</label>
                     <input
                         type="text"
@@ -162,7 +162,7 @@ export default function NewProduct() {
                         required
                     />
                 </div>
-                <div className="product-details">
+                <div className="user-details">
                     <label>Product Image URL:</label>
                     <input
                         type="text"

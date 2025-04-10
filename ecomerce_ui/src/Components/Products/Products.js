@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import NewProduct from "./NewProduct";
 import { toast } from "react-toastify";
 import axios from 'axios';
-import '../Users/Users.css'
 
 export default function Products() {
     const [products, setProducts] = useState([]);

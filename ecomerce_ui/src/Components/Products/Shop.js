@@ -8,7 +8,7 @@ export default function Shop({ searchTerm }) {
     const [loadingCategories, setLoadingCategories] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(10);
+    const [pageSize] = useState(20);
     const [noMoreProducts, setNoMoreProducts] = useState(false);
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
@@ -88,7 +88,6 @@ export default function Shop({ searchTerm }) {
                 }
 
                 const data = await response.json();
-                console.log("Fetched data for categories:", data);
 
                 const categories = data.reduce((categoriesArr, product) => {
                     if (!categoriesArr.includes(product.Category)) {
@@ -98,7 +97,6 @@ export default function Shop({ searchTerm }) {
                 }, []);
 
                 setAllCategories(categories);
-                console.log("Categories extracted:", categories);
 
             } catch (err) {
                 console.error("Error fetching categories:", err);

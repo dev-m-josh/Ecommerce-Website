@@ -12,7 +12,8 @@ export default function Header({ showOptions, setShowOptions, onSearch }) {
     const user = JSON.parse(localStorage.getItem("signedUser"));
     const token = localStorage.getItem("token");
     const [errorMessage, setErrorMessage] = useState("");
-
+    const [orders, setOrders] = useState([]);
+    const pendingCart = JSON.parse(localStorage.getItem("openedCart"));
     const [searchTerm, setSearchTerm] = useState("");
 
     const handleSearchInput = (e) => {
@@ -22,9 +23,6 @@ export default function Header({ showOptions, setShowOptions, onSearch }) {
             onSearch(input);
         }
     };
-
-    const [orders, setOrders] = useState([]);
-    const pendingCart = JSON.parse(localStorage.getItem("openedCart"));
 
     useEffect(() => {
         if (pendingCart) {
